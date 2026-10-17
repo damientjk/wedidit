@@ -133,6 +133,21 @@ body.resizing.rows{cursor:row-resize}
 .frow .imp{font-family:var(--mono);font-size:11px;font-weight:500;text-align:right;color:var(--mute);background:none;border:1px solid transparent;border-radius:6px;padding:4px;min-height:30px;cursor:pointer}
 .frow .imp:hover{border-color:var(--line);background:#fff}
 .frow .imp.up{color:var(--red)}.frow .imp.down{color:var(--green)}
+/* Field priority groups */
+.fform .grp.req,.fform .grp.none{grid-column:1/-1}
+.fform legend,.fform summary{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fform legend .hint,.fform summary .hint{font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--mute)}
+.fform .grp.req{background:#FFF6EE;border:1px solid #F5C9A3;border-radius:10px;padding:2px 10px 8px}
+.fform .grp.req legend{color:#B4530F;padding:8px 0 4px}
+.fform .grp.req .frow{grid-template-columns:minmax(0,1fr) minmax(0,220px) 52px}
+.fform details.grp.none{border-top:1px solid var(--line2);margin-top:6px}
+.fform summary{cursor:pointer;font-size:11px;letter-spacing:1.2px;font-weight:600;color:var(--mute);padding:10px 0 4px;text-transform:uppercase}
+.frow .rng{grid-column:1/-1;font-size:11px;line-height:1.3;color:var(--mute);padding:0 0 2px}
+.frow .rng:empty{display:none}
+.frow.risky .rng{color:#8A5200;font-weight:500}
+.frow.risky select{border-color:#E0A63A;border-style:solid}
+.frow.need select{border:2px solid var(--orange)}
+.range-note{grid-column:1/-1;margin-top:-4px;padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.7);color:#8A5200;line-height:1.35}
 .frow.blank select{color:var(--mute);border-style:dashed}
 .frow .imp.typ{font-style:italic;color:#9AA4B2}
 .filled{display:flex;align-items:center;gap:8px}

@@ -2,7 +2,8 @@
 
   GET  /health
   GET  /model/info       metrics, LR weights, first XGBoost trees (for the live view)
-  GET  /model/final      the final model's input fields, labels and tier thresholds
+  GET  /model/final      the final model's input fields, labels, allowed values and tier thresholds
+  POST /score/range      best / worst score for blank fields (each value tried in turn)
   POST /score            claim JSON (+ "exclude") -> final XGBoost model (src/explain.py)
   POST /demo/score       the 5-feature demo model, used by the PDF walkthrough UI
   POST /analyze          PDF upload -> risk after every sentence (demo model)
@@ -90,12 +91,22 @@ def model_info():
     }
 
 
-@app.get("/model/final")
-def model_final():
-    manifest, _, features, reference, encoder, categorical, _ = explain._load()
-    # Allowed values per categorical field, so the UI can build dropdowns.
+DEDUCTIBLES = [300.0, 400.0, 500.0, 700.0]  # the only deductibles in the training data
+
+
+def final_options():
+    """Allowed values per field (categorical levels, plus the observed deductibles)."""
+    _, _, _, _, encoder, categorical, _ = explain._load()
     options = {f: [c.item() if hasattr(c, "item") else c for c in cats]
                for f, cats in zip(categorical, encoder.categories_)}
+    options["Deductible"] = DEDUCTIBLES
+    return options
+
+
+@app.get("/model/final")
+def model_final():
+    manifest, _, features, reference, *_ = explain._load()
+    options = final_options()  # so the UI can build dropdowns
     return {
         "model_id": manifest["model_id"], "features": features, "options": options,
         "labels": {f: explain.LABELS.get(f, f) for f in features}, "reference": reference,
@@ -110,6 +121,34 @@ def score(claim: dict):
         return explain.score(claim)
     except ValueError as e:
         raise HTTPException(422, str(e))
+
+
+@app.post("/score/range")
+def score_range(body: dict):
+    """Best / worst case for blank fields.
+
+    Body: {"claim": {...}, "fields": ["VehiclePrice", ...]}. For each field, the claim is
+    scored with every allowed value of that field (all other inputs unchanged) and the
+    lowest and highest score are returned, plus whether that range crosses a tier.
+    """
+    manifest, _, features, *_ = explain._load()
+    claim, fields = body.get("claim") or {}, body.get("fields") or []
+    if not isinstance(claim, dict) or not isinstance(fields, list) or not set(fields) <= set(features):
+        raise HTTPException(422, "Expected {claim: {...}, fields: [model feature names]}")
+    claim = {k: v for k, v in claim.items() if k != "exclude"}
+    options = final_options()
+    out = {}
+    try:
+        for f in dict.fromkeys(fields):
+            results = [(v, explain.score({**claim, f: v})) for v in options[f]]
+            lo = min(results, key=lambda r: r[1]["risk_score"])
+            hi = max(results, key=lambda r: r[1]["risk_score"])
+            tiers = sorted({r["tier"] for _, r in results})
+            out[f] = {"min": lo[1]["risk_score"], "min_value": lo[0], "max": hi[1]["risk_score"],
+                      "max_value": hi[0], "tiers": tiers, "crosses_tier": len(tiers) > 1}
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return {"ranges": out}
 
 
 @app.post("/demo/score")

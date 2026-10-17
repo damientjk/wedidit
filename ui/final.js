@@ -3,18 +3,25 @@
 //   base value + sum(impacts) = log-odds,  score = 1 / (1 + e^-log-odds).
 // The score is an uncalibrated ranking score, never shown as a % chance of fraud.
 
+// Groups come from docs/missing_fields.md: how often leaving each field blank changes the
+// tier, measured on 600 validation claims with xgboost_09.
 const F_GROUPS = [
-  ["Accident", ["Month", "WeekOfMonth", "DayOfWeek", "AccidentArea"]],
-  ["Claim reported", ["MonthClaimed", "WeekOfMonthClaimed", "DayOfWeekClaimed"]],
-  ["Policy and history", ["BasePolicy", "Deductible", "AgentType", "Days_Policy_Accident", "Days_Policy_Claim", "PastNumberOfClaims", "DriverRating"]],
-  ["Vehicle", ["Make", "VehicleCategory", "VehiclePrice", "AgeOfVehicle", "NumberOfCars"]],
+  {kind: "req", title: "Required", hint: "Decides the score. Left blank, 37% of claims land in the wrong tier.",
+   fields: ["BasePolicy"]},
+  {kind: "rec", title: "Recommended", hint: "While blank, you see the best and worst case.",
+   fields: ["VehiclePrice", "MonthClaimed", "AgeOfVehicle", "Days_Policy_Accident", "Deductible", "Make"]},
+  {kind: "opt", title: "Optional", hint: "Small effect. A typical value is used if blank.",
+   fields: ["WeekOfMonth", "DayOfWeek", "VehicleCategory", "WeekOfMonthClaimed", "PastNumberOfClaims", "AccidentArea", "DriverRating"]},
+  {kind: "none", title: "No effect on this model", hint: "Kept for completeness. Blank changes nothing.",
+   fields: ["Month", "DayOfWeekClaimed", "AgentType", "Days_Policy_Claim", "NumberOfCars"]},
 ];
+const F_REQUIRED = F_GROUPS[0].fields;
+const F_RECOMMENDED = F_GROUPS[1].fields;
 const MONTH_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const BAND_ORDER = ["none", "new", "1", "1 to 7", "8 to 15", "15 to 30", "more than 30", "2 years", "3 years", "4 years", "5 years", "6 years", "7 years", "more than 7",
   "2 to 4", "more than 4", "1 vehicle", "2 vehicles", "3 to 4", "5 to 8", "more than 8",
   "less than 20000", "20000 to 29000", "30000 to 39000", "40000 to 59000", "60000 to 69000", "more than 69000"];
-const F_DEDUCTIBLES = [300, 400, 500, 700];
 const F_INTS = new Set(["WeekOfMonth", "WeekOfMonthClaimed", "DriverRating"]);
 
 let fin = null;          // GET /model/final
@@ -45,17 +52,32 @@ async function bootFinal() {
     return;
   }
   const form = $("#fForm");
-  F_GROUPS.forEach(([title, fields]) => {
-    const fs = el("fieldset");
-    fs.appendChild(el("legend", "", title));
-    fields.filter((f) => fin.features.includes(f)).forEach((f) => {
+  const placed = new Set();
+  // Any field the model has that is not in a group goes to Optional.
+  F_GROUPS[2].fields.push(...fin.features.filter((f) => !F_GROUPS.some((g) => g.fields.includes(f))));
+  F_GROUPS.forEach((g) => {
+    const fs = el("fieldset", "grp " + g.kind);
+    const legend = el("legend");
+    legend.append(el("span", "", g.title), el("span", "hint", g.hint));
+    fs.appendChild(legend);
+    let box = fs;
+    if (g.kind === "none") {
+      // Collapsed by default: these fields do not move this model's score.
+      const det = el("details", "grp none");
+      const sum = el("summary");
+      sum.append(el("span", "", `${g.title} (${g.fields.length} fields)`), el("span", "hint", g.hint));
+      det.appendChild(sum);
+      box = det;
+    }
+    g.fields.filter((f) => fin.features.includes(f) && !placed.has(f)).forEach((f) => {
+      placed.add(f);
       const row = el("div", "frow");
       row.dataset.f = f;
       const id = "f_" + f;
-      const lab = el("label", "", fin.labels[f] || f);
+      const lab = el("label", "", (fin.labels[f] || f) + (g.kind === "req" ? " *" : ""));
       lab.htmlFor = id;
       let input;
-      const opts = f === "Deductible" ? F_DEDUCTIBLES : (fin.options || {})[f];
+      const opts = (fin.options || {})[f];
       if (opts) {
         input = el("select");
         input.add(new Option("Not provided", ""));
@@ -70,10 +92,11 @@ async function bootFinal() {
       const imp = el("button", "imp", "");
       imp.type = "button";
       imp.setAttribute("aria-label", `Switch ${fin.labels[f] || f} off or on for a what-if`);
-      row.append(lab, input, imp);
-      fs.appendChild(row);
+      if (g.kind === "req") input.required = true;
+      row.append(lab, input, imp, el("div", "rng"));
+      box.appendChild(row);
     });
-    form.appendChild(fs);
+    form.appendChild(box);
   });
   form.addEventListener("submit", (e) => e.preventDefault());
   const span = 0.6; // meter shows 0 to 0.6, where all the action is
@@ -105,11 +128,14 @@ function clearForm() {
 }
 
 // Nothing entered yet: show an empty state instead of a score built only from typical values.
-function renderEmptyFinal() {
+function renderEmptyFinal(missingReq) {
   fRes = null;
+  ++fRangeReq;
   $("#fRisk").textContent = "-";
-  $("#fTier").textContent = "Waiting for details";
-  $("#fAdvice").textContent = "Fill in the claim fields. The score appears after the first one and updates after each.";
+  $("#fTier").textContent = missingReq ? "Required field missing" : "Waiting for details";
+  $("#fAdvice").textContent = missingReq
+    ? `Fill in ${missingReq.map((f) => fin.labels[f]).join(", ")} to get a score. It decides the score more than any other field.`
+    : "Start with Policy coverage (required). The score appears once it is filled and updates after every field.";
   $("#fDecision").className = "decision";
   $("#fMeter").style.transform = "scaleX(0)";
   $("#fScoreR").textContent = $("#fMargin").textContent = "-";
@@ -117,10 +143,15 @@ function renderEmptyFinal() {
   $("#fPrev").disabled = $("#fNext").disabled = true;
   $("#fWhatIf").hidden = true;
   $("#fReset").hidden = true;
+  $("#fRange").hidden = true;
   document.querySelectorAll(".frow").forEach((row) => {
-    row.classList.add("blank");
+    const blank = $("#fForm").elements[row.dataset.f].value === "";
+    row.classList.toggle("blank", blank);
+    row.classList.toggle("need", !!missingReq && missingReq.includes(row.dataset.f));
     row.classList.remove("ex", "hot");
     row.querySelector(".imp").textContent = "";
+    row.querySelector(".rng").textContent = "";
+    row.classList.remove("risky");
   });
   $("#fWaterfall").textContent = "";
   $("#fThinking").textContent = "";
@@ -135,6 +166,8 @@ async function scoreFinal() {
   $("#fFilled").textContent = `${n} of ${fin.features.length}`;
   $("#fFilledBar").style.transform = `scaleX(${n / fin.features.length})`;
   if (n === 0) { renderEmptyFinal(); return; }
+  const missingReq = F_REQUIRED.filter((f) => fin.features.includes(f) && $("#fForm").elements[f].value === "");
+  if (missingReq.length) { renderEmptyFinal(missingReq); return; }
   const body = {...readClaimFinal(), exclude: [...fExcluded]};
   let res;
   try {
@@ -148,6 +181,51 @@ async function scoreFinal() {
   if (my !== fReq) return;
   fRes = res;
   renderFinal();
+  fetchRanges();
+}
+
+/* ---------- best / worst case for blank recommended fields ---------- */
+let fRangeReq = 0;
+async function fetchRanges() {
+  const my = ++fRangeReq;
+  const blank = F_RECOMMENDED.filter((f) => fin.features.includes(f) && $("#fForm").elements[f].value === "");
+  document.querySelectorAll(".frow .rng").forEach((r) => { r.textContent = ""; });
+  document.querySelectorAll(".frow.risky").forEach((r) => r.classList.remove("risky"));
+  fRanges = {};
+  if (!blank.length) { renderRangeSummary(); return; }
+  blank.forEach((f) => { document.querySelector(`.frow[data-f="${f}"] .rng`).textContent = "checking best and worst case..."; });
+  let res;
+  try {
+    const r = await fetch("score/range", {method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({claim: readClaimFinal(), fields: blank})});
+    res = await r.json();
+    if (!r.ok) throw new Error(res.detail || r.status);
+  } catch (e) {
+    blank.forEach((f) => { document.querySelector(`.frow[data-f="${f}"] .rng`).textContent = ""; });
+    return;
+  }
+  if (my !== fRangeReq) return;
+  fRanges = res.ranges;
+  Object.entries(fRanges).forEach(([f, x]) => {
+    const row = document.querySelector(`.frow[data-f="${f}"]`);
+    row.classList.toggle("risky", x.crosses_tier);
+    row.querySelector(".rng").textContent = x.crosses_tier
+      ? `Could change the tier: score ${x.min.toFixed(2)} (${x.min_value}) to ${x.max.toFixed(2)} (${x.max_value})`
+      : `Safe to leave blank for now: score stays ${x.min.toFixed(2)} to ${x.max.toFixed(2)}, same tier`;
+  });
+  renderRangeSummary();
+}
+let fRanges = {};
+
+function renderRangeSummary() {
+  if (!fRes) return;
+  const risky = Object.entries(fRanges).filter(([, x]) => x.crosses_tier);
+  const box = $("#fRange");
+  if (!risky.length) { box.hidden = true; return; }
+  const lo = Math.min(...risky.map(([, x]) => x.min)), hi = Math.max(...risky.map(([, x]) => x.max));
+  box.hidden = false;
+  box.textContent = `Find first: ${risky.map(([f]) => fin.labels[f]).join(", ")}. ` +
+    `Each one alone could move the score between ${lo.toFixed(2)} and ${hi.toFixed(2)} and change the tier.`;
 }
 
 function renderFinal() {
@@ -167,6 +245,7 @@ function renderFinal() {
     const imp = row.querySelector(".imp");
     row.classList.toggle("ex", !!c && c.excluded);
     row.classList.toggle("blank", !!c && c.imputed);
+    row.classList.remove("need");
     if (!c) { imp.textContent = ""; return; }
     if (c.excluded) {
       imp.textContent = "off";
