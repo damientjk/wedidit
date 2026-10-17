@@ -31,7 +31,8 @@ const excluded = new Set();
 
 /* ---------- helpers ---------- */
 const pct = (p) => Math.round(p * 100) + "%";
-const pts = (d) => (d >= 0 ? "+" : "−") + Math.abs(d * 100).toFixed(0) + " pts";
+const pts = (d) => Math.round(Math.abs(d * 100)) === 0 ? "0 pts" : (d >= 0 ? "+" : "−") + Math.abs(d * 100).toFixed(0) + " pts";
+const chunkWord = (n) => n === 1 ? "1 chunk" : n + " chunks";
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const svg = (tag, attrs, text) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; };
 const sleep = (ms) => fast ? Promise.resolve() : new Promise((r) => setTimeout(r, ms / speed));
