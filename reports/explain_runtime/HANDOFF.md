@@ -16,12 +16,14 @@ All paths resolve from the repository, independent of current working directory.
 Loading is lazy, cached once per process; call score once during startup to
 warm/check artifacts. Do not mutate the shared model or fit it in the API.
 
-Verified runtime: Python 3.12.14, NumPy 1.26.4, pandas 2.1.4, SciPy 1.11.4,
+Verified original local runtime: Python 3.12.14, NumPy 1.26.4, pandas 2.1.4, SciPy 1.11.4,
 scikit-learn 1.4.1.post1, XGBoost 2.0.3, joblib 1.6.0. No shap package needed.
 Temporary packages were used; requirements.txt is unchanged. Use compatible
-versions for trusted joblib loading. Actual LinuxONE s390x artifact loading,
-scoring parity, concurrent service throughput and latency remain unverified.
-Earlier Ubuntu package evidence is not an on-host test.
+versions for trusted joblib loading. Subsequent team documentation reports
+LinuxONE artifact/score parity checks; see [the evaluation report](../../docs/evaluation.md)
+and retain timestamped evidence for the currently running release. Concurrent
+service throughput is not established by those small parity checks. The
+separate calibrated experiment is not the served model.
 
 ## Python interface
 
@@ -130,46 +132,52 @@ inputs; excluded fields can have nonzero impacts at their reference values.
 They remain in the response so additivity is preserved; grey them in the UI
 instead of forcing their impact to zero or silently dropping their effects.
 
-## Provisional bands
+## Chosen current score bands
 
-Distribution-only boundaries use locked validation scores, without optimizing
-labels or conducting another validation tuning round:
+Review begins at the team's chosen **0.1754** validation-based leakage-control
+boundary (commit bc85518). Investigation remains **0.31254968**, displayed
+approximately as **0.31255**. The model and fitted preprocessing are unchanged:
 
 | Priority | API tier | Score band |
 |---|---|---|
-| Low | fast_track | score < 0.25596985 |
-| Medium | review | 0.25596985 <= score < 0.31254968 |
+| Low | fast_track | score < 0.1754 |
+| Medium | review | 0.1754 <= score < 0.31254968 |
 | High | investigate | score >= 0.31254968 |
 
-These are the observed top-30% and top-10% rank cutoffs (925 and 308 slots)
-from the saved validation score distribution. Their empirical validation
-frequencies are approximate because of rounding/ties. Validation is already
-used and exploratory. These bands are not calibrated absolute-risk cutoffs,
-cannot guarantee future queue sizes or fraud recall, and are not exact batch
-top-K assignment. Use the separately documented quota scheduler for a hard
-human-capacity budget; pending that coordination, the UI displays provisional
-priority only. Version and monitor bands rather than adapting on live labels.
+Under this policy validation has 1,111 low, 1,665 review and 308 investigate
+claims. Review-only workload is 53.99%; combined workload is 63.98%, with
+175/184 fraud labels captured (95.11%). These are observed validation values,
+not fixed percentages, probability cutoffs or future coverage guarantees.
+Bands are not exact batch top-K assignment. Version and monitor the policy.
+
+Historical note: the original review boundary was **0.25596985**, yielding
+about 30% combined validation workload. That value remains in the original
+[frozen test protocol](../../docs/figures/test/frozen_protocol.json) by design.
+The current 0.1754 boundary was adopted after the original test evaluation.
+Its saved-test result (174/185 fraud captured, 94.05% recall, 63.13% workload)
+is [post-evaluation policy reanalysis](../../docs/figures/routing-update/README.md),
+not a new untouched holdout assessment. Do not overwrite the historical
+protocol or mix original and current-policy metrics/charts.
 
 Recommended text is returned per tier: specialist investigation, lightweight
 verification, or expedited standard processing with checks/safeguards. No tier
 certifies fraud, certifies fraud absence, approves payment or rejects a claim.
 
-## Damien's integration work
+## Damien's current integration contract
 
-1. Wire the existing /score handler to this function and map ValueError to 422;
-   handle artifact/version failures as startup/service failures, not low scores.
-2. Coordinate /model/info to expose the 19 names, explain.LABELS and band/model
-   metadata. The old demo's five-feature LR coefficients, PDF extractor,
+1. `/score` now calls this function and maps ValueError to 422. Preserve that
+   wiring; handle artifact/version failures as service failures, not low scores.
+2. `/model/final` exposes the 19 names, explain.LABELS and band/model metadata.
+   `/model/info` remains the separate demo interface. The five-feature LR coefficients, PDF extractor,
    lr_terms and tree visualizations cannot describe this model. Do not blend
    the synthetic LR with the tuned XGBoost.
-3. The current UI's pts(impact) assumes probability points. Change the label
-   and formatter to signed log-odds contribution (or a clearly marked relative
+3. Keep the final UI's impact label/formatter in signed log-odds (or a clearly marked relative
    explanation bar); keep risk_score separate. Show actual what-if score_change
    as the scenario score difference, not as a SHAP contribution.
 4. Show provisional band, quality warnings, excluded/imputed state, human-only
    recommendation and sensitivity banner. Preserve the original observed score.
-5. Verify the full pipeline, sparse preprocessing and contribution additivity
-   on LinuxONE, then load/concurrency tests and staffing/safeguard policy.
+5. Retain LinuxONE parity evidence for the current release and thresholds,
+   then perform any separately authorized load/concurrency checks.
    Request approval before any push/deployment or working-model replacement.
 
 ## Verification

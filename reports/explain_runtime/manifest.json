@@ -5,7 +5,7 @@
   "validation_predictions_sha256": "159b3c3edc9dd17f3136c50ea4f7cc0df2584ec9d35b5fc610d4880f725918b9",
   "review_min_score": 0.1754,
   "investigate_min_score": 0.31254968,
-  "bands": "validation top approximately 10% high; next 20% medium; remainder low",
-  "status": "provisional distribution-derived bands; no recall-based optimization; no capacity guarantee on new data",
+  "bands": "low below 0.1754; medium from 0.1754 to below 0.31254968; high from 0.31254968; workload shares are not fixed",
+  "status": "team-selected validation leakage-control review boundary (bc85518); investigation boundary unchanged; revised policy postdates original test evaluation; no capacity or recall guarantee on new data",
   "reference_source": "fitted numeric/categorical imputers: train-only median/modes"
 }

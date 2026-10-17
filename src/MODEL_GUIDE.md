@@ -8,8 +8,15 @@ experiments for the IBM Z Datathon 2026 project.
 `models/experiments/capacity_20261017T042040511095Z/xgboost_09.joblib`.
 It produces a **relative fraud-risk score** to help a human prioritize claims.
 `src/explain.py` loads this model, not the calibrated experiment. Calling the
-score a verified fraud probability would be incorrect. Deployment candidate
-does not mean it has been deployed or verified on LinuxONE.
+score a verified fraud probability would be incorrect. The team's
+[evaluation report](../docs/evaluation.md) now records LinuxONE integration
+and parity checks for this model. This guide update does not independently
+recheck the live service; preserve timestamped release evidence with Damien.
+
+**Chosen current boundaries:** review begins at **0.1754**, investigation at
+**0.31254968** (displayed approximately as **0.31255**). The original test
+evaluation used review boundary 0.25596985. Current-policy results are a
+separately documented post-evaluation reanalysis, not a new untouched test.
 
 **Separate probability-estimation experiment:** isotonic-calibrated XGBoost.
 It was selected using training-only nested cross-validation. Logistic
@@ -38,7 +45,7 @@ actual available model inputs are the existing processed files:
 | `data/processed/claims_clean.csv` | 15,419 | 14,496 | 923 | 5.99% |
 | `data/processed/train.csv` | 9,251 | 8,697 | 554 | 5.99% |
 | `data/processed/val.csv` | 3,084 | 2,900 | 184 | 5.97% |
-| `data/processed/test.csv` | Frozen final holdout | Not used in modeling work | Not evaluated | — |
+| `data/processed/test.csv` | 3,084 | 2,899 | 185 | 6.00% |
 
 The target is **`FraudFound_P`**, with this exact capitalization:
 
@@ -49,9 +56,12 @@ The existing split is stratified random 60/20/20 on `(FraudFound_P, Year)`,
 seed 42, frozen in the `split` column. Prior read-only dataset inspection
 verified consistent schemas, no remaining nulls, unique claim IDs, disjoint
 split IDs, and exact agreement between split files and the full cleaned CSV.
-Training/validation use their existing files; the final test file has not been
-used for fitting, tuning, calibration or performance evaluation. The initial
-dataset audit inspected all CSVs to verify their split integrity.
+Training/validation use their existing files. Yizhuo has completed the final
+test evaluation after locking xgboost_09 and the original thresholds; test was
+not used to fit this model. The later review-boundary change is reported
+separately on cached scores. Do not treat the test set as unused or rerun it
+for further model/threshold selection. The initial dataset audit inspected
+all CSVs to verify their split integrity.
 
 Important cleaning decisions already made by Yu Heng include correcting make
 spellings, dropping redundant/inconsistent `PolicyType`, renaming the sequential
@@ -274,27 +284,38 @@ features. They are **log-odds**, not probability-point changes. Exclusions
 replace values with fitted train-only references and are hypothetical
 sensitivity analysis, not a new observed score or a retrained model.
 
-The provisional API tiers are `fast_track`/low below .25596985,
-`review`/medium from .25596985 to below .31254968, and `investigate`/high from
-.31254968. These reflect validation score distributions, not calibrated
-probabilities, confirmed fraud labels or guaranteed future queue percentages.
+The current API tiers are `fast_track`/low below **0.1754**,
+`review`/medium from **0.1754** to below **0.31254968**, and `investigate`/high
+from **0.31254968**. The team replaced the original review boundary
+0.25596985 in commit bc85518 with a validation-based fraud-leakage-control
+cutoff; the investigation boundary is unchanged. These are uncalibrated score
+bands, not probabilities, confirmed fraud labels or fixed queue percentages.
 Low priority means standard checks and safeguards still apply.
+
+Current-policy validation totals: 1,111 low / 1,665 review / 308 investigate;
+9 / 136 / 39 fraud labels respectively. Combined review and investigation
+captures 175/184 (95.11%) at 63.98% model-driven human workload. The review-only
+share is 53.99%, not the historical 20%. High coverage comes with much more
+human review; future coverage/workload is not guaranteed.
 
 **Damien (API/deployment handoff):** use the whole locked pipeline via the
 scorer; preserve the 19 raw input types and transform exactly once. Coordinate
 the different `src/features.py` schema rather than substituting it. Translate
 invalid-input errors appropriately, propagate quality/sensitivity metadata,
-and verify model loading and score parity on s390x. The existing five-feature
-demo API/model remains separate and has not been overwritten. Do not switch
+and retain model-loading and score-parity evidence for the current s390x
+release. `/score` now invokes `explain.score`; `/model/final` provides the
+19-feature schema and current numeric boundaries. `/demo/score`, `/analyze`
+and `/model/info` remain the separate five-feature demo. Do not switch
 the scorer to the calibrated experiment without an explicit model decision.
 
 **Da Feng (UI handoff):** retain the four response keys, display a relative
 risk score and provisional priority, and show human-decision wording. Do not
 label the raw score as a fraud probability or treat low priority as clearance.
-Display signed contribution impacts in log-odds, not the existing probability
-point formatter. What-if results need a sensitivity banner and must not
+Display signed contribution impacts in log-odds, never a probability-point
+formatter. What-if results need a sensitivity banner and must not
 overwrite the observed claim score. Coordinate feature labels, missing/unknown
-warnings, and the existing five-feature PDF/demo interface before integration.
+warnings, and the separate five-feature PDF/demo interface. Keep current band
+text aligned to 0.1754 / 0.31254968; do not hardcode old workload percentages.
 
 See the [detailed scorer contract](../reports/explain_runtime/HANDOFF.md),
 [measured example response](../reports/explain_runtime/example_response.json),
@@ -335,10 +356,12 @@ through its separate manifest. It has not been switched to the probability
 candidate. Its native TreeSHAP impacts are log-odds contributions for that raw
 model, not additive explanations of the new calibrated probability.
 
-The existing teammate API/PDF demo uses five different synthetic features and
-is not wired to this 19-feature probability artifact. Integrating either new
-model, aligning extraction/schema and adapting explanations are separate
-coordinated tasks. No UI implementation or deployment was performed here.
+The final 19-feature `/score` route serves the tuned uncalibrated model;
+the five-feature PDF demo remains separate. Neither uses this calibrated
+probability artifact. Any switch to calibrated probabilities and corresponding
+explanations is a separate coordinated model decision. Marcus's model work
+did not implement or deploy the UI; subsequent team integration is documented
+in [docs/evaluation.md](../docs/evaluation.md).
 
 ## 8. Reproduction and verification
 
@@ -381,7 +404,47 @@ Checks completed:
   additivity, missing/unknown categories and exclusions. Those tests concern
   the raw explanation model, not the new calibrated probability mapping.
 
-## 9. Limits and next steps
+## 9. Completed final test and current-policy reanalysis
+
+The authoritative historical artifacts are the
+[frozen protocol](../docs/figures/test/frozen_protocol.json) and
+[original test summary](../docs/figures/test/evaluation_summary.json).
+They identify xgboost_09 alone, not a logistic/XGBoost ensemble or the
+calibrated experiment. Its model hash is unchanged. The saved pipeline owns
+the same fitted 19-feature preprocessing used by deployment.
+
+| Measurement | Validation (exploratory) | Final test |
+|---|---:|---:|
+| Claims / actual fraud | 3,084 / 184 | 3,084 / 185 |
+| ROC-AUC | .7169 | .6877 |
+| AP | .1256 | .1061 |
+| Fraud captured at exactly 617 highest-score claims | 81 | 65 |
+| Original LR fraud captured at the same 617 claims | 73 | 63 |
+
+The original frozen test used 0.25596985 / 0.31254968: combined review plus
+investigation captured 91/185 fraud labels (49.19%) in 889/3,084 claims
+(28.83% workload). At the investigation boundary alone, 315 claims contained
+39 fraud labels (precision12.38%, recall21.08%). Exact top-10% ranking selects
+308 claims and catches 38; this is a different operating point.
+
+The chosen current review boundary **0.1754** was applied later to the same
+cached scores. The [routing-update report](../docs/figures/routing-update/routing_summary.json)
+explicitly labels this **post-evaluation policy reanalysis**:
+
+| Current test tier | Claims | Actual fraud labels |
+|---|---:|---:|
+| fast_track | 1,137 | 11 |
+| review | 1,632 | 135 |
+| investigate | 315 | 39 |
+
+Combined: 174/185 fraud labels (94.05% recall), 1,947 escalated claims (63.13%
+workload), precision8.94%, F1=.1632, confusion matrix
+`[[1126,1773],[11,174]]` (rows actual, columns escalated; labels0/1).
+These are aggregate saved-report values, not newly computed test predictions.
+They must not be presented as a revised policy frozen before the original test.
+Keep the original protocol, scores, metrics and historical charts unchanged.
+
+## 10. Limits and next steps
 
 The available predictors provide only moderate separation. Calibration makes
 probability estimates better aligned with observed frequencies; it does not
@@ -392,10 +455,13 @@ and changed prevalence can invalidate calibration.
 Validation has already been examined repeatedly during project development,
 so its metrics are exploratory. Base hyperparameters were previously selected
 using these training rows; the latest nested calibration CV does not erase
-that historical selection. Freeze the final model and interpretation before
-an approved once-only evaluation on the untouched final test holdout.
+that historical selection. The final holdout has now been evaluated; do not
+reuse it for further model, feature, calibration or threshold selection.
+Any later changes motivated by these results need an independent evaluation
+design. Retain the original-test versus revised-policy distinction in reporting.
 
-Coordinate any real claim-time feature additions, verify the model on LinuxONE,
-and obtain approval before replacing a working model or deploying. Nothing
+Coordinate any real claim-time feature additions, retain current-release
+LinuxONE parity evidence, and obtain approval before replacing a working
+model or deploying another release. Nothing
 in this work certifies fraud, certifies absence of fraud, or authorizes an
 insurance claim decision.
