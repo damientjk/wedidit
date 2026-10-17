@@ -212,7 +212,7 @@ function finish() {
   fast = false;
   chunks = A.steps.filter((s) => s.facts.length && Math.abs(s.delta) >= MOVE);
   const f = A.final;
-  think("✓", `Done. Final risk ${pct(f.risk_score)}, ${TIER_LABEL[f.tier].toUpperCase()}. ${chunks.length} chunks moved the score. Use ‹ to trace back through them.`, "res");
+  think("✓", `Done. Final risk ${pct(f.risk_score)}, ${TIER_LABEL[f.tier].toUpperCase()}. ${chunkWord(chunks.length)} moved the score. Use ‹ to trace back through them.`, "res");
   status("Decision reached", "on");
   $("#prev").disabled = chunks.length === 0;
   excluded.clear();
@@ -230,7 +230,7 @@ function focusChunk(k) {
   if (pointer === chunks.length) {
     $("#decLabel").textContent = "FINAL RISK SCORE";
     $("#stepText").textContent = chunks.length
-      ? `Final decision. ${chunks.length} highlighted chunks moved the score. Press ‹ to step back through them.`
+      ? `Final decision. ${chunkWord(chunks.length)} moved the score. Press ‹ to step back through them.`
       : "Final decision. No sentence moved the score.";
     $("#whatif").hidden = false;
     showState(A.steps.length - 1, whatIfState());
@@ -298,13 +298,13 @@ function setRisk(s) {
   $("#tierPill").textContent = TIER_LABEL[s.tier];
   $("#advice").textContent = ADVICE[s.tier];
   $("#decision").className = "decision " + s.tier;
-  $("#meterFill").style.width = pct(s.risk_score);
+  $("#meterFill").style.transform = `scaleX(${s.risk_score})`;
   $("#pLr").textContent = s.p_lr != null ? s.p_lr.toFixed(2) : "-";
   $("#pXgb").textContent = s.p_xgb != null ? s.p_xgb.toFixed(2) : "-";
 }
 function setRead(f) {
   $("#readPct").textContent = "Read " + Math.round(f * 100) + "%";
-  $("#readBar").style.width = f * 100 + "%";
+  $("#readBar").style.transform = `scaleX(${f})`;
 }
 function resetTrail() {
   chunks = []; pointer = 0; whatIf = null; excluded.clear();
@@ -397,8 +397,8 @@ function renderTerms(terms, z) {
     track.appendChild(el("div", "mid"));
     const fill = el("div", "fill");
     const w = Math.min(50, Math.abs(v) / SCALE * 50);
-    fill.style.width = w + "%";
-    fill.style.left = (v >= 0 ? 50 : 50 - w) + "%";
+    // Bar starts at the centre line; a negative scale flips it to the left.
+    fill.style.transform = `scaleX(${(v >= 0 ? 1 : -1) * w / 50})`;
     fill.style.background = v >= 0 ? "#C8382F" : "#2E7D4F";
     track.appendChild(fill);
     li.appendChild(track);

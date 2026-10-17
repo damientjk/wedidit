@@ -33,7 +33,7 @@ button,select,input{font:inherit}
 .title{font-size:15px;font-weight:600}.sub{font-size:12px;color:var(--mute)}
 .progress{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--teal);font-weight:500;white-space:nowrap}
 .progress .bar{width:96px;height:6px;border-radius:3px;background:var(--teal-l)}
-.progress .bar div{height:6px;width:0;border-radius:3px;background:var(--teal);transition:width .2s}
+.progress .bar div{height:6px;width:100%;border-radius:3px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform .2s}
 
 .btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;min-height:34px;display:inline-flex;align-items:center}
 .btn:hover:not(:disabled){border-color:var(--teal);color:var(--teal)}
@@ -80,7 +80,7 @@ button,select,input{font:inherit}
 .pill{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 12px;border-radius:12px;background:#fff}
 .fast_track .pill{color:var(--green)}.review .pill{color:var(--amber)}.investigate .pill{color:var(--red-d)}
 .meter{position:relative;height:6px;border-radius:3px;background:rgba(20,24,31,.1);margin-top:8px}
-.meter div{height:6px;border-radius:3px;width:0;background:var(--ink);transition:width .5s}
+.meter div{height:6px;border-radius:3px;width:100%;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .5s}
 .meter i{position:absolute;top:-3px;width:2px;height:12px;background:var(--mute)}
 .stepper .step-row{display:flex;align-items:center;gap:10px;margin-top:6px}
 .step-text{flex:1;min-width:0;line-height:1.4}
@@ -104,7 +104,7 @@ button,select,input{font:inherit}
 .terms li{display:grid;grid-template-columns:96px minmax(0,1fr) 44px;align-items:center;gap:6px;font-size:11px;margin:3px 0}
 .terms .track{height:8px;background:#F0F2F5;border-radius:4px;position:relative}
 .terms .track .mid{position:absolute;left:50%;top:-2px;width:1px;height:12px;background:#C5CBD3}
-.terms .track .fill{position:absolute;top:0;height:8px;border-radius:4px;transition:all .4s}
+.terms .track .fill{position:absolute;top:0;left:50%;width:50%;transform-origin:left center;height:8px;border-radius:4px;transition:transform .4s,background .4s}
 .terms .num{text-align:right;font-family:var(--mono)}
 .tabs{display:flex;gap:4px}
 .tabs button{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:11px;padding:2px 7px;cursor:pointer;color:var(--mute)}
