@@ -1,0 +1,197 @@
+{
+  "created_at_utc": "2026-10-17T06:33:25.970880+00:00",
+  "model_id": "xgboost_09",
+  "model_sha256": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+  "policy_source_commit": "bc85518cab0bf1fe97c238adee588d1f7a7fcb5c",
+  "method": "Apply fixed team-provided boundary to cached predictions; no model loading/fitting/rescoring or new raw test access.",
+  "interpretation": "Routing policy revised after original test results were available; revised test routing is post-evaluation reanalysis, not an independent confirmatory test.",
+  "original_frozen_test_artifacts_unchanged": true,
+  "results": {
+    "validation": {
+      "old": {
+        "review_threshold": 0.25596985,
+        "investigate_threshold": 0.31254968,
+        "claims": 3084,
+        "fraud": 184,
+        "tiers": [
+          {
+            "tier": "fast_track",
+            "claims": 2159,
+            "share": 0.7000648508430609,
+            "fraud": 77,
+            "fraud_rate": 0.035664659564613246
+          },
+          {
+            "tier": "review",
+            "claims": 617,
+            "share": 0.20006485084306097,
+            "fraud": 68,
+            "fraud_rate": 0.11021069692058347
+          },
+          {
+            "tier": "investigate",
+            "claims": 308,
+            "share": 0.09987029831387809,
+            "fraud": 39,
+            "fraud_rate": 0.1266233766233766
+          }
+        ],
+        "fast_track_fraud_fraction": 0.41847826086956524,
+        "review_plus_investigate_claims": 925,
+        "review_plus_investigate_workload": 0.29993514915693903,
+        "review_plus_investigate_recall": 0.5815217391304348,
+        "review_plus_investigate_precision": 0.11567567567567567,
+        "review_plus_investigate_f1": 0.19296663660955815,
+        "confusion_matrix_review_plus_investigate": [
+          [
+            2082,
+            818
+          ],
+          [
+            77,
+            107
+          ]
+        ]
+      },
+      "current": {
+        "review_threshold": 0.1754,
+        "investigate_threshold": 0.31254968,
+        "claims": 3084,
+        "fraud": 184,
+        "tiers": [
+          {
+            "tier": "fast_track",
+            "claims": 1111,
+            "share": 0.36024643320363164,
+            "fraud": 9,
+            "fraud_rate": 0.008100810081008101
+          },
+          {
+            "tier": "review",
+            "claims": 1665,
+            "share": 0.5398832684824902,
+            "fraud": 136,
+            "fraud_rate": 0.08168168168168168
+          },
+          {
+            "tier": "investigate",
+            "claims": 308,
+            "share": 0.09987029831387809,
+            "fraud": 39,
+            "fraud_rate": 0.1266233766233766
+          }
+        ],
+        "fast_track_fraud_fraction": 0.04891304347826087,
+        "review_plus_investigate_claims": 1973,
+        "review_plus_investigate_workload": 0.6397535667963683,
+        "review_plus_investigate_recall": 0.9510869565217391,
+        "review_plus_investigate_precision": 0.08869741510390268,
+        "review_plus_investigate_f1": 0.16226240148354196,
+        "confusion_matrix_review_plus_investigate": [
+          [
+            1102,
+            1798
+          ],
+          [
+            9,
+            175
+          ]
+        ]
+      },
+      "predictions_sha256": "718a88657657b10c862fc4a37cc7bd8a068109d2032b62ed4c6dea5c29dd0762"
+    },
+    "test": {
+      "old": {
+        "review_threshold": 0.25596985,
+        "investigate_threshold": 0.31254968,
+        "claims": 3084,
+        "fraud": 185,
+        "tiers": [
+          {
+            "tier": "fast_track",
+            "claims": 2195,
+            "share": 0.7117380025940337,
+            "fraud": 94,
+            "fraud_rate": 0.0428246013667426
+          },
+          {
+            "tier": "review",
+            "claims": 574,
+            "share": 0.1861219195849546,
+            "fraud": 52,
+            "fraud_rate": 0.09059233449477352
+          },
+          {
+            "tier": "investigate",
+            "claims": 315,
+            "share": 0.10214007782101167,
+            "fraud": 39,
+            "fraud_rate": 0.12380952380952381
+          }
+        ],
+        "fast_track_fraud_fraction": 0.5081081081081081,
+        "review_plus_investigate_claims": 889,
+        "review_plus_investigate_workload": 0.28826199740596625,
+        "review_plus_investigate_recall": 0.4918918918918919,
+        "review_plus_investigate_precision": 0.10236220472440945,
+        "review_plus_investigate_f1": 0.16945996275605213,
+        "confusion_matrix_review_plus_investigate": [
+          [
+            2101,
+            798
+          ],
+          [
+            94,
+            91
+          ]
+        ]
+      },
+      "current": {
+        "review_threshold": 0.1754,
+        "investigate_threshold": 0.31254968,
+        "claims": 3084,
+        "fraud": 185,
+        "tiers": [
+          {
+            "tier": "fast_track",
+            "claims": 1137,
+            "share": 0.36867704280155644,
+            "fraud": 11,
+            "fraud_rate": 0.009674582233948988
+          },
+          {
+            "tier": "review",
+            "claims": 1632,
+            "share": 0.5291828793774319,
+            "fraud": 135,
+            "fraud_rate": 0.08272058823529412
+          },
+          {
+            "tier": "investigate",
+            "claims": 315,
+            "share": 0.10214007782101167,
+            "fraud": 39,
+            "fraud_rate": 0.12380952380952381
+          }
+        ],
+        "fast_track_fraud_fraction": 0.05945945945945946,
+        "review_plus_investigate_claims": 1947,
+        "review_plus_investigate_workload": 0.6313229571984436,
+        "review_plus_investigate_recall": 0.9405405405405406,
+        "review_plus_investigate_precision": 0.08936825885978428,
+        "review_plus_investigate_f1": 0.16322701688555347,
+        "confusion_matrix_review_plus_investigate": [
+          [
+            1126,
+            1773
+          ],
+          [
+            11,
+            174
+          ]
+        ]
+      },
+      "predictions_sha256": "a9c7c314c92eb2b750bbc7242909acc0d98a5c953959f7b93dccb9bed2bcfe74"
+    }
+  }
+}
