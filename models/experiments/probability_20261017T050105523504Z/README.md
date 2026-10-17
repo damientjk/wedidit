@@ -119,7 +119,7 @@ ranking or threshold metric. A different model should not be declared superior
 merely because more of its outputs exceed .5. The blend was evaluated, but
 was not forced into the final model because its probability losses were worse.
 
-## Saved model and training-role handoff
+## Saved model files
 
 - calibrated_probability.joblib: selected complete calibrated model.
 - xgboost_isotonic.joblib: same selected candidate under its comparison name.
