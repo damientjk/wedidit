@@ -2,7 +2,7 @@
 
 Owner: Yizhuo. Updated against Marcus's model commit `48e14f9eb3aae344bb14c8f66ef05893276ad2a8` on 17 October 2026.
 
-**Status:** the user confirmed locked tuned XGBoost as the final model and authorised the completed once-only test evaluation. Subsequent read-only server checks verified the locked scorer and model-test API on LinuxONE; full API metadata, dashboard and PDF integration remain incomplete. See `docs/figures/integration-check/README.md`. The separate probability-calibration experiment has not replaced this model.
+**Status:** xgboost_09 alone is the final model. The 19-field API/UI was deployed and verified on LinuxONE after commit 8346c73; the current numeric thresholds were rechecked after bc85518 / aa60ed7. Review begins at 0.1754, investigate at exact score 0.31254968 (displayed approximately as 0.31255). The separate calibration experiment has not replaced this model. Original frozen-test results and the subsequent routing-policy reanalysis are reported separately.
 
 ## Purpose
 
@@ -10,7 +10,7 @@ Support human prioritisation of insurance claims using a relative fraud-risk sco
 
 ## Model and service pipeline
 
-![Current model handoff and remaining integration](flowchart.png)
+![Live scoring and evaluation pipeline](flowchart.png)
 
 ```mermaid
 flowchart TB
@@ -23,12 +23,12 @@ flowchart TB
     LOCK --> EXPLAIN["src/explain.py: 19 raw inputs + native TreeSHAP"]
     LOCK --> EVAL["Yizhuo: validation + frozen-model test evaluation"]
     VAL --> EVAL
-    EXPLAIN -. "Integration pending" .-> API["Existing FastAPI service / Docker / LinuxONE"]
+    EXPLAIN --> API["Final-score FastAPI service / Docker / LinuxONE"]
     API --> UI["ClaimLens UI / human decisions"]
     CV --> CAL["Separate calibration experiment: not the served candidate"]
 ```
 
-Final test predictions, metrics and figures are now saved under `docs/figures/test/` and reported in `docs/evaluation.md`. No model or threshold was tuned on test. Earlier validation metrics remain exploratory because of repeated inspection.
+Final test predictions, metrics and figures are now saved under `docs/figures/test/` and reported in `docs/evaluation.md`. The original model/test evaluation used its predeclared thresholds. The later team-supplied review-policy change is applied separately to cached scores and labelled as post-evaluation routing analysis. Earlier validation metrics remain exploratory because of repeated inspection.
 
 ## Data and preprocessing
 
@@ -49,17 +49,17 @@ Its saved pipeline owns train-fitted imputation and one-hot preprocessing. Prese
 | `models/experiments/probability_20261017T050105523504Z/` | Separate calibration experiment; not a silent replacement |
 | `src/MODEL_GUIDE.md` | Model development, contracts, limitations and handoff guide |
 
-The scorer returns `risk_score`, `tier`, `contributions`, `excluded`, plus model, data-quality and sensitivity metadata. The candidate score is uncalibrated: do not display it as a verified probability of fraud. Provisional tiers use boundaries 0.25596985 and 0.31254968 derived from validation score distributions; they do not guarantee queue capacity or safe clearance.
+The scorer returns `risk_score`, `tier`, `contributions`, `excluded`, plus model, data-quality and sensitivity metadata. The candidate score is uncalibrated: do not display it as a verified probability of fraud. Current live tiers are fast-track below **0.1754**, review from **0.1754** to below **0.31254968**, and investigate at or above **0.31254968** (displayed approximately as **0.31255**). The review boundary was replaced in bc85518 using Yu Heng’s validation-based risk-layer cutoff; the investigation boundary is unchanged. On validation, review-only workload is now 53.99%, investigation 9.99%, and total human-review workload 63.98%. These are observed workload shares, not future queue guarantees or permission to clear claims.
 
 Native exact TreeSHAP impacts are aggregated from encoded columns back to the 19 original features in **log-odds**. The bias plus all impacts reconstructs the model margin; sigmoid of that margin reconstructs the raw score. A global feature chart uses mean absolute impacts, not feature gain or causal effects.
 
 What-if replaces selected inputs with their fitted train-only median/modes and rescoring occurs. It does not retrain or delete feature columns. Display sensitivity separately from the observed score. Missing/unknown inputs are flagged; the API/UI must preserve those warnings and `operational_routing_allowed` metadata.
 
-## Existing demo versus final integration
+## Serving interfaces and demo separation
 
-At the reviewed commit, `src/demo_server.py` still loads the older five-feature synthetic artifacts and averages demo LR/XGBoost scores 50/50. Its PDF extraction and visualisations also use that schema. This does not describe the new 19-input scorer. The demo's score-drop contributions are not the new scorer's TreeSHAP explanations.
+The live `POST /score` endpoint calls the final 19-input XGBoost scorer, with `GET /model/final` providing fields, allowed category values, labels and thresholds. The claim form displays an uncalibrated ranking score and native log-odds contributions, supports real low/medium/high examples, driver navigation and a hypothetical what-if/reset flow.
 
-Damien and Da Feng need to wire the new scorer and metadata, align PDF/form inputs, adapt the contribution formatter to log-odds, and ensure the final container uses the committed candidate rather than running `train_demo.py` over it. The user confirmed locked tuned XGBoost as final; the API still needs to be aligned with that decision. The calibration experiment improves probability losses but is not the current risk-ranking candidate.
+The PDF walkthrough remains a separate five-input synthetic-model demonstration: `/analyze`, `/demo/score` and `/model/info` serve that mode. Its ensemble behaviour and demo metrics do not describe the final model. The Docker build copies committed model artifacts and no longer trains a demo model over them. UI source and API checks matched release 8346c73; aa60ed7 subsequently changed the band text to show numerical cutoffs.
 
 ## LinuxONE environment and evidence
 
@@ -71,15 +71,19 @@ Damien and Da Feng need to wire the new scorer and metadata, align PDF/form inpu
 | Services | FastAPI in Docker; JupyterLab on port 38888 |
 | Team demo access | Loopback port 8000 via SSH tunnel |
 
-Marcus's saved training/verification environment was Windows AMD64. The new scorer has now passed artifact loading and 20 exact API-score parity checks in the LinuxONE model-test container, with valid contribution shape/units, what-if and quality/error behaviour. Full dashboard/PDF integration remains incomplete. Do not use another prototype's deployment as evidence for this model, or quote local warm-model timings as server/API latency.
+Marcus's training/verification environment was Windows AMD64; offline evaluation in this chat was on macOS ARM64. On LinuxONE, the deployed artifact hash matched the locked model, 20/20 cached API scores matched exactly, and metadata, what-if, quality/error handling and browser flows passed. The later review-boundary update was verified through live API metadata. These checks are not a load benchmark or guarantee; local timings must not be called server throughput evidence.
 
 ## Completion handoffs
 
-- Marcus: keep the confirmed model and thresholds frozen; review the completed final-test report without tuning against its results.
-- Damien: integrate the complete pipeline, preserve metadata and verify it on LinuxONE.
-- Da Feng: align 19-input UI/extraction, contribution units and sensitivity/quality displays.
+- Marcus: retain the frozen xgboost_09 model; align stale manifest bands/status descriptions with the current 0.1754 review boundary. Do not tune model parameters against the evaluated test results.
+- Damien: retain model/version parity and collect final-system evidence matching the current thresholds.
+- Da Feng: keep the 19-input final-model form and separate PDF demo clearly distinguished; retain correct contribution units and sensitivity/quality displays.
 - Yizhuo: review the completed test tables/figures and use matching final-test numbers in the video; obtain the final model’s LinuxONE evidence from Damien.
 
-## Latest integration source: `393ad1c`
+## Historical source transition: `393ad1c`
 
-After the checks above, commit `393ad1c` reached `main`. It wires `/score` to `explain.score`, introduces `/model/final` for the 19-field metadata, exposes `/demo/score` separately, and changes the Dockerfile to copy committed model artifacts instead of retraining. `/model/info` and `/analyze` remain demo interfaces by design in that commit. The served UI was not changed in that commit. The verification report describes the earlier running containers; this newer source/deployment still needs a fresh end-to-end check. These source changes do not alter the evaluated model or its test results.
+After the checks above, commit `393ad1c` reached `main`. It wires `/score` to `explain.score`, introduces `/model/final` for the 19-field metadata, exposes `/demo/score` separately, and changes the Dockerfile to copy committed model artifacts instead of retraining. `/model/info` and `/analyze` remain demo interfaces by design in that commit. The served UI was not changed in that commit. The verification report describes the earlier running containers; that historical check was superseded by the successful release-8346c73 verification described above. These source changes do not alter the evaluated model or its test results.
+
+## Current routing update: bc85518 / aa60ed7
+
+The API and UI now use the 0.1754 review boundary, with XGBoost alone. The older “next 20% medium” text in reports/explain_runtime/manifest.json is stale metadata for Marcus to update; the numeric values define current serving. Current validation trade-off: fast-tracked fraud labels fall from 77/184 to 9/184, while review-only workload rises from 20.01% to 53.99%. Updated tables and plots are in docs/evaluation.md and docs/figures/routing-update/. The original frozen test protocol remains unchanged, and revised test-routing figures are labelled post-evaluation reanalysis.

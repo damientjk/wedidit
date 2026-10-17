@@ -20,4 +20,8 @@ These figures describe the locked model outputs from commit 48e14f9 on 3,084 rea
 
 Reproduce from the repository root with `python docs/figures/generate_evaluation.py` in the numerical environment recorded in the summary. On macOS the XGBoost OpenMP library may need to be located, for example via the installed scikit-learn `.dylibs` directory. Do not run any training scripts to reproduce these plots. The generator reads validation inputs only and leaves models/test data unchanged.
 
-Final test evaluation is pending final model confirmation. Deployment parity remains Damien's handoff.
+The original final test evaluation is complete, and deployment parity was verified in this chat. A subsequent routing-policy update is recorded separately below; original test artifacts remain unchanged.
+
+## Current routing update: `routing-update/`
+
+Run `python docs/figures/routing-update/generate_routing_update.py` to apply the team's supplied review threshold 0.1754 and unchanged exact investigation threshold 0.31254968 to cached validation/test predictions. No model is loaded, fitted or rescored. Original frozen test artifacts are preserved and checksum-checked. Updated test routing is explicitly post-evaluation reanalysis; original AUC, AP, scores and fixed-capacity comparisons do not change. Use current-policy figures for the live routing trade-off and retain the historical figures as evidence of the original protocol.

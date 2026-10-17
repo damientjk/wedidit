@@ -100,7 +100,9 @@ def main():
     plt.axhline(y.mean(),ls='--',color='gray',label=f'Prevalence {y.mean():.2%}')
     plt.xlabel('Recall');plt.ylabel('Precision');plt.title('Validation precision-recall | exploratory')
     plt.legend(fontsize=9);save('precision_recall_curve.png')
-    low=manifest['review_min_score']; high=manifest['investigate_min_score']
+    # Reproduce the historical evaluation, not a later live routing policy.
+    frozen=json.loads((OUT/'test/frozen_protocol.json').read_text())['thresholds']
+    low=frozen['review']; high=frozen['investigate']
     operating={name:binary(y,scores,t) for name,t in [('investigate',high),('review_or_investigate',low)]}
     cm=np.array(operating['investigate']['confusion_matrix'])
     assert int(cm.sum())==len(y)
