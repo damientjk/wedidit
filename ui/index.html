@@ -136,6 +136,8 @@
    </div>
   </section>
 
+  <div id="splitV" class="split-v" role="separator" aria-orientation="vertical" aria-label="Drag to resize the two halves" tabindex="0" title="Drag to resize. Double-click to reset."></div>
+
   <!-- RIGHT: live decision feed -->
   <section class="card feed" aria-label="Live decision feed">
    <div id="pdfRight" class="view feed-pdf">
@@ -171,6 +173,7 @@
       <div id="treeNote" class="small muted"></div>
     </div>
 
+    <div class="split-h" role="separator" aria-orientation="horizontal" aria-label="Drag to resize the reasoning panel" tabindex="0" title="Drag to resize. Double-click to reset."></div>
     <div class="panel think">
       <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>READER REASONING</span><span class="small dim">rule-based extractor, runs offline on LinuxONE</span></div>
       <div id="thinking" class="thinking mono" aria-live="polite"></div>
@@ -192,6 +195,7 @@
       <div class="panel-head"><b>From the average claim to this claim</b><span class="small muted mono">score = 1 / (1 + e<sup>-log-odds</sup>)</span></div>
       <svg id="fWaterfall" viewBox="0 0 640 360" role="img" aria-label="Waterfall of each field's contribution to the log-odds"></svg>
     </div>
+    <div class="split-h" role="separator" aria-orientation="horizontal" aria-label="Drag to resize the reasoning panel" tabindex="0" title="Drag to resize. Double-click to reset."></div>
     <div class="panel think">
       <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>MODEL REASONING</span><span class="small dim">generated from the model's contributions</span></div>
       <div id="fThinking" class="thinking mono" aria-live="polite"></div>
@@ -201,5 +205,6 @@
 </main>
 <script src="app.js"></script>
 <script src="final.js"></script>
+<script src="layout.js"></script>
 </body>
 </html>

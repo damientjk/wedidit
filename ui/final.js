@@ -127,6 +127,7 @@ function renderFinal() {
   $("#fRisk").textContent = r.risk_score.toFixed(2);
   $("#fTier").textContent = TIER_LABEL[r.tier];
   $("#fAdvice").textContent = r.recommendation;
+  $("#fAdvice").title = r.recommendation; // full text when clamped to 3 lines
   $("#fDecision").className = "decision " + r.tier;
   $("#fMeter").style.transform = `scaleX(${Math.min(1, r.risk_score / 0.6)})`;
   $("#fScoreR").textContent = r.risk_score.toFixed(2);
