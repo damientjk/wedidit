@@ -1,0 +1,11 @@
+attribute,group,claims,fraud_cases,base_fraud_rate,flag_rate,investigate_rate,recall,note
+Sex,Female,490,20,0.041,0.567,0.094,0.95,
+Sex,Male,2594,165,0.064,0.643,0.104,0.939,
+MaritalStatus,Divorced,9,0,0.0,0.889,0.222,,too small to judge
+MaritalStatus,Married,2137,132,0.062,0.638,0.095,0.947,
+MaritalStatus,Single,934,53,0.057,0.612,0.118,0.925,
+MaritalStatus,Widow,4,0,0.0,0.75,0.0,,too small to judge
+AgeGroup,26 to 35,1227,84,0.068,0.635,0.095,0.917,
+AgeGroup,36 to 50,1412,75,0.053,0.623,0.103,0.947,
+AgeGroup,over 50,376,20,0.053,0.652,0.077,1.0,
+AgeGroup,under 26,69,6,0.087,0.638,0.348,,

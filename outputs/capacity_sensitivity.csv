@@ -1,0 +1,5 @@
+capacity,cutoff,share_fraud_caught,fraud_rate_investigated
+0.05,0.3513,0.125,0.149
+0.1,0.3125,0.212,0.127
+0.15,0.296,0.342,0.136
+0.2,0.286,0.457,0.131

@@ -1,0 +1,6 @@
+,estimate,ci_low,ci_high
+share_fast_tracked,0.369,0.352,0.386
+share_fraud_to_human,0.941,0.902,0.973
+share_fraud_investigated,0.211,0.156,0.272
+fraud_rate_fast_track,0.01,0.004,0.016
+share_fraud_usd_to_human,0.936,0.874,0.987
