@@ -1,6 +1,6 @@
 # ClaimLens architecture
 
-Owner: Yizhuo. Prepared in this chat from team repository commit `e08949b` on 17 October 2026. This replaces the unrelated ClaimWise prototype documents. Status: team demo implemented; final real-data model integration pending.
+Owner: Yizhuo. Source reviewed at team repository commit `e08949b`; deployment details confirmed by Damien on 17 October 2026. Status: team demo implemented; final real-data model integration pending.
 
 ## Purpose and boundary
 
@@ -42,7 +42,7 @@ The data and final-model arrows are explicitly pending. The current demo trainer
 
 ### Scoring and explanations
 
-`POST /score` currently uses five demo inputs: `claims_last_12m`, `days_policy_to_incident`, `vehicle_age`, `claim_amount`, `police_report`. Missing inputs fall back to stored baseline values. The score is `(p_lr + p_xgb) / 2`; tiers are `< 0.30` fast-track, `0.30–<0.60` review, `≥ 0.60` investigate. These are demo choices, not verified final operating points.
+`POST /score` currently uses five demo inputs: `claims_last_12m`, `days_policy_to_incident`, `vehicle_age`, `claim_amount`, `police_report`. Missing inputs fall back to stored baseline values. The score is `(p_lr + p_xgb) / 2`; tiers are `< 0.30` fast-track, `0.30–<0.60` review, `≥ 0.60` investigate. These are demo choices, not verified final operating points. **Final scoring method and tier thresholds are pending Marcus’s confirmation; Damien will align the API with the final model.**
 
 `contributions[].impact` is the score difference when one factor is replaced by its stored baseline, holding the other current inputs fixed. This is sensitivity in score units, **not SHAP or an additive log-odds decomposition**. Effects need not sum to the score and are not causal. Exclusion replaces requested known factors with their baselines and rescoring occurs.
 
@@ -50,7 +50,19 @@ Endpoints also include `GET /health`, `GET /model/info`, and `POST /analyze`. PD
 
 ## LinuxONE deployment
 
-Damien reports Ubuntu s390x, Docker and JupyterLab running. The team recipe uses a `claimlens` container bound to server loopback port 8000 and an SSH tunnel for browser access. Source: `deploy/claimlens.compose.yml` and Damien's team update. Do not substitute screenshots from the separate ClaimWise prototype.
+Damien confirms the following team server configuration:
+
+| Component | Confirmed configuration |
+| --- | --- |
+| Host platform | IBM LinuxONE, s390x |
+| Operating system | Ubuntu 24.04 |
+| CPUs | 3 |
+| RAM | 7.8 GB |
+| Application stack | FastAPI service with logistic regression / XGBoost in Docker |
+| Notebook environment | JupyterLab on port 38888 |
+| Final scoring method | Pending Marcus's confirmation; API integration owned by Damien |
+
+The team recipe uses a `claimlens` container bound to server loopback port 8000 and an SSH tunnel for browser access. Sources: `deploy/claimlens.compose.yml` and Damien's team update. Final real-data model deployment remains pending; the running demo is not evidence that the final model has been integrated.
 
 Capture the actual team instance, architecture, container, final model version and successful scoring call after final integration. Record runtime/library versions and resource measurements; hardware availability alone does not establish throughput or latency.
 
