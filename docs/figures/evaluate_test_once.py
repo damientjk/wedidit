@@ -1,4 +1,4 @@
-"""Locked test evaluation, authorised by the user after model confirmation.
+"""Locked test evaluation, authorised by the team after model confirmation.
 
 First invocation saves predictions once; --reuse regenerates summaries/figures
 from those saved outputs without loading models or re-reading the test set.
@@ -61,7 +61,7 @@ def first_evaluation():
     assert sha(ROOT/MODEL)==EXPECTED
     protected={str(p.relative_to(ROOT)):sha(p) for p in (ROOT/'models').rglob('*') if p.is_file()}
     protocol=dict(source_commit='48e14f9eb3aae344bb14c8f66ef05893276ad2a8',
-        authorisation='User confirmed locked tuned XGBoost is final and authorised once-only test evaluation in this chat.',
+        authorisation='The team confirmed locked tuned XGBoost as final and authorised the once-only test evaluation.',
         evaluated_at_utc=datetime.now(timezone.utc).isoformat(),model=MODEL,model_sha256=EXPECTED,
         original_baseline='models/baseline.joblib',baseline_sha256=sha(ROOT/'models/baseline.joblib'),
         thresholds=dict(review=LOW,investigate=HIGH,baseline_binary=.5),

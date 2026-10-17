@@ -1,8 +1,8 @@
-# ClaimLens final model evaluation
+# Claim! final model evaluation
 
 Owner: Yizhuo. Source model commit: `48e14f9eb3aae344bb14c8f66ef05893276ad2a8`. Evaluation date: 17 October 2026.
 
-**Status: the user confirmed locked tuned XGBoost as final and authorised this once-only test evaluation.** The model and original score bands were frozen before opening the test data; the later live review-boundary replacement is documented separately below. The original evaluation performed no training, tuning, calibration selection, model replacement or deployment. The current update only reapplies a team-supplied routing policy to cached scores. The final model has passed LinuxONE score-parity and UI checks in this chat; the latest live metadata confirms the revised numerical boundaries. The [earlier integration report](figures/integration-check/README.md) is a historical snapshot, not the current deployment status.
+**Status: The team confirmed the locked tuned XGBoost model as final and authorised the once-only test evaluation.** The model and original score bands were frozen before opening the test data; the later live review-boundary replacement is documented separately below. The original evaluation performed no training, tuning, calibration selection, model replacement or deployment. Current-policy routing tables reapply a team-supplied policy to cached scores. Historical LinuxONE score-parity, claim-form and metadata checks confirmed the final model and revised boundaries. The latest PDF path was source-reviewed at `1cea778`; no new live-service check was performed for this documentation update. The [earlier integration report](figures/integration-check/README.md) is a historical snapshot.
 
 ## Final findings
 
@@ -18,7 +18,7 @@ This test gain is modest and smaller than the exploratory validation gain. It do
 | Validation | 3,084 | 184 | Repeated exploratory model analysis and provisional score-band definition |
 | Final test | 3,084 | 185 | Once-only evaluation after final-model confirmation |
 
-The source documentation describes historical 1994–96 vehicle claims. `FraudFound_P = 1` denotes fraud. The existing split is stratified by label and year with seed 42; it is not a future-year holdout or proof of policyholder independence. Licence and claim-time feature provenance still need confirmation.
+The source documentation describes historical 1994–96 vehicle claims. `FraudFound_P = 1` denotes fraud. The existing split is stratified by label and year with seed 42; it is not a future-year holdout or proof of policyholder independence. The team's [dataset record](../README.md#6-datasets) lists the Kaggle source licence as CC0: Public Domain. Availability of all features at claim intake remains a deployment limitation.
 
 The final model is the complete fitted 19-input pipeline at `models/experiments/capacity_20261017T042040511095Z/xgboost_09.joblib`, not the first real-data XGBoost model, synthetic demo model, or calibrated experiment. The original comparator is `models/baseline.joblib`. Synthetic amount, incident and severity fields are excluded from prediction. Label, IDs, split indicators, explicit demographics and several fields with unresolved claim-time availability are excluded by Marcus's feature definition.
 
@@ -189,7 +189,7 @@ The earlier validation figures remain in `docs/figures/` and are explicitly labe
 
 ## Separate probability-calibration experiment
 
-This experiment remains separate from the user-confirmed uncalibrated risk-ranking model. It was not evaluated on test or substituted into scoring during this work.
+This experiment remains separate from the team-selected uncalibrated risk-ranking model. It was not evaluated on test or substituted into the deployed scorer.
 
 | Validation experiment | Log loss | Brier score | ROC-AUC | AP |
 | --- | ---: | ---: | ---: | ---: |
@@ -216,7 +216,9 @@ The one final holdout has now been evaluated. Any later model, feature or thresh
 
 ## Deployment and video handoff
 
-The live model is xgboost_09 alone. The 19-field claim form, native log-odds explanation display, three priority examples, what-if/reset, navigation and separately labelled PDF demo were verified on LinuxONE after commit 8346c73. Twenty live API scores exactly matched cached evaluated predictions. Later commits bc85518 and aa60ed7 set the review boundary to 0.1754 and replace the hardcoded band-share UI text. The current API metadata was rechecked for the updated numerical thresholds. PDF walkthrough remains a separate five-feature demo, not the evaluated model.
+The final model is xgboost_09 alone. Historical LinuxONE verification after commit 8346c73 covered the 19-field claim form, native log-odds explanations, three priority examples, what-if/reset and navigation. Twenty live API scores exactly matched cached evaluated predictions. Later commits bc85518 and aa60ed7 set the review boundary to 0.1754 and replaced the hardcoded band-share UI text; live API metadata was rechecked for those boundaries.
+
+Application source reviewed at `1cea778` now sends both intake screens to the final model: the claim form uses `/score`, while `/analyze` extracts claim-PDF text using pypdf and rule-based patterns before calling the same `explain.score()`. Neither screen displays a score without the `BasePolicy` category. Other missing fields produce provisional scores and warnings. This does not verify policy coverage and does not establish PDF extraction accuracy from the held-out CSV metrics. A new live PDF-upload/parity check was not performed for this update; source inspection and historical deployment verification are distinct.
 
 Damien confirms Ubuntu 24.04, s390x, 3 CPUs / 7.8 GB RAM and JupyterLab on port 38888. Small sequential HTTP checks are diagnostic, not a server throughput or latency guarantee.
 
@@ -224,8 +226,8 @@ Suggested routing segment: “The live model reviews claims from a score of 0.17
 
 For model-quality reporting, retain the original test ROC-AUC of 0.6877 and the unchanged matched-workload comparison of 65 versus 63 fraud-labelled claims in 617 review slots. Distinguish these model results from the later routing-policy update; do not present revised test routing as an untouched confirmatory evaluation.
 
-Confirm licence, feature availability and matching screenshots before submission. Historical data, possible entity/time leakage, limited positives, demographic proxies and drift limit real-world conclusions. No real savings, fraud confirmation, automatic clearance or calibrated individual probability is established by these results.
+Match the final deployment to [the team screenshots](architecture.md#linuxone-environment-and-evidence) before submission and retain the feature-availability limitation. Historical data, possible entity/time leakage, limited positives, demographic proxies and drift limit real-world conclusions. No real savings, fraud confirmation, automatic clearance or calibrated individual probability is established by these results.
 
-## Integration source update
+## Historical integration source update
 
-After the checks above, commit `393ad1c` reached `main`. It wires `/score` to `explain.score`, introduces `/model/final` for the 19-field metadata, exposes `/demo/score` separately, and changes the Dockerfile to copy committed model artifacts instead of retraining. `/model/info` and `/analyze` remain demo interfaces by design in that commit. The served UI was not changed in that commit. The timestamped integration report describes the earlier running containers; this newer source/deployment still needs a fresh end-to-end check. These source changes do not alter the evaluated model or its test results.
+Commit `393ad1c` wired `/score` to `explain.score`, introduced `/model/final`, separated `/demo/score`, and changed the Docker build to copy committed models. In that historical revision, `/analyze` still used the demo scorer. Subsequent claim-form/API checks superseded the earlier failures; the PDF path changed again before reviewed revision `1cea778`, as described above. The timestamped [integration report](figures/integration-check/README.md) preserves what was observed at 14:09 SGT on 17 October 2026 and should not be read as the current service status. These application-source changes do not alter the saved test metrics or evaluate the extraction pipeline.
