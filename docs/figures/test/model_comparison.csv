@@ -1,0 +1,3 @@
+model,label,roc_auc,average_precision
+lr_score,Original LR baseline,0.6821849099876005,0.09432428520709324
+xgb_score,Locked tuned XGBoost,0.6876630338513746,0.10607576418345666

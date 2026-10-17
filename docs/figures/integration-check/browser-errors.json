@@ -1,0 +1,8 @@
+[
+  {
+    "level": "error",
+    "message": "TypeError: Cannot read properties of undefined (reading 'xgboost')\n    at boot (http://127.0.0.1:18002/app.js:59:103)",
+    "timestamp": "2026-10-17T06:09:46.260Z",
+    "url": "http://127.0.0.1:18002/app.js"
+  }
+]

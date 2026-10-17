@@ -1,0 +1,8 @@
+{
+  "test_sha256": "1f252d336a3d086c5175103fac1b1367c48da9be79dc68c028f88ca48015317b",
+  "prediction_sha256": "a9c7c314c92eb2b750bbc7242909acc0d98a5c953959f7b93dccb9bed2bcfe74",
+  "model_artifacts_unchanged": true,
+  "protected_model_files": 46,
+  "no_split_id_overlap": true,
+  "max_contribution_additivity_error": 1.430511474609375e-06
+}
