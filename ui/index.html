@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ClaimLens | WDI</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E7C86'/%3E%3Ctext x='31' y='42' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-style='italic' font-size='25' fill='white' text-anchor='middle'%3EWDI%3C/text%3E%3C/svg%3E">
+<title>Claim! | WDI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E87722'/%3E%3Ctext x='31' y='42' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-style='italic' font-size='25' fill='white' text-anchor='middle'%3EWDI%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,800&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="style.css">
@@ -13,7 +13,7 @@
 <header class="top">
   <div class="brand">
     <div class="wdi" role="img" aria-label="WDI, we did it"><span>WDI</span></div>
-    <strong>ClaimLens</strong><span class="muted">Claims Risk Review</span>
+    <strong>Claim!</strong><span class="muted">Claims Risk Review</span>
   </div>
   <nav class="modes" aria-label="Mode">
     <button id="tabForm" class="mode" data-mode="form">Claim form <span>final model</span></button>
@@ -44,8 +44,10 @@
       <span class="spacer"></span>
       <label class="sr" for="speed">Reading speed</label>
       <select id="speed" class="btn"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option></select>
-      <button id="skip" class="btn" disabled>Skip</button>
-      <button id="replay" class="btn" disabled>Replay</button>
+      <button id="start" class="btn go" disabled>Start</button>
+      <button id="stop" class="btn" disabled>Stop</button>
+      <button id="restart" class="btn" disabled>Restart</button>
+      <button id="skip" class="btn" disabled title="Jump to the final result">Skip</button>
     </div>
 
     <div class="legend small">
@@ -98,16 +100,14 @@
     <div class="card-head">
       <div>
         <div class="title">Claim details</div>
-        <div id="fSub" class="sub">The 19 fields the final model reads. Change a field to re-score, or click its number to switch it off (what-if).</div>
+        <div id="fSub" class="sub">Enter what you know about the claim. The score updates after every field. Click a field's number to switch it off (what-if).</div>
       </div>
     </div>
     <div class="toolbar">
-      <span class="small muted">Real test-set claims</span>
-      <button class="btn" data-example="low">Low priority</button>
-      <button class="btn" data-example="mid">Medium priority</button>
-      <button class="btn" data-example="high">High priority</button>
+      <div class="filled"><b id="fFilled">0 of 19</b> <span class="small muted">fields filled</span><div class="bar"><div id="fFilledBar"></div></div></div>
       <span class="spacer"></span>
-      <button id="fReset" class="btn">Clear what-if</button>
+      <button id="fReset" class="btn" hidden title="Undo every what-if switch-off">Turn all fields back on</button>
+      <button id="fClear" class="btn">Clear form</button>
     </div>
     <form id="fForm" class="fform" autocomplete="off"></form>
     <div id="fDecision" class="decision fast_track">

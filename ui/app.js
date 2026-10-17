@@ -24,6 +24,9 @@ let token = 0;            // cancels an older playback
 let fast = false;         // Skip pressed
 let speed = 1;
 let autoFast = false;   // ?fast=1
+let autoStart = false;  // ?sample=... starts reading without pressing Start
+let pdfState = "empty";  // empty | ready | loading | playing | paused | done
+let playIdx = 0;        // sentence to resume from after Stop
 let pinnedTree = null;    // null = auto-pick the tree that changed most
 let shownTree = 0;
 let lastPdf = null;
@@ -71,15 +74,70 @@ async function boot() {
   // ?sample=claim_suspicious.pdf autoplays a sample (handy for the video); &fast=1 skips the animation.
   const q = new URLSearchParams(location.search);
   const b = q.get("sample") && document.querySelector(`[data-sample="${CSS.escape(q.get("sample"))}"]`);
-  if (b) { autoFast = !!q.get("fast"); b.click(); }
+  if (b) { autoFast = !!q.get("fast"); autoStart = true; b.click(); }
 }
 
 /* ---------- loading a PDF ---------- */
-async function analysePdf(blob, name) {
+// Loading a PDF (upload, drop or sample) only prepares it. Start begins reading.
+function loadPdf(blob, name) {
   if (!info) return;
+  ++token;
   lastPdf = {blob, name};
+  A = null;
+  fast = false;
+  pdfState = "ready";
+  resetTrail();
+  const paper = $("#paper");
+  const cursor = $("#cursor");
+  cursor.hidden = true;
+  paper.textContent = "";
+  paper.appendChild(cursor);
+  const empty = el("div", "empty");
+  empty.append(el("p", "", ""), el("p", "muted", "Press Start to let the reader go through it. Stop pauses, Restart begins again."));
+  empty.firstChild.appendChild(el("strong", "", `Ready: ${name}`));
+  paper.appendChild(empty);
+  $("#docTitle").textContent = name;
+  $("#docSub").textContent = "Loaded. Press Start to read it.";
+  $("#thinking").textContent = "";
+  think("i", `${name} loaded. Press Start to begin.`, "quiet");
+  status("Ready to read", "on");
+  pdfButtons();
+  if (autoStart) { autoStart = false; startPdf(); }
+}
+
+function pdfButtons() {
+  $("#start").disabled = !["ready", "paused"].includes(pdfState);
+  $("#start").textContent = pdfState === "paused" ? "Resume" : "Start";
+  $("#stop").disabled = pdfState !== "playing";
+  $("#restart").disabled = !A || !["playing", "paused", "done"].includes(pdfState);
+  $("#skip").disabled = !["playing", "paused"].includes(pdfState);
+}
+
+function startPdf() {
+  if (pdfState === "paused") { pdfState = "playing"; pdfButtons(); play(++token, playIdx); return; }
+  if (pdfState === "ready") analysePdf(lastPdf.blob, lastPdf.name);
+}
+function stopPdf() {
+  if (pdfState !== "playing") return;
+  ++token;
+  pdfState = "paused";
+  fast = false;
+  status("Paused", "");
+  think("ll", "Paused. Press Resume to continue, or Restart to begin again.", "quiet");
+  pdfButtons();
+}
+function restartPdf() {
+  if (!A) return;
+  fast = false;
+  $("#thinking").textContent = "";
+  play(++token, 0);
+}
+
+async function analysePdf(blob, name) {
   const my = ++token;
   fast = false;
+  pdfState = "loading";
+  pdfButtons();
   $("#thinking").textContent = "";
   status("Extracting text", "on");
   think("i", `Opening ${name} and extracting text with pypdf...`, "quiet");
@@ -93,6 +151,8 @@ async function analysePdf(blob, name) {
   } catch (e) {
     think("!", "Could not analyse this file: " + e.message, "err");
     status("Error", "err");
+    pdfState = "ready";
+    pdfButtons();
     return;
   }
   if (my !== token) return;
@@ -132,23 +192,28 @@ function renderDoc() {
 }
 
 /* ---------- playback ---------- */
-async function play(my) {
-  renderDoc();
-  resetTrail();
-  setRisk(A.start);
-  drawSigmoid([], A.start);
-  drawTree(A.start.features, A.start.features);
-  renderTerms(A.start.lr_terms, A.start.z_lr);
-  $("#skip").disabled = false;
-  $("#replay").disabled = true;
-  $("#paperWrap").scrollTop = 0;
+async function play(my, from = 0) {
+  pdfState = "playing";
+  pdfButtons();
+  if (from === 0) {
+    renderDoc();
+    resetTrail();
+    setRisk(A.start);
+    drawSigmoid([], A.start);
+    drawTree(A.start.features, A.start.features);
+    renderTerms(A.start.lr_terms, A.start.z_lr);
+    $("#paperWrap").scrollTop = 0;
+    think("i", `${A.sentences} sentences found. Starting from a neutral claim at ${pct(A.start.risk_score)}.`, "quiet");
+  } else {
+    think("\u25b6", `Resuming at sentence ${from + 1}.`, "quiet");
+  }
   status("Reading", "on");
-  think("i", `${A.sentences} sentences found. Starting from a neutral claim at ${pct(A.start.risk_score)}.`, "quiet");
   const cursor = $("#cursor");
   cursor.hidden = false;
   if (autoFast) fast = true;
-  for (let i = 0; i < A.steps.length; i++) {
+  for (let i = from; i < A.steps.length; i++) {
     if (my !== token) return;
+    playIdx = i;
     await readSentence(A.steps[i], my);
     if (my !== token) return;
     await applyStep(i, my);
@@ -196,6 +261,7 @@ async function applyStep(i, my) {
     return;
   }
   s.el.classList.add("fact", k);
+  s.el.querySelectorAll(".badge").forEach((b) => b.remove()); // resumed after Stop mid-step
   const badge = el("button", "badge " + k, k === "noted" ? "0 pts" : pts(s.delta));
   badge.setAttribute("aria-label", `Sentence ${i + 1}: ${badge.textContent}`);
   badge.addEventListener("click", () => { const c = chunks.indexOf(s); if (c >= 0) focusChunk(c); });
@@ -213,8 +279,8 @@ async function applyStep(i, my) {
 }
 
 function finish() {
-  $("#skip").disabled = true;
-  $("#replay").disabled = false;
+  pdfState = "done";
+  pdfButtons();
   fast = false;
   chunks = A.steps.filter((s) => s.facts.length && Math.abs(s.delta) >= MOVE);
   const f = A.final;
@@ -228,7 +294,7 @@ function finish() {
 
 /* ---------- decision trail (< >) ---------- */
 function focusChunk(k) {
-  if (!A || !$("#skip").disabled) return; // only after the score is done
+  if (!A || pdfState !== "done") return; // only after the score is done
   pointer = Math.max(0, Math.min(chunks.length, k));
   A.steps.forEach((s) => s.el.classList.remove("active"));
   $("#prev").disabled = pointer === 0;
@@ -509,15 +575,19 @@ function splitLabel(n) {
 }
 
 /* ---------- wiring ---------- */
-$("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) analysePdf(f, f.name); e.target.value = ""; });
+$("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) loadPdf(f, f.name); e.target.value = ""; });
 document.querySelectorAll("[data-sample]").forEach((b) => b.addEventListener("click", async () => {
   document.querySelectorAll("[data-sample]").forEach((x) => x.classList.toggle("on", x === b));
   const r = await fetch("samples/" + b.dataset.sample);
   if (!r.ok) { think("!", "Sample not found on the server.", "err"); return; }
-  analysePdf(await r.blob(), b.dataset.sample);
+  loadPdf(await r.blob(), b.dataset.sample);
 }));
-$("#skip").addEventListener("click", () => { fast = true; });
-$("#replay").addEventListener("click", () => { if (A) { fast = false; $("#thinking").textContent = ""; play(++token); } });
+$("#start").addEventListener("click", startPdf);
+$("#stop").addEventListener("click", stopPdf);
+$("#restart").addEventListener("click", restartPdf);
+$("#skip").addEventListener("click", () => {
+  if (pdfState === "paused") { fast = true; startPdf(); } else fast = true;
+});
 $("#speed").addEventListener("change", (e) => { speed = Number(e.target.value); });
 $("#prev").addEventListener("click", () => focusChunk(pointer - 1));
 $("#next").addEventListener("click", () => focusChunk(pointer + 1));
@@ -530,6 +600,6 @@ document.addEventListener("keydown", (e) => {
 const wrap = $("#paperWrap");
 ["dragenter", "dragover"].forEach((t) => wrap.addEventListener(t, (e) => { e.preventDefault(); wrap.classList.add("drag"); }));
 ["dragleave", "drop"].forEach((t) => wrap.addEventListener(t, (e) => { e.preventDefault(); wrap.classList.remove("drag"); }));
-wrap.addEventListener("drop", (e) => { const f = e.dataTransfer.files[0]; if (f) analysePdf(f, f.name); });
+wrap.addEventListener("drop", (e) => { const f = e.dataTransfer.files[0]; if (f) loadPdf(f, f.name); });
 
 boot();

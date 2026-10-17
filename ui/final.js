@@ -3,12 +3,6 @@
 //   base value + sum(impacts) = log-odds,  score = 1 / (1 + e^-log-odds).
 // The score is an uncalibrated ranking score, never shown as a % chance of fraud.
 
-// Three real claims from data/processed/test.csv (claim_id 6180, 7223, 2857).
-const F_EXAMPLES = {
-  low: {Deductible: 400, Month: "Apr", WeekOfMonth: 2, DayOfWeek: "Wednesday", MonthClaimed: "Apr", WeekOfMonthClaimed: 3, DayOfWeekClaimed: "Wednesday", Make: "Honda", AccidentArea: "Urban", VehicleCategory: "Sport", BasePolicy: "Liability", AgentType: "External", VehiclePrice: "more than 69000", DriverRating: 1, Days_Policy_Accident: "more than 30", Days_Policy_Claim: "more than 30", PastNumberOfClaims: "2 to 4", AgeOfVehicle: "new", NumberOfCars: "1 vehicle"},
-  mid: {Deductible: 400, Month: "May", WeekOfMonth: 1, DayOfWeek: "Thursday", MonthClaimed: "May", WeekOfMonthClaimed: 4, DayOfWeekClaimed: "Thursday", Make: "Pontiac", AccidentArea: "Urban", VehicleCategory: "Sedan", BasePolicy: "All Perils", AgentType: "External", VehiclePrice: "20000 to 29000", DriverRating: 2, Days_Policy_Accident: "more than 30", Days_Policy_Claim: "more than 30", PastNumberOfClaims: "2 to 4", AgeOfVehicle: "7 years", NumberOfCars: "1 vehicle"},
-  high: {Deductible: 500, Month: "Apr", WeekOfMonth: 2, DayOfWeek: "Monday", MonthClaimed: "Apr", WeekOfMonthClaimed: 3, DayOfWeekClaimed: "Friday", Make: "Pontiac", AccidentArea: "Urban", VehicleCategory: "Sedan", BasePolicy: "All Perils", AgentType: "External", VehiclePrice: "20000 to 29000", DriverRating: 2, Days_Policy_Accident: "more than 30", Days_Policy_Claim: "more than 30", PastNumberOfClaims: "none", AgeOfVehicle: "7 years", NumberOfCars: "2 vehicles"},
-};
 const F_GROUPS = [
   ["Accident", ["Month", "WeekOfMonth", "DayOfWeek", "AccidentArea"]],
   ["Claim reported", ["MonthClaimed", "WeekOfMonthClaimed", "DayOfWeekClaimed"]],
@@ -64,6 +58,7 @@ async function bootFinal() {
       const opts = f === "Deductible" ? F_DEDUCTIBLES : (fin.options || {})[f];
       if (opts) {
         input = el("select");
+        input.add(new Option("Not provided", ""));
         orderOptions(f, opts).forEach((o) => input.add(new Option(String(o), String(o))));
       } else {
         input = el("input");
@@ -85,28 +80,61 @@ async function bootFinal() {
   $("#fMarkR").style.left = (fin.tiers.review / span) * 100 + "%";
   $("#fMarkI").style.left = (fin.tiers.investigate / span) * 100 + "%";
   $("#fModelSub").textContent = `Final model ${fin.model_id} (XGBoost on the Kaggle claims), exact TreeSHAP contributions in log-odds`;
-  loadExample("high");
+  scoreFinal();
 }
 
+// Blank fields are sent as null: the model fills them with the training median/mode
+// and flags the claim for a data check (see src/explain.py).
 function readClaimFinal() {
   const c = {};
   fin.features.forEach((f) => {
     const v = $("#fForm").elements[f].value;
-    c[f] = f === "Deductible" ? Number(v) : F_INTS.has(f) ? parseInt(v, 10) : v;
+    c[f] = v === "" ? null : f === "Deductible" ? Number(v) : F_INTS.has(f) ? parseInt(v, 10) : v;
   });
   return c;
 }
 
-function loadExample(name) {
-  document.querySelectorAll("[data-example]").forEach((b) => b.classList.toggle("on", b.dataset.example === name));
-  const ex = F_EXAMPLES[name];
-  fin.features.forEach((f) => { if (ex[f] != null) $("#fForm").elements[f].value = String(ex[f]); });
+function filledCount() {
+  return fin.features.filter((f) => $("#fForm").elements[f].value !== "").length;
+}
+
+function clearForm() {
+  fin.features.forEach((f) => { $("#fForm").elements[f].value = ""; });
   fExcluded.clear();
   scoreFinal();
 }
 
+// Nothing entered yet: show an empty state instead of a score built only from typical values.
+function renderEmptyFinal() {
+  fRes = null;
+  $("#fRisk").textContent = "-";
+  $("#fTier").textContent = "Waiting for details";
+  $("#fAdvice").textContent = "Fill in the claim fields. The score appears after the first one and updates after each.";
+  $("#fDecision").className = "decision";
+  $("#fMeter").style.transform = "scaleX(0)";
+  $("#fScoreR").textContent = $("#fMargin").textContent = "-";
+  $("#fStep").textContent = "The decision trail appears once there is a score.";
+  $("#fPrev").disabled = $("#fNext").disabled = true;
+  $("#fWhatIf").hidden = true;
+  $("#fReset").hidden = true;
+  document.querySelectorAll(".frow").forEach((row) => {
+    row.classList.add("blank");
+    row.classList.remove("ex", "hot");
+    row.querySelector(".imp").textContent = "";
+  });
+  $("#fWaterfall").textContent = "";
+  $("#fThinking").textContent = "";
+  const ln = el("div", "ln quiet");
+  ln.textContent = `${fin.model_id} is ready. Nothing entered yet.`;
+  $("#fThinking").appendChild(ln);
+}
+
 async function scoreFinal() {
   const my = ++fReq;
+  const n = filledCount();
+  $("#fFilled").textContent = `${n} of ${fin.features.length}`;
+  $("#fFilledBar").style.transform = `scaleX(${n / fin.features.length})`;
+  if (n === 0) { renderEmptyFinal(); return; }
   const body = {...readClaimFinal(), exclude: [...fExcluded]};
   let res;
   try {
@@ -138,10 +166,21 @@ function renderFinal() {
     const c = byF[row.dataset.f];
     const imp = row.querySelector(".imp");
     row.classList.toggle("ex", !!c && c.excluded);
+    row.classList.toggle("blank", !!c && c.imputed);
     if (!c) { imp.textContent = ""; return; }
-    imp.textContent = c.excluded ? "off" : fmtImp(c.impact);
-    imp.className = "imp " + (c.excluded ? "" : c.impact > 0.005 ? "up" : c.impact < -0.005 ? "down" : "");
-    imp.title = c.excluded ? "Excluded: replaced with the training median/mode" : `${fmtImp(c.impact)} log-odds`;
+    if (c.excluded) {
+      imp.textContent = "off";
+      imp.className = "imp";
+      imp.title = "Switched off for the what-if: the typical value is used. Click to switch back on.";
+    } else if (c.imputed) {
+      imp.textContent = "typ.";
+      imp.className = "imp typ";
+      imp.title = `Not provided: the model used the typical value (${c.value}), which adds ${fmtImp(c.impact)} log-odds.`;
+    } else {
+      imp.textContent = fmtImp(c.impact);
+      imp.className = "imp " + (c.impact > 0.005 ? "up" : c.impact < -0.005 ? "down" : "");
+      imp.title = `${fmtImp(c.impact)} log-odds. Click to switch this field off (what-if).`;
+    }
   });
 
   // What-if note.
@@ -152,6 +191,13 @@ function renderFinal() {
     w.textContent = `What-if: with ${r.excluded.map((f) => fin.labels[f]).join(", ")} set to the typical value, the score goes ${s.original_risk_score.toFixed(2)} → ${r.risk_score.toFixed(2)} (${fmtImp(s.score_change)}). Hypothetical only, it does not change this claim's real priority.`;
   } else {
     w.hidden = true;
+  }
+  $("#fReset").hidden = fExcluded.size === 0;
+  const missing = r.missing_features.length;
+  if (missing) {
+    const rec = r.recommendation.replace(/^Input quality requires verification before operational routing\. /, "");
+    $("#fAdvice").textContent = `Provisional: ${missing} field${missing > 1 ? "s" : ""} not provided, typical values used. ${rec}`;
+    $("#fAdvice").title = $("#fAdvice").textContent;
   }
   fPointer = -1;
   focusDriver(-1);
@@ -169,7 +215,7 @@ function focusDriver(k) {
   document.querySelectorAll(".frow.hot").forEach((r) => r.classList.remove("hot"));
   document.querySelectorAll(".wf-row.hot").forEach((r) => r.classList.remove("hot"));
   if (fPointer < 0) {
-    const top = list.find((c) => !c.excluded);
+    const top = list.find((c) => !c.excluded && !c.imputed);
     $("#fStep").textContent = top
       ? `Biggest driver: ${top.label} = ${top.value} (${fmtImp(top.impact)}). Press › to step through all ${list.length} fields.`
       : "All fields excluded.";
@@ -195,7 +241,7 @@ function drawWaterfall() {
   const rest = list.slice(TOP).reduce((a, c) => a + c.impact, 0);
   const rows = [{label: "Average claim (base value)", start: 0, end: r.base_value, base: true}];
   let run = r.base_value;
-  shown.forEach((c) => { rows.push({label: `${c.label} = ${c.value}`, start: run, end: run + c.impact, c}); run += c.impact; });
+  shown.forEach((c) => { rows.push({label: c.imputed ? `${c.label} (not provided)` : `${c.label} = ${c.value}`, start: run, end: run + c.impact, c}); run += c.impact; });
   if (list.length > TOP) { rows.push({label: `${list.length - TOP} other fields`, start: run, end: run + rest}); run += rest; }
   rows.push({label: "This claim (log-odds)", start: 0, end: r.raw_margin, total: true});
 
@@ -241,14 +287,15 @@ function writeReasoning() {
   };
   line("model", `${r.model_id}, XGBoost trained on the Kaggle vehicle claims, served on ${fin.platform}.`, "quiet");
   line("start", `An average claim starts at ${r.base_value.toFixed(2)} log-odds.`);
-  r.contributions.filter((c) => !c.excluded).slice(0, 5).forEach((c, i) => {
+  r.contributions.filter((c) => !c.excluded && !c.imputed).slice(0, 5).forEach((c, i) => {
     line(i === 0 ? "drivers" : "", `${c.label} = ${c.value}: ${fmtImp(c.impact)} (${c.impact >= 0 ? "raises" : "lowers"} risk)`);
   });
   const t = fin.tiers;
   const rule = r.tier === "investigate" ? `≥ ${t.investigate.toFixed(3)}` : r.tier === "review" ? `≥ ${t.review.toFixed(3)} and < ${t.investigate.toFixed(3)}` : `< ${t.review.toFixed(3)}`;
   line("result", `All ${r.contributions.length} fields sum to ${r.raw_margin.toFixed(2)} log-odds, score ${r.risk_score.toFixed(3)} ${rule}, so ${TIER_LABEL[r.tier].toUpperCase()}.`, "res");
   line("", `Tier cut-offs (provisional): review \u2265 ${t.review.toFixed(3)}, investigate \u2265 ${t.investigate.toFixed(3)}.`, "quiet");
-  if (r.requires_data_quality_check) line("check", `Missing or unknown inputs: ${[...r.missing_features, ...r.unknown_categories].join(", ")}. Verify before routing.`, "err");
+  if (r.missing_features.length) line("missing", `${r.missing_features.length} of ${r.contributions.length} fields not provided, so typical training values were used: ${r.missing_features.map((f) => fin.labels[f]).join(", ")}. Treat the score as provisional.`, "err");
+  if (r.unknown_categories.length) line("check", `Unknown values: ${r.unknown_categories.join(", ")}. Verify before routing.`, "err");
   line("note", r.safety_note, "quiet");
 }
 
@@ -265,8 +312,8 @@ function setMode(m) {
 }
 
 document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
-document.querySelectorAll("[data-example]").forEach((b) => b.addEventListener("click", () => loadExample(b.dataset.example)));
 $("#fReset").addEventListener("click", () => { fExcluded.clear(); scoreFinal(); });
+$("#fClear").addEventListener("click", clearForm);
 $("#fPrev").addEventListener("click", () => focusDriver(fPointer - 1));
 $("#fNext").addEventListener("click", () => focusDriver(fPointer + 1));
 // Click a field's impact to exclude / include it (what-if).
@@ -274,6 +321,7 @@ $("#fForm").addEventListener("click", (e) => {
   const imp = e.target.closest(".imp");
   if (!imp || !fRes) return;
   const f = imp.parentElement.dataset.f;
+  if ($("#fForm").elements[f].value === "") return; // nothing to switch off
   fExcluded.has(f) ? fExcluded.delete(f) : fExcluded.add(f);
   scoreFinal();
 });
