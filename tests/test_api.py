@@ -26,6 +26,28 @@ import requests
 TIERS = {"fast_track", "review", "investigate"}
 TIMEOUT = 15
 
+API_FIELDS = [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars",
+]
+
 # Fallback only (used when val.csv is missing). Matches the raw columns in data/README.md.
 FALLBACK_CLAIM = {
     "Month": "Dec", "WeekOfMonth": 5, "DayOfWeek": "Wednesday", "Make": "Honda",
@@ -42,18 +64,27 @@ FALLBACK_CLAIM = {
 
 
 def load_claims(csv_path, label_col, n):
-    """Return a list of claim dicts (label column removed)."""
+    """Return a list of claims containing only the 19 model input fields."""
     if not os.path.exists(csv_path):
         print(f"[warn] {csv_path} not found, using 1 fallback claim")
-        return [FALLBACK_CLAIM]
+        return [{field: FALLBACK_CLAIM[field] for field in API_FIELDS}]
+
     import pandas as pd
 
     df = pd.read_csv(csv_path)
-    # drop the label and bookkeeping/synthetic columns so only real claim fields are sent
-    drop = [c for c in df.columns if c == label_col or c in ("split", "claim_id") or c.endswith("(synth)")]
-    df = df.drop(columns=drop)
+
+    # Check that all 19 required model fields exist.
+    missing = [c for c in API_FIELDS if c not in df.columns]
+    if missing:
+        raise ValueError(f"CSV is missing required model fields: {missing}")
+
+    # Only send the 19 fields accepted by the trained model.
+    df = df[API_FIELDS]
+
     df = df.head(n).where(df.head(n).notna(), None)
+
     return json.loads(df.to_json(orient="records"))
+
 
 
 # Da Feng's interim ClaimLens server (src/demo_server.py) does not take the raw
