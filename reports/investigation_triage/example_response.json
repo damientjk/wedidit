@@ -1,0 +1,46 @@
+{
+  "claim_id": "9",
+  "model_id": "xgboost_09",
+  "risk_score": 0.3551460802555084,
+  "score_type": "uncalibrated fraud-risk ranking score",
+  "tier": "investigate",
+  "tier_status": "closed_batch_assignment",
+  "recommendation": "Prioritize for specialist investigation. The risk flag is not a finding of fraud; a human must assess the evidence.",
+  "top_contributing_features": [
+    {
+      "feature": "VehiclePrice",
+      "value": "more than 69000",
+      "reference_value": "20000 to 29000",
+      "score_delta_on_restoring_observed_value": 0.07970613241195679
+    },
+    {
+      "feature": "VehicleCategory",
+      "value": "Sport",
+      "reference_value": "Sedan",
+      "score_delta_on_restoring_observed_value": 0.05266609787940979
+    },
+    {
+      "feature": "DayOfWeek",
+      "value": "Saturday",
+      "reference_value": "Monday",
+      "score_delta_on_restoring_observed_value": 0.015234798192977905
+    },
+    {
+      "feature": "WeekOfMonthClaimed",
+      "value": 5,
+      "reference_value": 2,
+      "score_delta_on_restoring_observed_value": -0.0067355334758758545
+    },
+    {
+      "feature": "AgeOfVehicle",
+      "value": "6 years",
+      "reference_value": "7 years",
+      "score_delta_on_restoring_observed_value": 0.005297720432281494
+    }
+  ],
+  "explanation_method": "one-feature-at-a-time replacement with training median/mode; non-additive, non-causal",
+  "unknown_categories": [],
+  "requires_data_quality_check": false,
+  "rank": 1,
+  "safeguard_note": "Mandatory referrals, data-quality exceptions and audits require separate capacity accounting; this adapter does not silently override queues."
+}

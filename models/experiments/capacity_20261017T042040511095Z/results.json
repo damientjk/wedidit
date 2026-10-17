@@ -1,0 +1,705 @@
+{
+  "protocol": {
+    "features": [
+      "Deductible",
+      "Month",
+      "WeekOfMonth",
+      "DayOfWeek",
+      "MonthClaimed",
+      "WeekOfMonthClaimed",
+      "DayOfWeekClaimed",
+      "Make",
+      "AccidentArea",
+      "VehicleCategory",
+      "BasePolicy",
+      "AgentType",
+      "VehiclePrice",
+      "DriverRating",
+      "Days_Policy_Accident",
+      "Days_Policy_Claim",
+      "PastNumberOfClaims",
+      "AgeOfVehicle",
+      "NumberOfCars"
+    ],
+    "target": "FraudFound_P",
+    "training_sha256": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+    "cv": "3-fold StratifiedKFold(shuffle=True, random_state=42)",
+    "selection": "descending mean fold recall across 10%,20%,30%; ties: mean AP, recall20, candidate name",
+    "finalists": "one winner per family, fixed before validation is opened; global CV winner recommended independently of validation",
+    "capacities": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "queue": "round(n*capacity), matching prior 617/3084 benchmark; ties by claim_id ascending",
+    "resource_limits": "sequential, 1 native/BLAS thread; max 500 XGB trees; bounded 19-column one-hot (~130 columns); no parallel search",
+    "candidates": [
+      {
+        "candidate": "logistic_00",
+        "family": "logistic",
+        "C": 0.01,
+        "balanced": false
+      },
+      {
+        "candidate": "logistic_01",
+        "family": "logistic",
+        "C": 0.01,
+        "balanced": true
+      },
+      {
+        "candidate": "logistic_02",
+        "family": "logistic",
+        "C": 0.1,
+        "balanced": false
+      },
+      {
+        "candidate": "logistic_03",
+        "family": "logistic",
+        "C": 0.1,
+        "balanced": true
+      },
+      {
+        "candidate": "logistic_04",
+        "family": "logistic",
+        "C": 1.0,
+        "balanced": false
+      },
+      {
+        "candidate": "logistic_05",
+        "family": "logistic",
+        "C": 1.0,
+        "balanced": true
+      },
+      {
+        "candidate": "logistic_06",
+        "family": "logistic",
+        "C": 10.0,
+        "balanced": false
+      },
+      {
+        "candidate": "logistic_07",
+        "family": "logistic",
+        "C": 10.0,
+        "balanced": true
+      },
+      {
+        "candidate": "xgboost_08",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 200,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_09",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 200,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_10",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 200,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_11",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 200,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "xgboost_12",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 500,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_13",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 500,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_14",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 500,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_15",
+        "family": "xgboost",
+        "depth": 2,
+        "trees": 500,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "xgboost_16",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 200,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_17",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 200,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_18",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 200,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_19",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 200,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "xgboost_20",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 500,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_21",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 500,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_22",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 500,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_23",
+        "family": "xgboost",
+        "depth": 3,
+        "trees": 500,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "xgboost_24",
+        "family": "xgboost",
+        "depth": 4,
+        "trees": 300,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_25",
+        "family": "xgboost",
+        "depth": 4,
+        "trees": 300,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_26",
+        "family": "xgboost",
+        "depth": 4,
+        "trees": 300,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_27",
+        "family": "xgboost",
+        "depth": 4,
+        "trees": 300,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "xgboost_28",
+        "family": "xgboost",
+        "depth": 5,
+        "trees": 200,
+        "weight": "one"
+      },
+      {
+        "candidate": "xgboost_29",
+        "family": "xgboost",
+        "depth": 5,
+        "trees": 200,
+        "weight": "sqrt_ratio"
+      },
+      {
+        "candidate": "xgboost_30",
+        "family": "xgboost",
+        "depth": 5,
+        "trees": 200,
+        "weight": "half_ratio"
+      },
+      {
+        "candidate": "xgboost_31",
+        "family": "xgboost",
+        "depth": 5,
+        "trees": 200,
+        "weight": "ratio"
+      },
+      {
+        "candidate": "hist_gradient_boosting_32",
+        "family": "hist_gradient_boosting",
+        "leaves": 7,
+        "balanced": false
+      },
+      {
+        "candidate": "hist_gradient_boosting_33",
+        "family": "hist_gradient_boosting",
+        "leaves": 7,
+        "balanced": true
+      },
+      {
+        "candidate": "hist_gradient_boosting_34",
+        "family": "hist_gradient_boosting",
+        "leaves": 15,
+        "balanced": false
+      },
+      {
+        "candidate": "hist_gradient_boosting_35",
+        "family": "hist_gradient_boosting",
+        "leaves": 15,
+        "balanced": true
+      }
+    ],
+    "environment": {
+      "machine": "AMD64",
+      "system": "Windows",
+      "python": "3.12.14",
+      "versions": {
+        "numpy": "1.26.4",
+        "pandas": "2.1.4",
+        "scipy": "1.11.4",
+        "scikit-learn": "1.4.1.post1",
+        "xgboost": "2.0.3",
+        "joblib": "1.6.0"
+      },
+      "s390x_runtime_verified": false
+    }
+  },
+  "recommended_by_training_cv": "xgboost_09",
+  "finalists": [
+    "xgboost_09",
+    "hist_gradient_boosting_32",
+    "logistic_02"
+  ],
+  "configurations_selected": {
+    "xgboost_09": {
+      "candidate": "xgboost_09",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "sqrt_ratio"
+    },
+    "hist_gradient_boosting_32": {
+      "candidate": "hist_gradient_boosting_32",
+      "family": "hist_gradient_boosting",
+      "leaves": 7,
+      "balanced": false
+    },
+    "logistic_02": {
+      "candidate": "logistic_02",
+      "family": "logistic",
+      "C": 0.1,
+      "balanced": false
+    }
+  },
+  "validation": [
+    {
+      "model": "xgboost_09",
+      "cv_selected": true,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "caught10": 39,
+      "caught20": 81,
+      "caught30": 107,
+      "caught_at_786": 100
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "cv_selected": false,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "caught10": 45,
+      "caught20": 82,
+      "caught30": 107,
+      "caught_at_786": 95
+    },
+    {
+      "model": "logistic_02",
+      "cv_selected": false,
+      "average_precision": 0.11425726712433802,
+      "roc_auc": 0.7100955772113944,
+      "caught10": 39,
+      "caught20": 75,
+      "caught30": 103,
+      "caught_at_786": 90
+    },
+    {
+      "model": "working_logistic",
+      "cv_selected": false,
+      "average_precision": 0.10191238070089309,
+      "roc_auc": 0.6941060719640181,
+      "caught10": 32,
+      "caught20": 73,
+      "caught30": 98,
+      "caught_at_786": 87
+    },
+    {
+      "model": "working_xgboost",
+      "cv_selected": false,
+      "average_precision": 0.12449352248635576,
+      "roc_auc": 0.7124934407796102,
+      "caught10": 40,
+      "caught20": 73,
+      "caught30": 107,
+      "caught_at_786": 92
+    }
+  ],
+  "capacity_metrics": [
+    {
+      "model": "xgboost_09",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "fraud_caught": 39,
+      "missed_fraud": 145,
+      "false_positives": 269,
+      "precision": 0.1266233766233766,
+      "recall": 0.21195652173913043,
+      "score_cutoff": 0.3125496804714203
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "fraud_caught": 81,
+      "missed_fraud": 103,
+      "false_positives": 536,
+      "precision": 0.1312803889789303,
+      "recall": 0.44021739130434784,
+      "score_cutoff": 0.2859994173049927
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "fraud_caught": 107,
+      "missed_fraud": 77,
+      "false_positives": 818,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "score_cutoff": 0.2559698522090912
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.25486381322957197,
+      "reviewed": 786,
+      "fraud_caught": 100,
+      "missed_fraud": 84,
+      "false_positives": 686,
+      "precision": 0.1272264631043257,
+      "recall": 0.5434782608695652,
+      "score_cutoff": 0.270679771900177
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "fraud_caught": 45,
+      "missed_fraud": 139,
+      "false_positives": 263,
+      "precision": 0.1461038961038961,
+      "recall": 0.24456521739130435,
+      "score_cutoff": 0.11656145249990084
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "fraud_caught": 82,
+      "missed_fraud": 102,
+      "false_positives": 535,
+      "precision": 0.13290113452188007,
+      "recall": 0.44565217391304346,
+      "score_cutoff": 0.09335952182020744
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "fraud_caught": 107,
+      "missed_fraud": 77,
+      "false_positives": 818,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "score_cutoff": 0.07963799711474091
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.25486381322957197,
+      "reviewed": 786,
+      "fraud_caught": 95,
+      "missed_fraud": 89,
+      "false_positives": 691,
+      "precision": 0.12086513994910941,
+      "recall": 0.5163043478260869,
+      "score_cutoff": 0.08597003293580938
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "fraud_caught": 39,
+      "missed_fraud": 145,
+      "false_positives": 269,
+      "precision": 0.1266233766233766,
+      "recall": 0.21195652173913043,
+      "score_cutoff": 0.11664375384218668
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "fraud_caught": 75,
+      "missed_fraud": 109,
+      "false_positives": 542,
+      "precision": 0.12155591572123177,
+      "recall": 0.4076086956521739,
+      "score_cutoff": 0.09340882598868873
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "fraud_caught": 103,
+      "missed_fraud": 81,
+      "false_positives": 822,
+      "precision": 0.11135135135135135,
+      "recall": 0.5597826086956522,
+      "score_cutoff": 0.07999125349897421
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.25486381322957197,
+      "reviewed": 786,
+      "fraud_caught": 90,
+      "missed_fraud": 94,
+      "false_positives": 696,
+      "precision": 0.11450381679389313,
+      "recall": 0.4891304347826087,
+      "score_cutoff": 0.08562647087739768
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "fraud_caught": 32,
+      "missed_fraud": 152,
+      "false_positives": 276,
+      "precision": 0.1038961038961039,
+      "recall": 0.17391304347826086,
+      "score_cutoff": 0.7012644595450077
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "fraud_caught": 73,
+      "missed_fraud": 111,
+      "false_positives": 544,
+      "precision": 0.11831442463533225,
+      "recall": 0.3967391304347826,
+      "score_cutoff": 0.6296240569815823
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "fraud_caught": 98,
+      "missed_fraud": 86,
+      "false_positives": 827,
+      "precision": 0.10594594594594595,
+      "recall": 0.532608695652174,
+      "score_cutoff": 0.5781104676253827
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.25486381322957197,
+      "reviewed": 786,
+      "fraud_caught": 87,
+      "missed_fraud": 97,
+      "false_positives": 699,
+      "precision": 0.11068702290076336,
+      "recall": 0.47282608695652173,
+      "score_cutoff": 0.6002495508834943
+    },
+    {
+      "model": "working_xgboost",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "fraud_caught": 40,
+      "missed_fraud": 144,
+      "false_positives": 268,
+      "precision": 0.12987012987012986,
+      "recall": 0.21739130434782608,
+      "score_cutoff": 0.6489636301994324
+    },
+    {
+      "model": "working_xgboost",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "fraud_caught": 73,
+      "missed_fraud": 111,
+      "false_positives": 544,
+      "precision": 0.11831442463533225,
+      "recall": 0.3967391304347826,
+      "score_cutoff": 0.6019634008407593
+    },
+    {
+      "model": "working_xgboost",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "fraud_caught": 107,
+      "missed_fraud": 77,
+      "false_positives": 818,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "score_cutoff": 0.5620941519737244
+    },
+    {
+      "model": "working_xgboost",
+      "capacity": 0.25486381322957197,
+      "reviewed": 786,
+      "fraud_caught": 92,
+      "missed_fraud": 92,
+      "false_positives": 694,
+      "precision": 0.11704834605597965,
+      "recall": 0.5,
+      "score_cutoff": 0.5799601674079895
+    }
+  ],
+  "tiers": {
+    "xgboost_09": {
+      "investigate": {
+        "claims": 308,
+        "fraud": 39,
+        "non_fraud": 269
+      },
+      "review": {
+        "claims": 309,
+        "fraud": 42,
+        "non_fraud": 267
+      },
+      "expedited_standard": {
+        "claims": 2467,
+        "fraud": 103,
+        "non_fraud": 2364
+      }
+    },
+    "hist_gradient_boosting_32": {
+      "investigate": {
+        "claims": 308,
+        "fraud": 45,
+        "non_fraud": 263
+      },
+      "review": {
+        "claims": 309,
+        "fraud": 37,
+        "non_fraud": 272
+      },
+      "expedited_standard": {
+        "claims": 2467,
+        "fraud": 102,
+        "non_fraud": 2365
+      }
+    },
+    "logistic_02": {
+      "investigate": {
+        "claims": 308,
+        "fraud": 39,
+        "non_fraud": 269
+      },
+      "review": {
+        "claims": 309,
+        "fraud": 36,
+        "non_fraud": 273
+      },
+      "expedited_standard": {
+        "claims": 2467,
+        "fraud": 109,
+        "non_fraud": 2358
+      }
+    },
+    "working_logistic": {
+      "investigate": {
+        "claims": 308,
+        "fraud": 32,
+        "non_fraud": 276
+      },
+      "review": {
+        "claims": 309,
+        "fraud": 41,
+        "non_fraud": 268
+      },
+      "expedited_standard": {
+        "claims": 2467,
+        "fraud": 111,
+        "non_fraud": 2356
+      }
+    },
+    "working_xgboost": {
+      "investigate": {
+        "claims": 308,
+        "fraud": 40,
+        "non_fraud": 268
+      },
+      "review": {
+        "claims": 309,
+        "fraud": 33,
+        "non_fraud": 276
+      },
+      "expedited_standard": {
+        "claims": 2467,
+        "fraud": 111,
+        "non_fraud": 2356
+      }
+    }
+  },
+  "train_rows": 9251,
+  "train_fraud": 554,
+  "validation_rows": 3084,
+  "validation_fraud": 184,
+  "validation_sha256": "7f7e67e1c8a6a3cb9da07bca524aef49b1677aca09cefc12fade16b7dcd54f99",
+  "protected_model_sha256": {
+    "models\\baseline.joblib": "c972245be10fc07a19c084b19b248ce431e3ba67e4ab75dad87feb23845bbb96",
+    "models\\lr.json": "7ab5a4e50dfc1b31c4efc8fb3336138d075e5c9b3c50366f6b4ce57a2d7cac3b",
+    "models\\metrics.json": "9bcc2d2e6ec9fc717fa59e17c7012f6989cb97519251ba47497d94ff37c93c17",
+    "models\\model.json": "618e059a6d9bc7bf45a6c0ed6160e4de4ef40caf821b7b1969a7058f596db8ea",
+    "models\\trees.json": "6a28d36e3e06c97e2f041a79935a8c3151fe9f63ac7eef7f286f3ada123b8d18",
+    "models\\xgboost_metrics.json": "7f9d7d28050fd46c4e1f29776e6cd74b41afe0ee36344935af785dff21c30d29",
+    "models\\xgboost_pipeline.joblib": "6a9ee58c9ff0f81cc40ecb3c444a9cfc6d0c9294a2996353b06cbf0daf12a6f9",
+    "models\\xgboost\\model.json": "f9492e61c9c237eab47eb0a764760679dd4ceb4a234352fa874e5571a1724bdd",
+    "models\\xgboost\\preprocessing.json": "3fa782ced3988c31c2d58464c0627c837b294edab490aeb4719426fafd2ae0c3",
+    "models\\xgboost\\preprocessor.joblib": "6dc2694ecfc5109f452a5da2845ae50225c46de67396151d034ed64863a4d8e9"
+  },
+  "elapsed_seconds": 21.375,
+  "caveats": [
+    "Prior development has already used validation; it is not an unbiased final holdout.",
+    "One validation comparison this experiment; no further tuning based on these results.",
+    "No test data used; no deployment; uncertainty remains with 184 validation fraud cases.",
+    "Fixed top-k controls model escalations only; safeguard/manual-rule referrals must be counted separately."
+  ]
+}

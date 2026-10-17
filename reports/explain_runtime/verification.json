@@ -1,0 +1,10 @@
+{
+  "tests_run": 8,
+  "all_passed": true,
+  "median_ms": 2.28725000488339,
+  "p95_ms": 2.8183500078739607,
+  "samples": 20,
+  "runtime": "Windows AMD64 warm model, one thread; not s390x/service latency",
+  "first_validation_claim_score": 0.03716346248984337,
+  "first_validation_claim_tier": "fast_track"
+}

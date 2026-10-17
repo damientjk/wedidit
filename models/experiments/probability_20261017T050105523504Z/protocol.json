@@ -1,0 +1,51 @@
+{
+  "target": "FraudFound_P",
+  "features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "training_sha256": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+  "models": "Fixed previously training-CV-selected LR C=.1 unweighted; tuned XGBoost depth2/200/sqrt weighting; equal-weight soft-voting combination",
+  "calibrations": [
+    "sigmoid",
+    "isotonic"
+  ],
+  "selection": "lowest mean outer-fold log loss among six calibrated candidates; tie lower Brier score then name. Raw models and training-prevalence baseline are controls, not calibrated candidates.",
+  "outer_cv": "3-fold StratifiedKFold(shuffle=True,random_state=2026)",
+  "inner_cv": "3-fold shuffled, seed=100+outer_fold; ensemble=False uses inner OOF calibration predictions, then refits base on all outer-training rows",
+  "weights": "calibrator uses natural unweighted labels; no class rebalancing or oversampling of calibration data",
+  "final_fit": "inner OOF calibration across all training, seed42; full-training base refit; validation untouched during selection or fitting",
+  "resources": "one thread, sequential, fixed base hyperparameters; no new base-model tuning",
+  "limitations": "Previously chosen base hyperparameters used these training rows; nested calibration evaluation is not a fresh unbiased model-selection holdout. Validation is previously-used and exploratory.",
+  "environment": {
+    "machine": "AMD64",
+    "system": "Windows",
+    "python": "3.12.14",
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.6.0"
+    },
+    "s390x_runtime_verified": false
+  }
+}

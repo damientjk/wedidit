@@ -1,0 +1,47 @@
+{
+  "latency": {
+    "xgboost_09": {
+      "single_claim_with_explanations_median_ms": 16.616849999991246,
+      "p95_ms": 18.378209993534256,
+      "repetitions": 10,
+      "scope": "local Windows AMD64 warm model; no network; not LinuxONE service latency"
+    },
+    "hist_gradient_boosting_32": {
+      "single_claim_with_explanations_median_ms": 11.547449990757741,
+      "p95_ms": 17.365849998896003,
+      "repetitions": 10,
+      "scope": "local Windows AMD64 warm model; no network; not LinuxONE service latency"
+    }
+  },
+  "batch_tiers_test": "passed",
+  "missing_input_rejection": "passed",
+  "candidate_policy": {
+    "model": "xgboost_09",
+    "investigate_slots": 308,
+    "review_slots": 612,
+    "fast_track_slots": 2164,
+    "workload": 0.29831387808041504,
+    "investigate_fraud": 39,
+    "review_fraud": 68,
+    "fast_track_fraud": 77,
+    "tp": 107,
+    "fp": 813,
+    "tn": 2087,
+    "fn": 77,
+    "precision": 0.11630434782608695,
+    "recall": 0.5815217391304348,
+    "f1": 0.19384057971014493,
+    "accuracy": 0.711413748378729,
+    "balanced_accuracy": 0.650588455772114,
+    "confusion_matrix": [
+      [
+        2087,
+        813
+      ],
+      [
+        77,
+        107
+      ]
+    ]
+  }
+}

@@ -1,0 +1,291 @@
+{
+  "features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "target": "FraudFound_P",
+  "training_sha256": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+  "cv": "3-fold StratifiedKFold(shuffle=True, random_state=42)",
+  "selection": "descending mean fold recall across 10%,20%,30%; ties: mean AP, recall20, candidate name",
+  "finalists": "one winner per family, fixed before validation is opened; global CV winner recommended independently of validation",
+  "capacities": [
+    0.1,
+    0.2,
+    0.3
+  ],
+  "queue": "round(n*capacity), matching prior 617/3084 benchmark; ties by claim_id ascending",
+  "resource_limits": "sequential, 1 native/BLAS thread; max 500 XGB trees; bounded 19-column one-hot (~130 columns); no parallel search",
+  "candidates": [
+    {
+      "candidate": "logistic_00",
+      "family": "logistic",
+      "C": 0.01,
+      "balanced": false
+    },
+    {
+      "candidate": "logistic_01",
+      "family": "logistic",
+      "C": 0.01,
+      "balanced": true
+    },
+    {
+      "candidate": "logistic_02",
+      "family": "logistic",
+      "C": 0.1,
+      "balanced": false
+    },
+    {
+      "candidate": "logistic_03",
+      "family": "logistic",
+      "C": 0.1,
+      "balanced": true
+    },
+    {
+      "candidate": "logistic_04",
+      "family": "logistic",
+      "C": 1.0,
+      "balanced": false
+    },
+    {
+      "candidate": "logistic_05",
+      "family": "logistic",
+      "C": 1.0,
+      "balanced": true
+    },
+    {
+      "candidate": "logistic_06",
+      "family": "logistic",
+      "C": 10.0,
+      "balanced": false
+    },
+    {
+      "candidate": "logistic_07",
+      "family": "logistic",
+      "C": 10.0,
+      "balanced": true
+    },
+    {
+      "candidate": "xgboost_08",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_09",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_10",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_11",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "xgboost_12",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_13",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_14",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_15",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "xgboost_16",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 200,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_17",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 200,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_18",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 200,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_19",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 200,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "xgboost_20",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 500,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_21",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 500,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_22",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 500,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_23",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 500,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "xgboost_24",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 300,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_25",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 300,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_26",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 300,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_27",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 300,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "xgboost_28",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 200,
+      "weight": "one"
+    },
+    {
+      "candidate": "xgboost_29",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 200,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "candidate": "xgboost_30",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 200,
+      "weight": "half_ratio"
+    },
+    {
+      "candidate": "xgboost_31",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 200,
+      "weight": "ratio"
+    },
+    {
+      "candidate": "hist_gradient_boosting_32",
+      "family": "hist_gradient_boosting",
+      "leaves": 7,
+      "balanced": false
+    },
+    {
+      "candidate": "hist_gradient_boosting_33",
+      "family": "hist_gradient_boosting",
+      "leaves": 7,
+      "balanced": true
+    },
+    {
+      "candidate": "hist_gradient_boosting_34",
+      "family": "hist_gradient_boosting",
+      "leaves": 15,
+      "balanced": false
+    },
+    {
+      "candidate": "hist_gradient_boosting_35",
+      "family": "hist_gradient_boosting",
+      "leaves": 15,
+      "balanced": true
+    }
+  ],
+  "environment": {
+    "machine": "AMD64",
+    "system": "Windows",
+    "python": "3.12.14",
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.6.0"
+    },
+    "s390x_runtime_verified": false
+  }
+}

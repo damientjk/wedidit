@@ -1,0 +1,11 @@
+{
+  "model_id": "xgboost_09",
+  "model_path": "models/experiments/capacity_20261017T042040511095Z/xgboost_09.joblib",
+  "model_sha256": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+  "validation_predictions_sha256": "159b3c3edc9dd17f3136c50ea4f7cc0df2584ec9d35b5fc610d4880f725918b9",
+  "review_min_score": 0.25596985,
+  "investigate_min_score": 0.31254968,
+  "bands": "validation top approximately 10% high; next 20% medium; remainder low",
+  "status": "provisional distribution-derived bands; no recall-based optimization; no capacity guarantee on new data",
+  "reference_source": "fitted numeric/categorical imputers: train-only median/modes"
+}

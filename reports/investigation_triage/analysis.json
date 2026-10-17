@@ -1,0 +1,556 @@
+{
+  "source_run": "models\\experiments\\capacity_20261017T042040511095Z",
+  "validation_rows": 3084,
+  "validation_fraud": 184,
+  "status": "Exploratory policy analysis on previously-used validation; no tuning/retraining",
+  "classification_at_0_5": [
+    {
+      "model": "xgboost_09",
+      "metric_type": "classification at score >=0.5",
+      "threshold": 0.5,
+      "ap": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "tp": 2,
+      "fp": 4,
+      "tn": 2896,
+      "fn": 182,
+      "precision": 0.3333333333333333,
+      "recall": 0.010869565217391304,
+      "f1": 0.021052631578947368,
+      "accuracy": 0.9396887159533074,
+      "balanced_accuracy": 0.5047451274362819,
+      "confusion_matrix": [
+        [
+          2896,
+          4
+        ],
+        [
+          182,
+          2
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "metric_type": "classification at score >=0.5",
+      "threshold": 0.5,
+      "ap": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "tp": 0,
+      "fp": 0,
+      "tn": 2900,
+      "fn": 184,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.940337224383917,
+      "balanced_accuracy": 0.5,
+      "confusion_matrix": [
+        [
+          2900,
+          0
+        ],
+        [
+          184,
+          0
+        ]
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "model": "xgboost_09",
+      "investigate_budget": 0.05,
+      "review_budget": 0.15,
+      "investigate_claims": 154,
+      "review_claims": 463,
+      "fast_track_claims": 2467,
+      "investigate_fraud": 23,
+      "review_fraud": 58,
+      "fast_track_fraud": 103,
+      "investigate_false_positives": 131,
+      "review_false_positives": 405,
+      "investigate_only_recall": 0.125,
+      "combined_coverage": 0.44021739130434784,
+      "human_escalations": 617,
+      "workload": 0.20006485084306097,
+      "escalation_precision": 0.1312803889789303,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "minimum_k_for_same_coverage": 614,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 81,
+      "fp": 536,
+      "tn": 2364,
+      "fn": 103,
+      "precision": 0.1312803889789303,
+      "recall": 0.44021739130434784,
+      "f1": 0.20224719101123595,
+      "accuracy": 0.7928015564202334,
+      "balanced_accuracy": 0.6276949025487256,
+      "confusion_matrix": [
+        [
+          2364,
+          536
+        ],
+        [
+          103,
+          81
+        ]
+      ]
+    },
+    {
+      "model": "xgboost_09",
+      "investigate_budget": 0.1,
+      "review_budget": 0.2,
+      "investigate_claims": 308,
+      "review_claims": 617,
+      "fast_track_claims": 2159,
+      "investigate_fraud": 39,
+      "review_fraud": 68,
+      "fast_track_fraud": 77,
+      "investigate_false_positives": 269,
+      "review_false_positives": 549,
+      "investigate_only_recall": 0.21195652173913043,
+      "combined_coverage": 0.5815217391304348,
+      "human_escalations": 925,
+      "workload": 0.29993514915693903,
+      "escalation_precision": 0.11567567567567567,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "minimum_k_for_same_coverage": 920,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 107,
+      "fp": 818,
+      "tn": 2082,
+      "fn": 77,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "f1": 0.19296663660955815,
+      "accuracy": 0.709792477302205,
+      "balanced_accuracy": 0.6497263868065968,
+      "confusion_matrix": [
+        [
+          2082,
+          818
+        ],
+        [
+          77,
+          107
+        ]
+      ]
+    },
+    {
+      "model": "xgboost_09",
+      "investigate_budget": 0.1,
+      "review_budget": 0.3,
+      "investigate_claims": 308,
+      "review_claims": 926,
+      "fast_track_claims": 1850,
+      "investigate_fraud": 39,
+      "review_fraud": 88,
+      "fast_track_fraud": 57,
+      "investigate_false_positives": 269,
+      "review_false_positives": 838,
+      "investigate_only_recall": 0.21195652173913043,
+      "combined_coverage": 0.6902173913043478,
+      "human_escalations": 1234,
+      "workload": 0.40012970168612194,
+      "escalation_precision": 0.10291734197730956,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "minimum_k_for_same_coverage": 1226,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 127,
+      "fp": 1107,
+      "tn": 1793,
+      "fn": 57,
+      "precision": 0.10291734197730956,
+      "recall": 0.6902173913043478,
+      "f1": 0.17912552891396333,
+      "accuracy": 0.622568093385214,
+      "balanced_accuracy": 0.6542466266866567,
+      "confusion_matrix": [
+        [
+          1793,
+          1107
+        ],
+        [
+          57,
+          127
+        ]
+      ]
+    },
+    {
+      "model": "xgboost_09",
+      "investigate_budget": 0.15,
+      "review_budget": 0.35,
+      "investigate_claims": 463,
+      "review_claims": 1079,
+      "fast_track_claims": 1542,
+      "investigate_fraud": 63,
+      "review_fraud": 79,
+      "fast_track_fraud": 42,
+      "investigate_false_positives": 400,
+      "review_false_positives": 1000,
+      "investigate_only_recall": 0.3423913043478261,
+      "combined_coverage": 0.7717391304347826,
+      "human_escalations": 1542,
+      "workload": 0.5,
+      "escalation_precision": 0.09208819714656291,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "minimum_k_for_same_coverage": 1542,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 142,
+      "fp": 1400,
+      "tn": 1500,
+      "fn": 42,
+      "precision": 0.09208819714656291,
+      "recall": 0.7717391304347826,
+      "f1": 0.1645422943221321,
+      "accuracy": 0.5324254215304799,
+      "balanced_accuracy": 0.6444902548725637,
+      "confusion_matrix": [
+        [
+          1500,
+          1400
+        ],
+        [
+          42,
+          142
+        ]
+      ]
+    },
+    {
+      "model": "xgboost_09",
+      "investigate_budget": 0.2,
+      "review_budget": 0.4,
+      "investigate_claims": 617,
+      "review_claims": 1233,
+      "fast_track_claims": 1234,
+      "investigate_fraud": 81,
+      "review_fraud": 82,
+      "fast_track_fraud": 21,
+      "investigate_false_positives": 536,
+      "review_false_positives": 1151,
+      "investigate_only_recall": 0.44021739130434784,
+      "combined_coverage": 0.8858695652173914,
+      "human_escalations": 1850,
+      "workload": 0.5998702983138781,
+      "escalation_precision": 0.08810810810810811,
+      "average_precision": 0.1255515398563654,
+      "roc_auc": 0.7169209145427287,
+      "minimum_k_for_same_coverage": 1830,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 163,
+      "fp": 1687,
+      "tn": 1213,
+      "fn": 21,
+      "precision": 0.08810810810810811,
+      "recall": 0.8858695652173914,
+      "f1": 0.16027531956735497,
+      "accuracy": 0.4461738002594034,
+      "balanced_accuracy": 0.6520727136431784,
+      "confusion_matrix": [
+        [
+          1213,
+          1687
+        ],
+        [
+          21,
+          163
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "investigate_budget": 0.05,
+      "review_budget": 0.15,
+      "investigate_claims": 154,
+      "review_claims": 463,
+      "fast_track_claims": 2467,
+      "investigate_fraud": 26,
+      "review_fraud": 56,
+      "fast_track_fraud": 102,
+      "investigate_false_positives": 128,
+      "review_false_positives": 407,
+      "investigate_only_recall": 0.14130434782608695,
+      "combined_coverage": 0.44565217391304346,
+      "human_escalations": 617,
+      "workload": 0.20006485084306097,
+      "escalation_precision": 0.13290113452188007,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "minimum_k_for_same_coverage": 614,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 82,
+      "fp": 535,
+      "tn": 2365,
+      "fn": 102,
+      "precision": 0.13290113452188007,
+      "recall": 0.44565217391304346,
+      "f1": 0.20474406991260924,
+      "accuracy": 0.793450064850843,
+      "balanced_accuracy": 0.6305847076461769,
+      "confusion_matrix": [
+        [
+          2365,
+          535
+        ],
+        [
+          102,
+          82
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "investigate_budget": 0.1,
+      "review_budget": 0.2,
+      "investigate_claims": 308,
+      "review_claims": 617,
+      "fast_track_claims": 2159,
+      "investigate_fraud": 45,
+      "review_fraud": 62,
+      "fast_track_fraud": 77,
+      "investigate_false_positives": 263,
+      "review_false_positives": 555,
+      "investigate_only_recall": 0.24456521739130435,
+      "combined_coverage": 0.5815217391304348,
+      "human_escalations": 925,
+      "workload": 0.29993514915693903,
+      "escalation_precision": 0.11567567567567567,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "minimum_k_for_same_coverage": 923,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 107,
+      "fp": 818,
+      "tn": 2082,
+      "fn": 77,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "f1": 0.19296663660955815,
+      "accuracy": 0.709792477302205,
+      "balanced_accuracy": 0.6497263868065968,
+      "confusion_matrix": [
+        [
+          2082,
+          818
+        ],
+        [
+          77,
+          107
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "investigate_budget": 0.1,
+      "review_budget": 0.3,
+      "investigate_claims": 308,
+      "review_claims": 926,
+      "fast_track_claims": 1850,
+      "investigate_fraud": 45,
+      "review_fraud": 84,
+      "fast_track_fraud": 55,
+      "investigate_false_positives": 263,
+      "review_false_positives": 842,
+      "investigate_only_recall": 0.24456521739130435,
+      "combined_coverage": 0.7010869565217391,
+      "human_escalations": 1234,
+      "workload": 0.40012970168612194,
+      "escalation_precision": 0.10453808752025932,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "minimum_k_for_same_coverage": 1232,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 129,
+      "fp": 1105,
+      "tn": 1795,
+      "fn": 55,
+      "precision": 0.10453808752025932,
+      "recall": 0.7010869565217391,
+      "f1": 0.18194640338504936,
+      "accuracy": 0.6238651102464332,
+      "balanced_accuracy": 0.6600262368815593,
+      "confusion_matrix": [
+        [
+          1795,
+          1105
+        ],
+        [
+          55,
+          129
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "investigate_budget": 0.15,
+      "review_budget": 0.35,
+      "investigate_claims": 463,
+      "review_claims": 1079,
+      "fast_track_claims": 1542,
+      "investigate_fraud": 65,
+      "review_fraud": 78,
+      "fast_track_fraud": 41,
+      "investigate_false_positives": 398,
+      "review_false_positives": 1001,
+      "investigate_only_recall": 0.3532608695652174,
+      "combined_coverage": 0.7771739130434783,
+      "human_escalations": 1542,
+      "workload": 0.5,
+      "escalation_precision": 0.0927367055771725,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "minimum_k_for_same_coverage": 1532,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 143,
+      "fp": 1399,
+      "tn": 1501,
+      "fn": 41,
+      "precision": 0.0927367055771725,
+      "recall": 0.7771739130434783,
+      "f1": 0.1657010428736964,
+      "accuracy": 0.5330739299610895,
+      "balanced_accuracy": 0.647380059970015,
+      "confusion_matrix": [
+        [
+          1501,
+          1399
+        ],
+        [
+          41,
+          143
+        ]
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "investigate_budget": 0.2,
+      "review_budget": 0.4,
+      "investigate_claims": 617,
+      "review_claims": 1233,
+      "fast_track_claims": 1234,
+      "investigate_fraud": 82,
+      "review_fraud": 77,
+      "fast_track_fraud": 25,
+      "investigate_false_positives": 535,
+      "review_false_positives": 1156,
+      "investigate_only_recall": 0.44565217391304346,
+      "combined_coverage": 0.8641304347826086,
+      "human_escalations": 1850,
+      "workload": 0.5998702983138781,
+      "escalation_precision": 0.08594594594594594,
+      "average_precision": 0.14038925296656551,
+      "roc_auc": 0.7189308470764619,
+      "minimum_k_for_same_coverage": 1841,
+      "metric_type": "capacity ranking; binary positive = escalated, not confirmed fraud",
+      "tp": 159,
+      "fp": 1691,
+      "tn": 1209,
+      "fn": 25,
+      "precision": 0.08594594594594594,
+      "recall": 0.8641304347826086,
+      "f1": 0.15634218289085547,
+      "accuracy": 0.44357976653696496,
+      "balanced_accuracy": 0.6405134932533733,
+      "confusion_matrix": [
+        [
+          1209,
+          1691
+        ],
+        [
+          25,
+          159
+        ]
+      ]
+    }
+  ],
+  "coverage_goals": [
+    {
+      "model": "xgboost_09",
+      "target": 0.7,
+      "required_fraud": 129,
+      "reviewed": 1332,
+      "workload": 0.43190661478599224,
+      "actual_coverage": 0.7010869565217391,
+      "within_30pct_budget": false,
+      "within_60pct_budget": true
+    },
+    {
+      "model": "xgboost_09",
+      "target": 0.8,
+      "required_fraud": 148,
+      "reviewed": 1606,
+      "workload": 0.5207522697795072,
+      "actual_coverage": 0.8043478260869565,
+      "within_30pct_budget": false,
+      "within_60pct_budget": true
+    },
+    {
+      "model": "xgboost_09",
+      "target": 0.9,
+      "required_fraud": 166,
+      "reviewed": 1906,
+      "workload": 0.6180285343709468,
+      "actual_coverage": 0.9021739130434783,
+      "within_30pct_budget": false,
+      "within_60pct_budget": false
+    },
+    {
+      "model": "xgboost_09",
+      "target": 0.95,
+      "required_fraud": 175,
+      "reviewed": 1973,
+      "workload": 0.6397535667963683,
+      "actual_coverage": 0.9510869565217391,
+      "within_30pct_budget": false,
+      "within_60pct_budget": false
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "target": 0.7,
+      "required_fraud": 129,
+      "reviewed": 1232,
+      "workload": 0.39948119325551235,
+      "actual_coverage": 0.7010869565217391,
+      "within_30pct_budget": false,
+      "within_60pct_budget": true
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "target": 0.8,
+      "required_fraud": 148,
+      "reviewed": 1637,
+      "workload": 0.5308041504539559,
+      "actual_coverage": 0.8043478260869565,
+      "within_30pct_budget": false,
+      "within_60pct_budget": true
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "target": 0.9,
+      "required_fraud": 166,
+      "reviewed": 1980,
+      "workload": 0.642023346303502,
+      "actual_coverage": 0.9021739130434783,
+      "within_30pct_budget": false,
+      "within_60pct_budget": false
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "target": 0.95,
+      "required_fraud": 175,
+      "reviewed": 2009,
+      "workload": 0.6514267185473411,
+      "actual_coverage": 0.9510869565217391,
+      "within_30pct_budget": false,
+      "within_60pct_budget": false
+    }
+  ],
+  "practical_budget_assumption": "30% combined, 10% specialist +20% lightweight; not an approved staffing budget",
+  "operational_note": "Exact top-k requires a defined batch and stable tie-break. All actual fraud counts are retrospective ground truth, never live confirmation."
+}

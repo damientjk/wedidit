@@ -1,0 +1,21 @@
+{
+  "Deductible": 400.0,
+  "Month": "Jan",
+  "WeekOfMonth": 3,
+  "DayOfWeek": "Monday",
+  "MonthClaimed": "Jan",
+  "WeekOfMonthClaimed": 2,
+  "DayOfWeekClaimed": "Monday",
+  "Make": "Pontiac",
+  "AccidentArea": "Urban",
+  "VehicleCategory": "Sedan",
+  "BasePolicy": "Collision",
+  "AgentType": "External",
+  "VehiclePrice": "20000 to 29000",
+  "DriverRating": 1,
+  "Days_Policy_Accident": "more than 30",
+  "Days_Policy_Claim": "more than 30",
+  "PastNumberOfClaims": "2 to 4",
+  "AgeOfVehicle": "7 years",
+  "NumberOfCars": "1 vehicle"
+}

@@ -1,0 +1,52 @@
+{
+  "selected": "xgb_09",
+  "configuration": {
+    "id": "xgb_09",
+    "family": "xgboost",
+    "depth": 3,
+    "trees": 600,
+    "child": 10,
+    "reg": 10,
+    "alpha": 1,
+    "weight": "ratio",
+    "subsample": 0.85
+  },
+  "cv_comparison": [
+    {
+      "id": "xgb_09",
+      "precision10": 0.13582251082251082,
+      "recall10": 0.22648354876615748,
+      "precision20": 0.12128579146407348,
+      "recall20": 0.40519486878182526,
+      "precision30": 0.10630630630630632,
+      "recall30": 0.5324373286329808,
+      "ap": 0.11875302366917766
+    },
+    {
+      "id": "hist_22",
+      "precision10": 0.13798701298701296,
+      "recall10": 0.2301410105757932,
+      "precision20": 0.11966504592112372,
+      "recall20": 0.39982373678025857,
+      "precision30": 0.10882882882882883,
+      "recall30": 0.5451135918527222,
+      "ap": 0.125830099991197
+    },
+    {
+      "id": "locked_xgb_control",
+      "precision10": 0.14502164502164502,
+      "recall10": 0.2418576184880533,
+      "precision20": 0.11399243652079956,
+      "recall20": 0.38087054445750096,
+      "precision30": 0.11045045045045045,
+      "recall30": 0.5532608695652174,
+      "ap": 0.1262251426864509
+    }
+  ],
+  "elapsed_seconds": 101.39099999998871,
+  "validation_evaluated": false,
+  "test_evaluated": false,
+  "deployed": false,
+  "protected_existing_artifacts_unchanged": true,
+  "caveat": "Search/confirmation use the same training rows under different folds, not independent holdout; selected CV metrics can be optimistic. No new validation claim is made."
+}

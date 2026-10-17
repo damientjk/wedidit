@@ -1,0 +1,221 @@
+{
+  "dataset": "frozen validation only",
+  "rows": 3084,
+  "fraud_count": 184,
+  "fraud_prevalence": 0.05966277561608301,
+  "average_precision": 0.10191238070089309,
+  "zero_division": 0,
+  "score_note": "Balanced-class logistic scores have not been probability calibrated.",
+  "input_sha256": {
+    "models\\baseline.joblib": "c972245be10fc07a19c084b19b248ce431e3ba67e4ab75dad87feb23845bbb96",
+    "models\\metrics.json": "9bcc2d2e6ec9fc717fa59e17c7012f6989cb97519251ba47497d94ff37c93c17",
+    "data\\processed\\val.csv": "7f7e67e1c8a6a3cb9da07bca524aef49b1677aca09cefc12fade16b7dcd54f99"
+  },
+  "thresholds": [
+    {
+      "threshold": 0.1,
+      "precision": 0.07073075420085971,
+      "recall": 0.9836956521739131,
+      "f1": 0.13197229310973388,
+      "true_positives": 181,
+      "false_positives": 2378,
+      "true_negatives": 522,
+      "false_negatives": 3,
+      "claims_flagged": 2559
+    },
+    {
+      "threshold": 0.15,
+      "precision": 0.08070333633904418,
+      "recall": 0.9728260869565217,
+      "f1": 0.14904246461282264,
+      "true_positives": 179,
+      "false_positives": 2039,
+      "true_negatives": 861,
+      "false_negatives": 5,
+      "claims_flagged": 2218
+    },
+    {
+      "threshold": 0.2,
+      "precision": 0.08376470588235294,
+      "recall": 0.967391304347826,
+      "f1": 0.15417929839757472,
+      "true_positives": 178,
+      "false_positives": 1947,
+      "true_negatives": 953,
+      "false_negatives": 6,
+      "claims_flagged": 2125
+    },
+    {
+      "threshold": 0.25,
+      "precision": 0.08381226053639847,
+      "recall": 0.9510869565217391,
+      "f1": 0.15404929577464788,
+      "true_positives": 175,
+      "false_positives": 1913,
+      "true_negatives": 987,
+      "false_negatives": 9,
+      "claims_flagged": 2088
+    },
+    {
+      "threshold": 0.3,
+      "precision": 0.08378511582060127,
+      "recall": 0.9239130434782609,
+      "f1": 0.15363759602349752,
+      "true_positives": 170,
+      "false_positives": 1859,
+      "true_negatives": 1041,
+      "false_negatives": 14,
+      "claims_flagged": 2029
+    },
+    {
+      "threshold": 0.35,
+      "precision": 0.08633093525179857,
+      "recall": 0.9130434782608695,
+      "f1": 0.15774647887323945,
+      "true_positives": 168,
+      "false_positives": 1778,
+      "true_negatives": 1122,
+      "false_negatives": 16,
+      "claims_flagged": 1946
+    },
+    {
+      "threshold": 0.4,
+      "precision": 0.0861504907306434,
+      "recall": 0.8586956521739131,
+      "f1": 0.1565906838453915,
+      "true_positives": 158,
+      "false_positives": 1676,
+      "true_negatives": 1224,
+      "false_negatives": 26,
+      "claims_flagged": 1834
+    },
+    {
+      "threshold": 0.45,
+      "precision": 0.08980582524271845,
+      "recall": 0.8043478260869565,
+      "f1": 0.1615720524017467,
+      "true_positives": 148,
+      "false_positives": 1500,
+      "true_negatives": 1400,
+      "false_negatives": 36,
+      "claims_flagged": 1648
+    },
+    {
+      "threshold": 0.5,
+      "precision": 0.09175627240143369,
+      "recall": 0.6956521739130435,
+      "f1": 0.16212792906903103,
+      "true_positives": 128,
+      "false_positives": 1267,
+      "true_negatives": 1633,
+      "false_negatives": 56,
+      "claims_flagged": 1395
+    },
+    {
+      "threshold": 0.55,
+      "precision": 0.10347985347985347,
+      "recall": 0.6141304347826086,
+      "f1": 0.17711598746081506,
+      "true_positives": 113,
+      "false_positives": 979,
+      "true_negatives": 1921,
+      "false_negatives": 71,
+      "claims_flagged": 1092
+    },
+    {
+      "threshold": 0.6,
+      "precision": 0.11068702290076336,
+      "recall": 0.47282608695652173,
+      "f1": 0.17938144329896907,
+      "true_positives": 87,
+      "false_positives": 699,
+      "true_negatives": 2201,
+      "false_negatives": 97,
+      "claims_flagged": 786
+    },
+    {
+      "threshold": 0.65,
+      "precision": 0.10919540229885058,
+      "recall": 0.30978260869565216,
+      "f1": 0.16147308781869688,
+      "true_positives": 57,
+      "false_positives": 465,
+      "true_negatives": 2435,
+      "false_negatives": 127,
+      "claims_flagged": 522
+    },
+    {
+      "threshold": 0.7,
+      "precision": 0.10679611650485436,
+      "recall": 0.1793478260869565,
+      "f1": 0.13387423935091278,
+      "true_positives": 33,
+      "false_positives": 276,
+      "true_negatives": 2624,
+      "false_negatives": 151,
+      "claims_flagged": 309
+    },
+    {
+      "threshold": 0.75,
+      "precision": 0.11764705882352941,
+      "recall": 0.09782608695652174,
+      "f1": 0.10682492581602374,
+      "true_positives": 18,
+      "false_positives": 135,
+      "true_negatives": 2765,
+      "false_negatives": 166,
+      "claims_flagged": 153
+    },
+    {
+      "threshold": 0.8,
+      "precision": 0.10144927536231885,
+      "recall": 0.03804347826086957,
+      "f1": 0.05533596837944664,
+      "true_positives": 7,
+      "false_positives": 62,
+      "true_negatives": 2838,
+      "false_negatives": 177,
+      "claims_flagged": 69
+    },
+    {
+      "threshold": 0.85,
+      "precision": 0.05555555555555555,
+      "recall": 0.005434782608695652,
+      "f1": 0.009900990099009901,
+      "true_positives": 1,
+      "false_positives": 17,
+      "true_negatives": 2883,
+      "false_negatives": 183,
+      "claims_flagged": 18
+    },
+    {
+      "threshold": 0.9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "true_positives": 0,
+      "false_positives": 5,
+      "true_negatives": 2895,
+      "false_negatives": 184,
+      "claims_flagged": 5
+    }
+  ],
+  "candidate_policy": {
+    "review_threshold": 0.3,
+    "investigate_threshold": 0.6
+  },
+  "candidate_tiers": {
+    "fast_track": {
+      "claims": 1055,
+      "fraud": 14
+    },
+    "review": {
+      "claims": 1243,
+      "fraud": 83
+    },
+    "investigate": {
+      "claims": 786,
+      "fraud": 87
+    }
+  }
+}

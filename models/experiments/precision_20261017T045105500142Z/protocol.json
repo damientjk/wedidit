@@ -1,0 +1,288 @@
+{
+  "selection": "mean fold precision at top20%, ties AP; ranking not score inflation",
+  "features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "train_sha256": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+  "target": "FraudFound_P",
+  "configs": [
+    {
+      "id": "locked_xgb_control",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 200,
+      "weight": "sqrt_ratio"
+    },
+    {
+      "id": "xgb_01",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "child": 1,
+      "reg": 1,
+      "alpha": 0,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_02",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "child": 1,
+      "reg": 1,
+      "alpha": 0,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_03",
+      "family": "xgboost",
+      "depth": 2,
+      "trees": 500,
+      "child": 1,
+      "reg": 1,
+      "alpha": 0,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_04",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 400,
+      "child": 1,
+      "reg": 5,
+      "alpha": 0,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_05",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 400,
+      "child": 1,
+      "reg": 5,
+      "alpha": 0,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_06",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 400,
+      "child": 1,
+      "reg": 5,
+      "alpha": 0,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_07",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 600,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_08",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 600,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_09",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 600,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_10",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 400,
+      "child": 5,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_11",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 400,
+      "child": 5,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_12",
+      "family": "xgboost",
+      "depth": 4,
+      "trees": 400,
+      "child": 5,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_13",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 300,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_14",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 300,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_15",
+      "family": "xgboost",
+      "depth": 5,
+      "trees": 300,
+      "child": 10,
+      "reg": 10,
+      "alpha": 1,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_16",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 300,
+      "child": 20,
+      "reg": 20,
+      "alpha": 2,
+      "weight": "one",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_17",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 300,
+      "child": 20,
+      "reg": 20,
+      "alpha": 2,
+      "weight": "sqrt_ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "xgb_18",
+      "family": "xgboost",
+      "depth": 3,
+      "trees": 300,
+      "child": 20,
+      "reg": 20,
+      "alpha": 2,
+      "weight": "ratio",
+      "subsample": 0.85
+    },
+    {
+      "id": "hist_19",
+      "family": "hist_gradient_boosting",
+      "leaves": 7,
+      "trees": 400,
+      "reg": 10
+    },
+    {
+      "id": "hist_20",
+      "family": "hist_gradient_boosting",
+      "leaves": 15,
+      "trees": 300,
+      "reg": 10
+    },
+    {
+      "id": "hist_21",
+      "family": "hist_gradient_boosting",
+      "leaves": 15,
+      "trees": 400,
+      "reg": 20
+    },
+    {
+      "id": "hist_22",
+      "family": "hist_gradient_boosting",
+      "leaves": 31,
+      "trees": 200,
+      "reg": 20
+    },
+    {
+      "id": "forest_23",
+      "family": "forest",
+      "leaf": 5,
+      "class_weight": null
+    },
+    {
+      "id": "forest_24",
+      "family": "forest",
+      "leaf": 15,
+      "class_weight": null
+    },
+    {
+      "id": "forest_25",
+      "family": "forest",
+      "leaf": 5,
+      "class_weight": "balanced_subsample"
+    },
+    {
+      "id": "forest_26",
+      "family": "forest",
+      "leaf": 15,
+      "class_weight": "balanced_subsample"
+    }
+  ],
+  "search": "3-fold seed42 for all; top2 plus locked control confirmed with 3-fold seed137; choose best mean precision20 across both seeds, tie AP",
+  "validation": "not opened; no claimed validation improvement",
+  "resources": "sequential; one native thread; RF200, XGB max600 trees"
+}

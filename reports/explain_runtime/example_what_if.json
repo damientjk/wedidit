@@ -1,0 +1,187 @@
+{
+  "risk_score": 0.043382398784160614,
+  "tier": "fast_track",
+  "contributions": [
+    {
+      "feature": "BasePolicy",
+      "label": "Policy coverage",
+      "value": "Liability",
+      "impact": -2.1119313910603523,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "AgeOfVehicle",
+      "label": "Vehicle age band",
+      "value": "3 years",
+      "impact": 0.2010505828075111,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "VehiclePrice",
+      "label": "Vehicle price band",
+      "value": "more than 69000",
+      "impact": 0.13404308987082914,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "VehicleCategory",
+      "label": "Vehicle category",
+      "value": "Sport",
+      "impact": 0.09818143770098686,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "DayOfWeek",
+      "label": "Accident weekday",
+      "value": "Wednesday",
+      "impact": -0.09680242440663278,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "PastNumberOfClaims",
+      "label": "Prior claims band",
+      "value": "none",
+      "impact": 0.07626980972054298,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "NumberOfCars",
+      "label": "Number of cars band",
+      "value": "3 to 4",
+      "impact": 0.05910412222146988,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "MonthClaimed",
+      "label": "Claim reporting month",
+      "value": "Jan",
+      "impact": 0.05584735132288188,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "WeekOfMonthClaimed",
+      "label": "Claim reporting week of month",
+      "value": 1,
+      "impact": -0.03545102704083547,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "AccidentArea",
+      "label": "Accident area",
+      "value": "Urban",
+      "impact": -0.023183239623904228,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "WeekOfMonth",
+      "label": "Accident week of month",
+      "value": 5,
+      "impact": -0.021699610631912947,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "DriverRating",
+      "label": "Driver rating",
+      "value": 1,
+      "impact": -0.013120994641212747,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "Deductible",
+      "label": "Policy deductible",
+      "value": 400.0,
+      "impact": -0.01242103986442089,
+      "excluded": true,
+      "imputed": false
+    },
+    {
+      "feature": "Make",
+      "label": "Vehicle make",
+      "value": "Pontiac",
+      "impact": -0.007321311539271846,
+      "excluded": true,
+      "imputed": false
+    },
+    {
+      "feature": "Days_Policy_Accident",
+      "label": "Policy-to-accident duration band",
+      "value": "more than 30",
+      "impact": -0.006360404542647302,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "Month",
+      "label": "Accident month",
+      "value": "Dec",
+      "impact": -0.002327104564756155,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "DayOfWeekClaimed",
+      "label": "Claim reporting weekday",
+      "value": "Tuesday",
+      "impact": 0.0,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "AgentType",
+      "label": "Agent type",
+      "value": "External",
+      "impact": 0.0,
+      "excluded": false,
+      "imputed": false
+    },
+    {
+      "feature": "Days_Policy_Claim",
+      "label": "Policy-to-claim duration band",
+      "value": "more than 30",
+      "impact": 0.0,
+      "excluded": false,
+      "imputed": false
+    }
+  ],
+  "excluded": [
+    "Deductible",
+    "Make"
+  ],
+  "model_id": "xgboost_09",
+  "score_type": "relative fraud-risk ranking score; uncalibrated",
+  "priority_band": "low",
+  "tier_status": "provisional_validation_distribution_band",
+  "recommendation": "Lower priority: expedite standard processing with coverage/document checks and safeguards. This is not fraud clearance or approval of payment.",
+  "contribution_method": "XGBoost native exact TreeSHAP, summed over encoded columns per original feature",
+  "impact_unit": "log_odds",
+  "base_value": -1.3872277736663818,
+  "raw_margin": -3.0933499336242676,
+  "sensitivity_analysis": {
+    "is_sensitivity_analysis": true,
+    "method": "Replace excluded features with fitted train median/mode; no retraining or removal of encoded columns",
+    "original_risk_score": 0.03716346248984337,
+    "score_change": 0.0062189362943172455,
+    "reference_values": {
+      "Deductible": 400.0,
+      "Make": "Pontiac"
+    },
+    "warning": "Hypothetical sensitivity result; must not replace the observed claim's operational priority"
+  },
+  "missing_features": [],
+  "unknown_categories": [],
+  "requires_data_quality_check": false,
+  "operational_routing_allowed": false,
+  "safety_note": "Human decisions only; model flags do not confirm fraud or approve/reject claims. Bands do not enforce queue capacity."
+}

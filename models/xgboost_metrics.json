@@ -1,0 +1,546 @@
+{
+  "target": "FraudFound_P",
+  "selected_features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "samples": {
+    "train": 9251,
+    "validation": 3084
+  },
+  "training_class_counts": {
+    "non_fraud": 8697,
+    "fraud": 554
+  },
+  "scale_pos_weight": 15.6985559566787,
+  "parameters": {
+    "n_estimators": 200,
+    "max_depth": 3,
+    "learning_rate": 0.05,
+    "subsample": 1.0,
+    "colsample_bytree": 1.0,
+    "reg_lambda": 1.0,
+    "objective": "binary:logistic",
+    "eval_metric": "aucpr",
+    "tree_method": "hist",
+    "n_jobs": 1,
+    "random_state": 42,
+    "scale_pos_weight": 15.6985559566787
+  },
+  "environment": {
+    "machine": "AMD64",
+    "system": "Windows",
+    "python": "3.12.14",
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.6.0"
+    },
+    "s390x_runtime_verified": false
+  },
+  "validation_fraud_prevalence": 0.05966277561608301,
+  "validation_results": {
+    "logistic_regression": {
+      "roc_auc": 0.6941060719640181,
+      "average_precision": 0.10191238070089309,
+      "at_0.5": {
+        "threshold": 0.5,
+        "precision": 0.09175627240143369,
+        "recall": 0.6956521739130435,
+        "f1": 0.16212792906903103,
+        "true_positives": 128,
+        "false_positives": 1267,
+        "true_negatives": 1633,
+        "false_negatives": 56,
+        "claims_flagged": 1395,
+        "confusion_matrix": [
+          [
+            1633,
+            1267
+          ],
+          [
+            56,
+            128
+          ]
+        ]
+      },
+      "best_grid_f1": {
+        "threshold": 0.6,
+        "precision": 0.11068702290076336,
+        "recall": 0.47282608695652173,
+        "f1": 0.17938144329896907,
+        "true_positives": 87,
+        "false_positives": 699,
+        "true_negatives": 2201,
+        "false_negatives": 97,
+        "claims_flagged": 786,
+        "confusion_matrix": [
+          [
+            2201,
+            699
+          ],
+          [
+            97,
+            87
+          ]
+        ]
+      },
+      "candidate_policy": {
+        "review_threshold": 0.35,
+        "investigate_threshold": 0.6,
+        "tiers": {
+          "fast_track": {
+            "claims": 1138,
+            "fraud": 16
+          },
+          "review": {
+            "claims": 1160,
+            "fraud": 81
+          },
+          "investigate": {
+            "claims": 786,
+            "fraud": 87
+          }
+        },
+        "selection": "review: largest grid threshold with recall >=90%; investigate: best grid F1; validation-selected only"
+      }
+    },
+    "xgboost": {
+      "roc_auc": 0.7124934407796102,
+      "average_precision": 0.12449352248635576,
+      "at_0.5": {
+        "threshold": 0.5,
+        "precision": 0.09950248756218906,
+        "recall": 0.7608695652173914,
+        "f1": 0.1759899434318039,
+        "true_positives": 140,
+        "false_positives": 1267,
+        "true_negatives": 1633,
+        "false_negatives": 44,
+        "claims_flagged": 1407,
+        "confusion_matrix": [
+          [
+            1633,
+            1267
+          ],
+          [
+            44,
+            140
+          ]
+        ]
+      },
+      "best_grid_f1": {
+        "threshold": 0.55,
+        "precision": 0.11306042884990253,
+        "recall": 0.6304347826086957,
+        "f1": 0.19173553719008266,
+        "true_positives": 116,
+        "false_positives": 910,
+        "true_negatives": 1990,
+        "false_negatives": 68,
+        "claims_flagged": 1026,
+        "confusion_matrix": [
+          [
+            1990,
+            910
+          ],
+          [
+            68,
+            116
+          ]
+        ]
+      },
+      "candidate_policy": {
+        "review_threshold": 0.35,
+        "investigate_threshold": 0.55,
+        "tiers": {
+          "fast_track": {
+            "claims": 1139,
+            "fraud": 17
+          },
+          "review": {
+            "claims": 919,
+            "fraud": 51
+          },
+          "investigate": {
+            "claims": 1026,
+            "fraud": 116
+          }
+        },
+        "selection": "review: largest grid threshold with recall >=90%; investigate: best grid F1; validation-selected only"
+      }
+    }
+  },
+  "equal_workload": [
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.09987029831387809,
+      "score_cutoff": 0.7012644595450077,
+      "cutoff_tie_count": 1,
+      "precision": 0.1038961038961039,
+      "recall": 0.17391304347826086,
+      "f1": 0.13008130081300814,
+      "true_positives": 32,
+      "false_positives": 276,
+      "true_negatives": 2624,
+      "false_negatives": 152,
+      "claims_flagged": 308,
+      "confusion_matrix": [
+        [
+          2624,
+          276
+        ],
+        [
+          152,
+          32
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.20006485084306097,
+      "score_cutoff": 0.6296240569815823,
+      "cutoff_tie_count": 1,
+      "precision": 0.11831442463533225,
+      "recall": 0.3967391304347826,
+      "f1": 0.1822721598002497,
+      "true_positives": 73,
+      "false_positives": 544,
+      "true_negatives": 2356,
+      "false_negatives": 111,
+      "claims_flagged": 617,
+      "confusion_matrix": [
+        [
+          2356,
+          544
+        ],
+        [
+          111,
+          73
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.25,
+      "score_cutoff": 0.6025634334598721,
+      "cutoff_tie_count": 1,
+      "precision": 0.11154345006485085,
+      "recall": 0.4673913043478261,
+      "f1": 0.18010471204188483,
+      "true_positives": 86,
+      "false_positives": 685,
+      "true_negatives": 2215,
+      "false_negatives": 98,
+      "claims_flagged": 771,
+      "confusion_matrix": [
+        [
+          2215,
+          685
+        ],
+        [
+          98,
+          86
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.25486381322957197,
+      "score_cutoff": 0.6002495508834943,
+      "cutoff_tie_count": 1,
+      "precision": 0.11068702290076336,
+      "recall": 0.47282608695652173,
+      "f1": 0.17938144329896907,
+      "true_positives": 87,
+      "false_positives": 699,
+      "true_negatives": 2201,
+      "false_negatives": 97,
+      "claims_flagged": 786,
+      "confusion_matrix": [
+        [
+          2201,
+          699
+        ],
+        [
+          97,
+          87
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.45006485084306097,
+      "score_cutoff": 0.5011894344351976,
+      "cutoff_tie_count": 1,
+      "precision": 0.09221902017291066,
+      "recall": 0.6956521739130435,
+      "f1": 0.1628498727735369,
+      "true_positives": 128,
+      "false_positives": 1260,
+      "true_negatives": 1640,
+      "false_negatives": 56,
+      "claims_flagged": 1388,
+      "confusion_matrix": [
+        [
+          1640,
+          1260
+        ],
+        [
+          56,
+          128
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.45233463035019456,
+      "score_cutoff": 0.5000235004295813,
+      "cutoff_tie_count": 1,
+      "precision": 0.09175627240143369,
+      "recall": 0.6956521739130435,
+      "f1": 0.16212792906903103,
+      "true_positives": 128,
+      "false_positives": 1267,
+      "true_negatives": 1633,
+      "false_negatives": 56,
+      "claims_flagged": 1395,
+      "confusion_matrix": [
+        [
+          1633,
+          1267
+        ],
+        [
+          56,
+          128
+        ]
+      ]
+    },
+    {
+      "model": "logistic_regression",
+      "workload_fraction": 0.6579118028534371,
+      "score_cutoff": 0.3002839345386772,
+      "cutoff_tie_count": 1,
+      "precision": 0.08378511582060127,
+      "recall": 0.9239130434782609,
+      "f1": 0.15363759602349752,
+      "true_positives": 170,
+      "false_positives": 1859,
+      "true_negatives": 1041,
+      "false_negatives": 14,
+      "claims_flagged": 2029,
+      "confusion_matrix": [
+        [
+          1041,
+          1859
+        ],
+        [
+          14,
+          170
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.09987029831387809,
+      "score_cutoff": 0.6489636301994324,
+      "cutoff_tie_count": 1,
+      "precision": 0.12987012987012986,
+      "recall": 0.21739130434782608,
+      "f1": 0.16260162601626016,
+      "true_positives": 40,
+      "false_positives": 268,
+      "true_negatives": 2632,
+      "false_negatives": 144,
+      "claims_flagged": 308,
+      "confusion_matrix": [
+        [
+          2632,
+          268
+        ],
+        [
+          144,
+          40
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.20006485084306097,
+      "score_cutoff": 0.6019634008407593,
+      "cutoff_tie_count": 1,
+      "precision": 0.11831442463533225,
+      "recall": 0.3967391304347826,
+      "f1": 0.1822721598002497,
+      "true_positives": 73,
+      "false_positives": 544,
+      "true_negatives": 2356,
+      "false_negatives": 111,
+      "claims_flagged": 617,
+      "confusion_matrix": [
+        [
+          2356,
+          544
+        ],
+        [
+          111,
+          73
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.25,
+      "score_cutoff": 0.5820512175559998,
+      "cutoff_tie_count": 1,
+      "precision": 0.11802853437094682,
+      "recall": 0.4945652173913043,
+      "f1": 0.1905759162303665,
+      "true_positives": 91,
+      "false_positives": 680,
+      "true_negatives": 2220,
+      "false_negatives": 93,
+      "claims_flagged": 771,
+      "confusion_matrix": [
+        [
+          2220,
+          680
+        ],
+        [
+          93,
+          91
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.25486381322957197,
+      "score_cutoff": 0.5799601674079895,
+      "cutoff_tie_count": 1,
+      "precision": 0.11704834605597965,
+      "recall": 0.5,
+      "f1": 0.18969072164948453,
+      "true_positives": 92,
+      "false_positives": 694,
+      "true_negatives": 2206,
+      "false_negatives": 92,
+      "claims_flagged": 786,
+      "confusion_matrix": [
+        [
+          2206,
+          694
+        ],
+        [
+          92,
+          92
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.45006485084306097,
+      "score_cutoff": 0.5039992928504944,
+      "cutoff_tie_count": 1,
+      "precision": 0.10014409221902017,
+      "recall": 0.7554347826086957,
+      "f1": 0.17684478371501272,
+      "true_positives": 139,
+      "false_positives": 1249,
+      "true_negatives": 1651,
+      "false_negatives": 45,
+      "claims_flagged": 1388,
+      "confusion_matrix": [
+        [
+          1651,
+          1249
+        ],
+        [
+          45,
+          139
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.45233463035019456,
+      "score_cutoff": 0.5026286244392395,
+      "cutoff_tie_count": 1,
+      "precision": 0.0996415770609319,
+      "recall": 0.7554347826086957,
+      "f1": 0.17606079797340088,
+      "true_positives": 139,
+      "false_positives": 1256,
+      "true_negatives": 1644,
+      "false_negatives": 45,
+      "claims_flagged": 1395,
+      "confusion_matrix": [
+        [
+          1644,
+          1256
+        ],
+        [
+          45,
+          139
+        ]
+      ]
+    },
+    {
+      "model": "xgboost",
+      "workload_fraction": 0.6579118028534371,
+      "score_cutoff": 0.2962397634983063,
+      "cutoff_tie_count": 1,
+      "precision": 0.08378511582060127,
+      "recall": 0.9239130434782609,
+      "f1": 0.15363759602349752,
+      "true_positives": 170,
+      "false_positives": 1859,
+      "true_negatives": 1041,
+      "false_negatives": 14,
+      "claims_flagged": 2029,
+      "confusion_matrix": [
+        [
+          1041,
+          1859
+        ],
+        [
+          14,
+          170
+        ]
+      ]
+    }
+  ],
+  "input_sha256": {
+    "models\\baseline.joblib": "c972245be10fc07a19c084b19b248ce431e3ba67e4ab75dad87feb23845bbb96",
+    "models\\metrics.json": "9bcc2d2e6ec9fc717fa59e17c7012f6989cb97519251ba47497d94ff37c93c17",
+    "models\\model.json": "618e059a6d9bc7bf45a6c0ed6160e4de4ef40caf821b7b1969a7058f596db8ea",
+    "data\\processed\\train.csv": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+    "data\\processed\\val.csv": "7f7e67e1c8a6a3cb9da07bca524aef49b1677aca09cefc12fade16b7dcd54f99"
+  },
+  "notes": [
+    "No test.csv access; no fitting on validation; one fixed training configuration, no early stopping or hyperparameter sweep.",
+    "Scores are uncalibrated; thresholds selected on validation require final held-out assessment.",
+    "Equal workloads use top-k scores, with claim_id ascending to break ties; a threshold alone may flag a different number when scores tie.",
+    "Native export is models/xgboost/model.json to preserve teammate demo models/model.json.",
+    "Full pipeline and native-plus-preprocessor reload predictions matched on validation."
+  ]
+}

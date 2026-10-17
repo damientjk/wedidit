@@ -1,0 +1,48 @@
+{
+  "model_id": "xgboost_isotonic",
+  "model_file": "calibrated_probability.joblib",
+  "model_sha256": "11f9360932ac574cd773d71c8c4b44c3a2468e3ebda3abfaadda664335e31a87",
+  "features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "target": "FraudFound_P",
+  "positive_label": 1,
+  "classes": [
+    0,
+    1
+  ],
+  "output": "predict_proba(DataFrame[features])[:, index of class 1] = estimated fraud probability",
+  "environment": {
+    "machine": "AMD64",
+    "system": "Windows",
+    "python": "3.12.14",
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.6.0"
+    },
+    "s390x_runtime_verified": false
+  },
+  "status": "candidate, not deployed; validation exploratory; population drift can invalidate calibration"
+}

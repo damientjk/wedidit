@@ -1,47 +1,91 @@
 {
-  "platform": "s390x",
-  "data": "synthetic placeholder",
-  "rows": {
-    "train": 8999,
-    "val": 3000,
-    "test": 3001
+  "model_type": "LogisticRegression",
+  "data": "Yu Heng cleaned vehicle claims",
+  "target": "FraudFound_P",
+  "label_mapping": {
+    "0": "non-fraud",
+    "1": "fraud"
   },
-  "fraud_rate_train": 0.1105,
-  "threshold": 0.3,
-  "n_trees": 60,
-  "xgboost_version": "2.0.3",
-  "val": {
-    "logistic_regression": {
-      "auc": 0.7399,
-      "precision": 0.4667,
-      "recall": 0.2115
+  "split_strategy": "existing frozen train/val CSVs",
+  "sample_counts": {
+    "train": 9251,
+    "validation": 3084
+  },
+  "class_counts": {
+    "train": {
+      "0": 8697,
+      "1": 554
     },
-    "xgboost": {
-      "auc": 0.7809,
-      "precision": 0.1634,
-      "recall": 0.8671
-    },
-    "ensemble": {
-      "auc": 0.7838,
-      "precision": 0.2514,
-      "recall": 0.6888
+    "validation": {
+      "0": 2900,
+      "1": 184
     }
   },
-  "test": {
-    "logistic_regression": {
-      "auc": 0.7633,
-      "precision": 0.5175,
-      "recall": 0.2229
-    },
-    "xgboost": {
-      "auc": 0.8077,
-      "precision": 0.1764,
-      "recall": 0.9096
-    },
-    "ensemble": {
-      "auc": 0.8108,
-      "precision": 0.2653,
-      "recall": 0.7169
-    }
+  "selected_features": [
+    "Deductible",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "numeric_features": [
+    "Deductible"
+  ],
+  "categorical_features": [
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "DayOfWeekClaimed",
+    "Make",
+    "AccidentArea",
+    "VehicleCategory",
+    "BasePolicy",
+    "AgentType",
+    "VehiclePrice",
+    "DriverRating",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "NumberOfCars"
+  ],
+  "model_parameters": {
+    "max_iter": 1000,
+    "class_weight": "balanced",
+    "random_state": 42
+  },
+  "threshold": 0.5,
+  "validation": {
+    "roc_auc": 0.6941060719640181,
+    "precision": 0.09175627240143369,
+    "recall": 0.6956521739130435,
+    "f1": 0.16212792906903103,
+    "confusion_matrix": [
+      [
+        1633,
+        1267
+      ],
+      [
+        56,
+        128
+      ]
+    ],
+    "confusion_matrix_layout": "rows=actual, columns=predicted; labels=[0,1]"
   }
 }

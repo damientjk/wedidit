@@ -1,0 +1,308 @@
+{
+  "protocol": {
+    "target": "FraudFound_P",
+    "features": [
+      "Deductible",
+      "Month",
+      "WeekOfMonth",
+      "DayOfWeek",
+      "MonthClaimed",
+      "WeekOfMonthClaimed",
+      "DayOfWeekClaimed",
+      "Make",
+      "AccidentArea",
+      "VehicleCategory",
+      "BasePolicy",
+      "AgentType",
+      "VehiclePrice",
+      "DriverRating",
+      "Days_Policy_Accident",
+      "Days_Policy_Claim",
+      "PastNumberOfClaims",
+      "AgeOfVehicle",
+      "NumberOfCars"
+    ],
+    "training_sha256": "9299d14d68317eaee3f312fa092e44ee62960e1caa79d2ccc98ec512fa2833e0",
+    "models": "Fixed previously training-CV-selected LR C=.1 unweighted; tuned XGBoost depth2/200/sqrt weighting; equal-weight soft-voting combination",
+    "calibrations": [
+      "sigmoid",
+      "isotonic"
+    ],
+    "selection": "lowest mean outer-fold log loss among six calibrated candidates; tie lower Brier score then name. Raw models and training-prevalence baseline are controls, not calibrated candidates.",
+    "outer_cv": "3-fold StratifiedKFold(shuffle=True,random_state=2026)",
+    "inner_cv": "3-fold shuffled, seed=100+outer_fold; ensemble=False uses inner OOF calibration predictions, then refits base on all outer-training rows",
+    "weights": "calibrator uses natural unweighted labels; no class rebalancing or oversampling of calibration data",
+    "final_fit": "inner OOF calibration across all training, seed42; full-training base refit; validation untouched during selection or fitting",
+    "resources": "one thread, sequential, fixed base hyperparameters; no new base-model tuning",
+    "limitations": "Previously chosen base hyperparameters used these training rows; nested calibration evaluation is not a fresh unbiased model-selection holdout. Validation is previously-used and exploratory.",
+    "environment": {
+      "machine": "AMD64",
+      "system": "Windows",
+      "python": "3.12.14",
+      "versions": {
+        "numpy": "1.26.4",
+        "pandas": "2.1.4",
+        "scipy": "1.11.4",
+        "scikit-learn": "1.4.1.post1",
+        "xgboost": "2.0.3",
+        "joblib": "1.6.0"
+      },
+      "s390x_runtime_verified": false
+    }
+  },
+  "selected": "xgboost_isotonic",
+  "per_family": {
+    "logistic": "logistic_sigmoid",
+    "xgboost": "xgboost_isotonic",
+    "blend": "blend_sigmoid"
+  },
+  "train_rows": 9251,
+  "train_fraud": 554,
+  "validation_rows": 3084,
+  "validation_fraud": 184,
+  "validation_sha256": "7f7e67e1c8a6a3cb9da07bca524aef49b1677aca09cefc12fade16b7dcd54f99",
+  "validation": {
+    "logistic_raw": {
+      "log_loss": 0.20834476248648112,
+      "brier_score": 0.05450177357996144,
+      "roc_auc": 0.7100955772113944,
+      "average_precision": 0.11425726712433802,
+      "mean_probability": 0.06005269930905359,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.090065989292327,
+      "actual_fraud_median_probability": 0.08511593822216197,
+      "actual_legitimate_mean_probability": 0.05814840780666659,
+      "actual_legitimate_median_probability": 0.05800787275195185,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "specificity": 1.0,
+        "confusion_matrix": [
+          [
+            2900,
+            0
+          ],
+          [
+            184,
+            0
+          ]
+        ]
+      }
+    },
+    "logistic_sigmoid": {
+      "log_loss": 0.20840908414572468,
+      "brier_score": 0.05446116860478806,
+      "roc_auc": 0.7100955772113944,
+      "average_precision": 0.11425726712433802,
+      "mean_probability": 0.0601052886509772,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.08845981605421166,
+      "actual_fraud_median_probability": 0.0845381902714443,
+      "actual_legitimate_mean_probability": 0.058306242774358176,
+      "actual_legitimate_median_probability": 0.059439055759205536,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "specificity": 1.0,
+        "confusion_matrix": [
+          [
+            2900,
+            0
+          ],
+          [
+            184,
+            0
+          ]
+        ]
+      }
+    },
+    "xgboost_raw": {
+      "log_loss": 0.2802151864072502,
+      "brier_score": 0.0756315207536793,
+      "roc_auc": 0.7169209145427287,
+      "average_precision": 0.1255515398563654,
+      "mean_probability": 0.1869441270828247,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.26972687244415283,
+      "actual_fraud_median_probability": 0.2756173014640808,
+      "actual_legitimate_mean_probability": 0.18169169127941132,
+      "actual_legitimate_median_probability": 0.21867378056049347,
+      "at_0_5": {
+        "accuracy": 0.9396887159533074,
+        "precision": 0.3333333333333333,
+        "recall": 0.010869565217391304,
+        "f1": 0.021052631578947368,
+        "specificity": 0.9986206896551724,
+        "confusion_matrix": [
+          [
+            2896,
+            4
+          ],
+          [
+            182,
+            2
+          ]
+        ]
+      }
+    },
+    "xgboost_isotonic": {
+      "log_loss": 0.20765293223210715,
+      "brier_score": 0.054382312187396156,
+      "roc_auc": 0.7100777736131934,
+      "average_precision": 0.11082144557448712,
+      "mean_probability": 0.059560819504536136,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.09082897234728317,
+      "actual_fraud_median_probability": 0.08961749821901321,
+      "actual_legitimate_mean_probability": 0.05757690911727219,
+      "actual_legitimate_median_probability": 0.06543624401092529,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "specificity": 1.0,
+        "confusion_matrix": [
+          [
+            2900,
+            0
+          ],
+          [
+            184,
+            0
+          ]
+        ]
+      }
+    },
+    "blend_raw": {
+      "log_loss": 0.23078557772034583,
+      "brier_score": 0.05956898289992592,
+      "roc_auc": 0.7183676911544228,
+      "average_precision": 0.12089851303006277,
+      "mean_probability": 0.12349840822767748,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.17989643214374695,
+      "actual_fraud_median_probability": 0.1802968389840966,
+      "actual_legitimate_mean_probability": 0.11992005084817516,
+      "actual_legitimate_median_probability": 0.13913495076407384,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "specificity": 1.0,
+        "confusion_matrix": [
+          [
+            2900,
+            0
+          ],
+          [
+            184,
+            0
+          ]
+        ]
+      }
+    },
+    "blend_sigmoid": {
+      "log_loss": 0.20900795914953318,
+      "brier_score": 0.054610858395517804,
+      "roc_auc": 0.7183676911544228,
+      "average_precision": 0.12089851303006277,
+      "mean_probability": 0.06023405660796208,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.09111850464117828,
+      "actual_fraud_median_probability": 0.08059070132380157,
+      "actual_legitimate_mean_probability": 0.05827449162930285,
+      "actual_legitimate_median_probability": 0.05439325643759638,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.5,
+        "recall": 0.005434782608695652,
+        "f1": 0.010752688172043012,
+        "specificity": 0.9996551724137931,
+        "confusion_matrix": [
+          [
+            2899,
+            1
+          ],
+          [
+            183,
+            1
+          ]
+        ]
+      }
+    },
+    "prevalence_control": {
+      "log_loss": 0.22603906851327088,
+      "brier_score": 0.05610317839140672,
+      "roc_auc": 0.5,
+      "average_precision": 0.05966277561608301,
+      "mean_probability": 0.059885417792671085,
+      "observed_fraud_rate": 0.05966277561608301,
+      "actual_fraud_mean_probability": 0.059885417792671085,
+      "actual_fraud_median_probability": 0.059885417792671064,
+      "actual_legitimate_mean_probability": 0.059885417792671085,
+      "actual_legitimate_median_probability": 0.059885417792671064,
+      "at_0_5": {
+        "accuracy": 0.940337224383917,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "specificity": 1.0,
+        "confusion_matrix": [
+          [
+            2900,
+            0
+          ],
+          [
+            184,
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "verification": {
+    "reload_predictions_match": true,
+    "missing_unknown_probability_checks": true,
+    "protected_artifacts_unchanged": true,
+    "test_access": false
+  },
+  "elapsed_seconds": 8.296999999991385,
+  "protected_sha256": {
+    "models\\baseline.joblib": "c972245be10fc07a19c084b19b248ce431e3ba67e4ab75dad87feb23845bbb96",
+    "models\\lr.json": "7ab5a4e50dfc1b31c4efc8fb3336138d075e5c9b3c50366f6b4ce57a2d7cac3b",
+    "models\\metrics.json": "9bcc2d2e6ec9fc717fa59e17c7012f6989cb97519251ba47497d94ff37c93c17",
+    "models\\model.json": "618e059a6d9bc7bf45a6c0ed6160e4de4ef40caf821b7b1969a7058f596db8ea",
+    "models\\trees.json": "6a28d36e3e06c97e2f041a79935a8c3151fe9f63ac7eef7f286f3ada123b8d18",
+    "models\\xgboost_metrics.json": "7f9d7d28050fd46c4e1f29776e6cd74b41afe0ee36344935af785dff21c30d29",
+    "models\\xgboost_pipeline.joblib": "6a9ee58c9ff0f81cc40ecb3c444a9cfc6d0c9294a2996353b06cbf0daf12a6f9",
+    "models\\xgboost\\model.json": "f9492e61c9c237eab47eb0a764760679dd4ceb4a234352fa874e5571a1724bdd",
+    "models\\xgboost\\preprocessing.json": "3fa782ced3988c31c2d58464c0627c837b294edab490aeb4719426fafd2ae0c3",
+    "models\\xgboost\\preprocessor.joblib": "6dc2694ecfc5109f452a5da2845ae50225c46de67396151d034ed64863a4d8e9",
+    "models\\experiments\\capacity_20261017T042040511095Z\\cv_folds.csv": "fa28cb6b8e38d740a3e5c81fafdc65064cb8adad9bf544f565324285c2be131c",
+    "models\\experiments\\capacity_20261017T042040511095Z\\cv_ranking.csv": "c40a5172fed5fef6d259a766b5a41867160b6a2ff86f5e6ad336585db29a2a0c",
+    "models\\experiments\\capacity_20261017T042040511095Z\\hist_gradient_boosting_32.joblib": "5acec475354e863b5ec27a75bcbf092ee83da24a208d3fe4e88bd4846c114255",
+    "models\\experiments\\capacity_20261017T042040511095Z\\logistic_02.joblib": "0fc421e583b9fdc0b2f6b219e37d6966ca4829c08865b1ee397f65d5ef220bd5",
+    "models\\experiments\\capacity_20261017T042040511095Z\\protocol.json": "1516bdd1fd7ece65641a5d83089898a566f26eb93eadfdfc3ea06c0233d8d371",
+    "models\\experiments\\capacity_20261017T042040511095Z\\README.md": "0163ab7a6496a8314ea87712651df04cd75883e99f788adaad55e604ee4ce31b",
+    "models\\experiments\\capacity_20261017T042040511095Z\\results.json": "1740dcec757c9ce5153473dd72337239c33ec4d78f6ff4183849b1b9000516a7",
+    "models\\experiments\\capacity_20261017T042040511095Z\\selection.json": "4f9fd8ced96c3b268e1d58c26443dd5e4a29044b7aa829ea42c24f01dfc7dd95",
+    "models\\experiments\\capacity_20261017T042040511095Z\\validation_capacity.csv": "c4e7a725dcdd034e0ef0fd3093e15d28f7c429bf78a8beacc040cbba26c5d0a7",
+    "models\\experiments\\capacity_20261017T042040511095Z\\validation_comparison.csv": "d486cc4df123dbd0923fd3387dcc451d3a0b968d85dcded89b883e1d8a5e0b0a",
+    "models\\experiments\\capacity_20261017T042040511095Z\\validation_predictions.csv": "159b3c3edc9dd17f3136c50ea4f7cc0df2584ec9d35b5fc610d4880f725918b9",
+    "models\\experiments\\capacity_20261017T042040511095Z\\xgboost_09.joblib": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+    "models\\experiments\\precision_20261017T045105500142Z\\candidate_pipeline.joblib": "f98b52f42d317ddbace8e4aab8fbc3be189d2f5c684573c4cdb8fd9d093bfcac",
+    "models\\experiments\\precision_20261017T045105500142Z\\confirmation_selection.json": "1acacf0d55b0ec4d0cd1a336e980c19bd1c9918bb3c8b735bba78e11da9a39dc",
+    "models\\experiments\\precision_20261017T045105500142Z\\confirmed_comparison.csv": "727103bbdec98951b58dbe9c17a201d33d7e4b17d412d53235ed690542daeac9",
+    "models\\experiments\\precision_20261017T045105500142Z\\fold_metrics.csv": "2fa51dc45ce75bce122ee65e6c6b8a1740933d6705b79715c78ab324f4dcdeb0",
+    "models\\experiments\\precision_20261017T045105500142Z\\protocol.json": "38d4b3f7e9d5810790c4f8672649bd5f97454639d51137f8a88f21c85383a7b7",
+    "models\\experiments\\precision_20261017T045105500142Z\\README.md": "e61695c2f4066fb4696d19efc6115e1bb2858b7e2275da24bad278f23c629de1",
+    "models\\experiments\\precision_20261017T045105500142Z\\results.json": "2f224fb870d256004b30e8425a944508f44f73e8bc86b566278a74cf121fee38",
+    "models\\experiments\\precision_20261017T045105500142Z\\search_ranking.csv": "b012a9dd0d9cd8108ed2425c23e41adfebfa07cf425acc0a6dbaa7487fb7ac20"
+  }
+}

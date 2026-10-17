@@ -1,0 +1,9 @@
+{
+  "recommended_by_training_cv": "xgboost_09",
+  "finalists": [
+    "xgboost_09",
+    "hist_gradient_boosting_32",
+    "logistic_02"
+  ],
+  "validation_not_opened_yet": true
+}
