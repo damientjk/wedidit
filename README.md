@@ -1,0 +1,114 @@
+# we did it | IBM Z Datathon 2026
+
+> Project title for submission: **we did it_IBM Z Datathon 2026 Project**
+> Theme 1: Real-Time AI for Critical Decisions (insurance risk)
+
+## 1. Problem
+
+TODO (Marcus drafts the problem statement, paste here).
+
+## 2. Our approach
+
+An explainable AI model that scores insurance claims for fraud and risk. Low-risk claims are fast-tracked and suspicious ones are sent to a human. **The model advises, the claims officer decides.**
+
+For every claim the system returns:
+
+- a **risk score** between 0 and 1
+- a **tier**: `fast_track`, `review` or `investigate`
+- the **per-feature contributions** that pushed the score up or down
+- a **what-if** option that re-scores the claim with one factor switched off
+
+## 3. Architecture
+
+```
+claims data (CSV)
+   -> prepare_data.py   clean, merge, split 9k / 3k / 3k
+   -> train.py          logistic regression baseline + XGBoost
+   -> model.json + metrics.json
+   -> API               POST /score, runs in Docker on LinuxONE
+   -> UI                claim in, risk score out, contributions, what-if
+```
+
+TODO: add `docs/flowchart.png` and link `docs/architecture.md` (Yizhuo).
+
+## 4. How we use IBM Z (LinuxONE)
+
+- Training, the scoring API and the demo run on a LinuxONE (s390x) server.
+- The API is packaged in Docker and runs as a container on the instance.
+- Why it fits: claim data is sensitive, so scoring close to where the data already lives keeps it inside a secure, high-throughput platform with low latency.
+- Evidence screenshots: see `docs/evidence/`.
+- Mandatory labs: see `docs/evidence/labs/`.
+
+TODO (Damien): confirm container names, ports and what ran where.
+
+## 5. How to run
+
+```bash
+git clone https://github.com/damientjk/wedidit.git
+cd wedidit
+pip install -r requirements.txt
+
+# 1. prepare data
+python src/prepare_data.py
+
+# 2. train
+python src/train.py
+
+# 3. start the API (see deploy/ for the Docker version)
+uvicorn api:app --host 0.0.0.0 --port 8000
+
+# 4. open the UI
+# open ui/index.html, with API_URL at the top of ui/app.js pointing at the API
+```
+
+Test the API:
+
+```bash
+export API_URL=http://localhost:8000
+python tests/test_api.py
+```
+
+TODO: replace the commands above with the final ones from Damien (Dockerfile and compose).
+
+## 6. Datasets
+
+| Dataset | Source | Licence | Used for |
+|---|---|---|---|
+| TODO (Kaggle vehicle claim fraud) | TODO link | TODO | Fraud label and claim features |
+| TODO (second dataset or synthetic) | TODO link | TODO | Claim amount |
+
+If any column is synthetic, it is documented in `data/README.md`.
+
+## 7. Open-source libraries
+
+| Library | Link |
+|---|---|
+| XGBoost | https://github.com/dmlc/xgboost |
+| scikit-learn | https://scikit-learn.org |
+| SHAP | https://github.com/shap/shap |
+| FastAPI | https://fastapi.tiangolo.com |
+| Uvicorn | https://www.uvicorn.org |
+| pandas | https://pandas.pydata.org |
+| Docker | https://www.docker.com |
+
+TODO: add anything else in `requirements.txt`.
+
+## 8. Results
+
+TODO (Yizhuo / Marcus): fill ONLY with real numbers from `models/metrics.json` and `docs/evaluation.md`.
+
+| Model | AUC | Precision | Recall | Threshold |
+|---|---|---|---|---|
+| Logistic regression (baseline) | TODO | TODO | TODO | TODO |
+| XGBoost | TODO | TODO | TODO | TODO |
+
+## 9. Limitations
+
+- The risk score is a ranking score. Unless calibrated, it is not a literal probability of fraud.
+- Contributions show what the model relied on, not what caused the fraud.
+- TODO: list any synthetic columns.
+- Reading claim PDFs is future work. It would sit in front of the same model (extract, structure into the model's columns, score).
+
+## 10. Team
+
+we did it: Damien, Marcus, Da Feng, Yu Heng, Yizhuo, Ethan.
