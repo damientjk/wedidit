@@ -2,7 +2,7 @@
 
 ## Final test: `test/`
 
-The user confirmed locked tuned XGBoost and authorised once-only evaluation. `test/` contains its final test report inputs, frozen protocol, verification, predictions, five figures, feature summary and model/capacity comparisons. All were generated without retraining or modifying thresholds.
+The team confirmed locked tuned XGBoost and authorised once-only evaluation. `test/` contains its final test report inputs, frozen protocol, verification, predictions, five figures, feature summary and model/capacity comparisons. All were generated without retraining or modifying thresholds.
 
 Use `python docs/figures/evaluate_test_once.py --reuse` to regenerate summaries and plots from the saved test predictions. This does not load models or reopen test data. First evaluation refuses to overwrite existing predictions. The original baseline is a fixed comparator; other candidates/calibration models were not evaluated on test.
 
@@ -20,7 +20,7 @@ These figures describe the locked model outputs from commit 48e14f9 on 3,084 rea
 
 Reproduce from the repository root with `python docs/figures/generate_evaluation.py` in the numerical environment recorded in the summary. On macOS the XGBoost OpenMP library may need to be located, for example via the installed scikit-learn `.dylibs` directory. Do not run any training scripts to reproduce these plots. The generator reads validation inputs only and leaves models/test data unchanged.
 
-The original final test evaluation is complete, and deployment parity was verified in this chat. A subsequent routing-policy update is recorded separately below; original test artifacts remain unchanged.
+The original final test evaluation is complete, and historical deployment checks verified final-model score parity. A subsequent routing-policy update is recorded separately below; original test artifacts remain unchanged. See [the architecture](../architecture.md#linuxone-environment-and-evidence) for the distinction between historical live checks and the latest application-source review.
 
 ## Current routing update: `routing-update/`
 
