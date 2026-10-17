@@ -20,7 +20,10 @@ button,select,input{font:inherit}
 .top{height:56px;flex:none;background:var(--ink);color:#fff;display:flex;align-items:center;gap:20px;padding:0 24px}
 .brand{display:flex;align-items:center;gap:12px;font-size:16px}
 .brand .muted{color:#A7B0BD;font-size:12px;padding-left:4px}
-.logo{width:30px;height:30px;border-radius:8px;background:var(--teal);display:grid;place-items:center}
+/* WDI = "we did it". Heavy, forward-leaning wordmark; the bar underneath is the "done" stroke. */
+.wdi{position:relative;display:inline-flex;align-items:center;height:32px;padding:0 10px 2px 8px;border-radius:8px;background:var(--teal);margin-right:4px}
+.wdi span{font:italic 800 19px/1 'Poppins',system-ui,sans-serif;letter-spacing:-.5px;color:#fff;transform:skewX(-4deg)}
+.wdi::after{content:"";position:absolute;left:9px;right:9px;bottom:5px;height:2.5px;border-radius:2px;background:#8FD3D9;transform:skewX(-30deg)}
 .chip{margin-left:auto;font-size:12px;color:#C9D1DC;background:#2A313C;padding:5px 12px;border-radius:14px}
 .status{display:flex;align-items:center;gap:8px;font-size:12px;color:#C9D1DC}
 .dot{width:8px;height:8px;border-radius:4px;background:#7E8896;display:inline-block}
