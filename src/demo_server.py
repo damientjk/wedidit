@@ -85,16 +85,19 @@ def model_info():
         "features": FEATURES, "labels": LABELS, "baseline": BASELINE, "tiers": TIERS,
         "lr": {k: LR[k] for k in ("coef", "intercept", "mean", "scale")},
         "trees": json.loads((MODELS / "trees.json").read_text()),
-        "metrics": json.loads((MODELS / "metrics.json").read_text()),
+        "metrics": json.loads((MODELS / "demo_metrics.json").read_text()),  # models/metrics.json is Marcus's
         "platform": platform.machine(),
     }
 
 
 @app.get("/model/final")
 def model_final():
-    manifest, _, features, reference, *_ = explain._load()
+    manifest, _, features, reference, encoder, categorical, _ = explain._load()
+    # Allowed values per categorical field, so the UI can build dropdowns.
+    options = {f: [c.item() if hasattr(c, "item") else c for c in cats]
+               for f, cats in zip(categorical, encoder.categories_)}
     return {
-        "model_id": manifest["model_id"], "features": features,
+        "model_id": manifest["model_id"], "features": features, "options": options,
         "labels": {f: explain.LABELS.get(f, f) for f in features}, "reference": reference,
         "tiers": {"review": manifest["review_min_score"], "investigate": manifest["investigate_min_score"]},
         "impact_unit": "log-odds", "platform": platform.machine(),

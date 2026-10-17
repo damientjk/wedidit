@@ -5,7 +5,16 @@ through it sentence by sentence, left to right, and every fact it finds
 re-scores the claim with two pre-trained models. When it finishes, the officer
 can step back through the exact sentences that moved the score.
 
-## What you see
+## Two modes (tabs in the header)
+
+| Mode | Model | What it does |
+|---|---|---|
+| **Claim form** (default) | Marcus's final XGBoost (`POST /score`, `src/explain.py`) | 19 Kaggle fields as dropdowns (options from `GET /model/final`). Three real test-set claims as examples. Shows the risk **ranking score** (uncalibrated, never a %), the tier, the recommendation, and a TreeSHAP waterfall in log-odds: base value + contributions = log-odds, then score = sigmoid(log-odds). The ‹ › trail steps through the drivers, and clicking a field's number switches it off for a what-if. |
+| **PDF walkthrough** (`#pdf`) | Demo model on synthetic data (`POST /demo/score`, `/analyze`) | The reader cursor, yellow chunks and live LogReg + tree view described below. |
+
+The demo model's metrics live in `models/demo_metrics.json`. `models/metrics.json` belongs to Marcus's real model.
+
+## What you see in the PDF walkthrough
 
 | Area | What it shows |
 |---|---|
@@ -58,4 +67,4 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-demo.txt   # Mac:
 .venv/bin/uvicorn demo_server:app --app-dir src --port 8000
 ```
 
-**For the video:** http://localhost:8000/?sample=claim_suspicious.pdf autoplays a sample (add `&fast=1` to skip the animation).
+**For the video:** http://localhost:8000/?sample=claim_suspicious.pdf opens the PDF mode and autoplays a sample (add `&fast=1` to skip the animation).

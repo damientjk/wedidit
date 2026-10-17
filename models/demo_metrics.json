@@ -1,0 +1,47 @@
+{
+  "platform": "s390x",
+  "data": "synthetic placeholder",
+  "rows": {
+    "train": 8999,
+    "val": 3000,
+    "test": 3001
+  },
+  "fraud_rate_train": 0.1105,
+  "threshold": 0.3,
+  "n_trees": 60,
+  "xgboost_version": "2.0.3",
+  "val": {
+    "logistic_regression": {
+      "auc": 0.7399,
+      "precision": 0.4667,
+      "recall": 0.2115
+    },
+    "xgboost": {
+      "auc": 0.7809,
+      "precision": 0.1634,
+      "recall": 0.8671
+    },
+    "ensemble": {
+      "auc": 0.7838,
+      "precision": 0.2514,
+      "recall": 0.6888
+    }
+  },
+  "test": {
+    "logistic_regression": {
+      "auc": 0.7633,
+      "precision": 0.5175,
+      "recall": 0.2229
+    },
+    "xgboost": {
+      "auc": 0.8077,
+      "precision": 0.1764,
+      "recall": 0.9096
+    },
+    "ensemble": {
+      "auc": 0.8108,
+      "precision": 0.2653,
+      "recall": 0.7169
+    }
+  }
+}

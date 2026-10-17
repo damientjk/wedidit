@@ -27,6 +27,9 @@ let autoFast = false;   // ?fast=1
 let pinnedTree = null;    // null = auto-pick the tree that changed most
 let shownTree = 0;
 let lastPdf = null;
+let pdfChip = "Demo model";
+// "form" (final model, final.js) or "pdf" (this file). ?sample=... or #pdf opens the PDF mode.
+let mode = new URLSearchParams(location.search).get("sample") || location.hash === "#pdf" ? "pdf" : "form";
 const excluded = new Set();
 
 /* ---------- helpers ---------- */
@@ -55,9 +58,11 @@ async function boot() {
     think("!", "Cannot reach the scoring API. Run: uvicorn demo_server:app --app-dir src", "err");
     return;
   }
-  const t = info.metrics.test;
-  $("#modelChip").textContent = `Model pre-trained on ${info.metrics.platform} · test AUC XGBoost ${t.xgboost.auc.toFixed(2)} · LogReg ${t.logistic_regression.auc.toFixed(2)}`;
-  status(`Reader ready on ${info.platform}`, "on");
+  const t = info.metrics && info.metrics.test;
+  pdfChip = t ? `Demo model (synthetic data) · test AUC XGBoost ${t.xgboost.auc.toFixed(2)} · LogReg ${t.logistic_regression.auc.toFixed(2)}`
+              : "Demo model (synthetic data)";
+  if (mode === "pdf") $("#modelChip").textContent = pdfChip;
+  status(`Ready on ${info.platform}`, "on");
   buildTabs();
   drawSigmoid([], null);
   drawTree(info.baseline, info.baseline);
@@ -264,7 +269,7 @@ function whatIfState() { return whatIf || A.final; }
 
 async function rescoreWhatIf() {
   const body = {...A.final.features, exclude: [...excluded]};
-  const r = await fetch("score", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const r = await fetch("demo/score", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
   const res = await r.json();
   const feats = {...A.final.features};
   excluded.forEach((f) => { feats[f] = info.baseline[f]; });
@@ -451,7 +456,7 @@ function drawTree(feats, prevFeats, keep) {
     if (best > 1e-9) shownTree = bestI;
   }
   const tree = info.trees[shownTree];
-  $("#treeNo").textContent = `${shownTree + 1} of ${info.metrics.n_trees || "all"}`;
+  $("#treeNo").textContent = `${shownTree + 1} of ${(info.metrics && info.metrics.n_trees) || "all"}`;
   const path = leafOf(tree, feats);
   const onIds = new Set(path.map((n) => n.nodeid));
   const prevLeaf = leafOf(tree, prevFeats).at(-1);
@@ -518,6 +523,7 @@ $("#prev").addEventListener("click", () => focusChunk(pointer - 1));
 $("#next").addEventListener("click", () => focusChunk(pointer + 1));
 document.addEventListener("keydown", (e) => {
   if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (mode !== "pdf") return; // final.js handles the form mode
   if (e.key === "ArrowLeft" && !$("#prev").disabled) focusChunk(pointer - 1);
   if (e.key === "ArrowRight" && !$("#next").disabled) focusChunk(pointer + 1);
 });

@@ -4,7 +4,8 @@ Writes everything as JSON (no pickles, so files load the same on s390x):
   models/model.json    XGBoost booster
   models/lr.json       scaler + coefficients for logistic regression
   models/trees.json    first few XGBoost trees, for the live tree view
-  models/metrics.json  AUC / precision / recall on val and test
+  models/demo_metrics.json  AUC / precision / recall on val and test
+                       (models/metrics.json belongs to Marcus's real model)
 
 Run:  python src/train_demo.py
 """
@@ -77,7 +78,7 @@ def main():
             "xgboost": evaluate(y, p_xgb, TIERS["review"]),
             "ensemble": evaluate(y, (p_lr + p_xgb) / 2, TIERS["review"]),
         }
-    (OUT / "metrics.json").write_text(json.dumps(metrics, indent=2))
+    (OUT / "demo_metrics.json").write_text(json.dumps(metrics, indent=2))
     print(json.dumps(metrics, indent=2))
 
 

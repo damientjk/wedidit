@@ -14,13 +14,18 @@
     <div class="logo" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg></div>
     <strong>ClaimLens</strong><span class="muted">Claims Risk Review</span>
   </div>
+  <nav class="modes" aria-label="Mode">
+    <button id="tabForm" class="mode" data-mode="form">Claim form <span>final model</span></button>
+    <button id="tabPdf" class="mode" data-mode="pdf">PDF walkthrough <span>demo model</span></button>
+  </nav>
   <div id="modelChip" class="chip">Loading model...</div>
   <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Connecting</span></div>
 </header>
 
 <main class="grid">
   <!-- LEFT: document being read -->
-  <section class="card doc" aria-labelledby="docTitle">
+  <section class="card doc">
+   <div id="pdfLeft" class="view">
     <div class="card-head">
       <div>
         <div id="docTitle" class="title">No claim loaded</div>
@@ -86,10 +91,53 @@
       <span class="eyebrow">WHAT IF</span><span class="small muted">Untick a fact to score the claim without it.</span>
       <div id="chips" class="chips"></div>
     </div>
+   </div>
+
+   <div id="formLeft" class="view" hidden>
+    <div class="card-head">
+      <div>
+        <div class="title">Claim details</div>
+        <div id="fSub" class="sub">The 19 fields the final model reads. Change a field to re-score, or click its number to switch it off (what-if).</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="small muted">Real test-set claims</span>
+      <button class="btn" data-example="low">Low priority</button>
+      <button class="btn" data-example="mid">Medium priority</button>
+      <button class="btn" data-example="high">High priority</button>
+      <span class="spacer"></span>
+      <button id="fReset" class="btn">Clear what-if</button>
+    </div>
+    <form id="fForm" class="fform" autocomplete="off"></form>
+    <div id="fDecision" class="decision fast_track">
+      <div class="dec-main">
+        <div class="eyebrow">RISK RANKING SCORE</div>
+        <div class="dec-row">
+          <div id="fRisk" class="risk-num">-</div>
+          <div>
+            <div id="fTier" class="pill">-</div>
+            <div id="fAdvice" class="small"></div>
+          </div>
+        </div>
+        <div class="meter" aria-hidden="true"><div id="fMeter"></div><i id="fMarkR"></i><i id="fMarkI"></i></div>
+        <div class="small muted note">Uncalibrated ranking score, not a % chance of fraud.</div>
+      </div>
+      <div class="stepper">
+        <div class="eyebrow">DECISION TRAIL</div>
+        <div class="step-row">
+          <button id="fPrev" class="btn round" aria-label="Previous driver" disabled>&lsaquo;</button>
+          <div id="fStep" class="step-text small"></div>
+          <button id="fNext" class="btn round" aria-label="Next driver" disabled>&rsaquo;</button>
+        </div>
+      </div>
+    </div>
+    <div id="fWhatIf" class="whatif small" hidden></div>
+   </div>
   </section>
 
   <!-- RIGHT: live decision feed -->
   <section class="card feed" aria-label="Live decision feed">
+   <div id="pdfRight" class="view feed-pdf">
     <div class="card-head">
       <div>
         <div class="title">Live decision feed</div>
@@ -126,8 +174,31 @@
       <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>READER REASONING</span><span class="small dim">rule-based extractor, runs offline on LinuxONE</span></div>
       <div id="thinking" class="thinking mono" aria-live="polite"></div>
     </div>
+   </div>
+
+   <div id="formRight" class="view feed-form" hidden>
+    <div class="card-head">
+      <div>
+        <div class="title">Why this score</div>
+        <div id="fModelSub" class="sub">Final XGBoost model, exact TreeSHAP contributions in log-odds</div>
+      </div>
+      <div class="readouts">
+        <div><span class="small muted">Score</span><b id="fScoreR">-</b></div>
+        <div><span class="small muted">Log-odds</span><b id="fMargin">-</b></div>
+      </div>
+    </div>
+    <div class="panel shap">
+      <div class="panel-head"><b>From the average claim to this claim</b><span class="small muted mono">score = 1 / (1 + e<sup>-log-odds</sup>)</span></div>
+      <svg id="fWaterfall" viewBox="0 0 640 360" role="img" aria-label="Waterfall of each field's contribution to the log-odds"></svg>
+    </div>
+    <div class="panel think">
+      <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>MODEL REASONING</span><span class="small dim">generated from the model's contributions</span></div>
+      <div id="fThinking" class="thinking mono" aria-live="polite"></div>
+    </div>
+   </div>
   </section>
 </main>
 <script src="app.js"></script>
+<script src="final.js"></script>
 </body>
 </html>
