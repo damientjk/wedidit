@@ -1,7 +1,6 @@
-# we did it | IBM Z Datathon 2026
+# we did it_IBM Z Datathon 2026 Project
 
-> Project title for submission: **we did it_IBM Z Datathon 2026 Project**
-> Theme 1: Real-Time AI for Critical Decisions (insurance risk)
+**Claim!** · Theme 1: Real-Time AI for Critical Decisions (insurance risk)
 
 ## 1. Problem
 
@@ -23,8 +22,6 @@ The service runs in FastAPI and Docker on IBM LinuxONE (Ubuntu 24.04, s390x). Th
 ![Claim! architecture](docs/flowchart.png)
 
 See [the architecture and verification status](docs/architecture.md), [editable SVG diagram](docs/flowchart.svg), and [evaluation](docs/evaluation.md). The historical live checks and latest PDF source review are documented separately; the held-out model metrics do not measure PDF extraction accuracy.
-
-## 4. How we use IBM Z (LinuxONE)
 
 ## 4. How we use IBM Z (LinuxONE)
 
