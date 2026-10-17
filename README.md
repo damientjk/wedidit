@@ -5,70 +5,48 @@
 
 ## 1. Problem
 
-TODO (Marcus drafts the problem statement, paste here).
+Insurance companies process large volumes of vehicle insurance claims, making it challenging to efficiently identify potentially fraudulent submissions. Traditional claims processing often relies on manual assessments and rule-based checks, which can be time-consuming, resource-intensive, and inconsistent.
+A key challenge is balancing fraud detection with operational efficiency. Investigating every claim increases processing time and costs, while prioritizing too few claims risks overlooking fraudulent activity. Insurers therefore need a reliable way to identify which claims deserve greater attention without unnecessarily delaying legitimate customers.
 
 ## 2. Our approach
 
-An explainable AI model that scores insurance claims for fraud and risk. Low-risk claims are fast-tracked and suspicious ones are sent to a human. **The model advises, the claims officer decides.**
-
-For every claim the system returns:
-
-- a **risk score** between 0 and 1
-- a **tier**: `fast_track`, `review` or `investigate`
-- the **per-feature contributions** that pushed the score up or down
-- a **what-if** option that re-scores the claim with one factor switched off
+Our project, Claim!, addresses this challenge through an AI-assisted fraud investigation prioritization system powered by IBM LinuxONE. Using machine learning, the system analyses vehicle insurance claim information and generates a relative fraud-risk score, assigns an investigation priority, and provides explainable insights into the factors influencing its assessment.
+Rather than automatically approving or rejecting claims, Claim! supports human decision-making by helping insurance officers prioritize high-risk claims, allocate investigation resources more effectively, and streamline routine claims processing.
+By combining real-time machine learning inference, explainable AI, and IBM Z infrastructure, Claim! aims to make vehicle insurance claims assessment more efficient, transparent, and data-driven.
 
 ## 3. Architecture
 
-```
-claims data (CSV)
-   -> prepare_data.py   clean, merge, split 9k / 3k / 3k
-   -> train.py          logistic regression baseline + XGBoost
-   -> model.json + metrics.json
-   -> API               POST /score, runs in Docker on LinuxONE
-   -> UI                claim in, risk score out, contributions, what-if
-```
+The final model is tuned XGBoost (`xgboost_09`) with its own fitted preprocessing. The claim form passes 19 source fields to `/score`. The PDF reader uses pypdf and rule-based patterns to extract those same fields, then calls the same scorer through `/analyze`. Both intake screens display the risk ranking, tier and native TreeSHAP explanations for a claims officer to review.
 
-TODO: add `docs/flowchart.png` and link `docs/architecture.md` (Yizhuo).
+The service runs in FastAPI and Docker on IBM LinuxONE (Ubuntu 24.04, s390x). The UI withholds the score until the policy-coverage category (`BasePolicy`) is provided; other missing fields are flagged and scores are provisional. Reading a coverage category from a claim does not verify the policy itself.
+
+![Claim! architecture](docs/flowchart.png)
+
+See [the architecture and verification status](docs/architecture.md), [editable SVG diagram](docs/flowchart.svg), and [evaluation](docs/evaluation.md). The historical live checks and latest PDF source review are documented separately; the held-out model metrics do not measure PDF extraction accuracy.
 
 ## 4. How we use IBM Z (LinuxONE)
 
-- Training, the scoring API and the demo run on a LinuxONE (s390x) server.
-- The API is packaged in Docker and runs as a container on the instance.
-- Why it fits: claim data is sensitive, so scoring close to where the data already lives keeps it inside a secure, high-throughput platform with low latency.
-- Evidence screenshots: see `docs/evidence/`.
-- Mandatory labs: see `docs/evidence/labs/`.
+Server details: IBM z17, s390x, Ubuntu 24.04, 3 vCPUs, 8 GB of RAM.
 
-TODO (Damien): confirm container names, ports and what ran where.
+What runs on LinuxONE: Explain which components run on LinuxONE, including the approximately 5 ms response time.
+
+Training: Model training was conducted off-server using the same library versions, then verified on LinuxONE.
+
+Container table:
+
+Port 8000: Application
+
+Port 38889: Labs
+
+Port 38888: JupyterLab
 
 ## 5. How to run
 
-```bash
-git clone https://github.com/damientjk/wedidit.git
-cd wedidit
-pip install -r requirements.txt
+Provide instructions for running the application using Docker on LinuxONE or plain Python.
 
-# 1. prepare data (needs data/raw/fraud_oracle.csv, see section 6)
-python prepare_data.py
+Include optional steps to rebuild the data and model.
 
-# 2. train
-python src/train.py
-
-# 3. start the API (see deploy/ for the Docker version)
-uvicorn api:app --host 0.0.0.0 --port 8000
-
-# 4. open the UI
-# open ui/index.html, with API_URL at the top of ui/app.js pointing at the API
-```
-
-Test the API:
-
-```bash
-export API_URL=http://localhost:8000
-python tests/test_api.py
-```
-
-TODO: replace the commands above with the final ones from Damien (Dockerfile and compose).
+Include the command for running the API tests.
 
 ## 6. Datasets
 
@@ -95,12 +73,32 @@ TODO: add anything else in `requirements.txt`.
 
 ## 8. Results
 
-TODO (Yizhuo / Marcus): fill ONLY with real numbers from `models/metrics.json` and `docs/evaluation.md`.
+Claim! uses **tuned XGBoost (`xgboost_09`) alone**, with no ensemble. The model was locked before the original held-out test evaluation on **3,084 real vehicle claims, including 185 fraud labels (6.00%)**. Synthetic fields are excluded from prediction.
 
-| Model | AUC | Precision | Recall | Threshold |
-|---|---|---|---|---|
-| Logistic regression (baseline) | TODO | TODO | TODO | TODO |
-| XGBoost | TODO | TODO | TODO | TODO |
+The comparison below uses the same test claims. Precision and recall refer to reviewing the **617 highest-scoring claims (approximately 20% capacity)** for each model, rather than applying the live score thresholds.
+
+| Model | Test ROC-AUC | Test average precision (AP) | Precision at 20% capacity | Recall at 20% capacity | Fraud labels captured |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Original logistic-regression baseline | 0.6822 | 0.0943 | 10.21% | 34.05% | 63 / 185 |
+| Locked tuned XGBoost | 0.6877 | 0.1061 | 10.53% | 35.14% | 65 / 185 |
+
+At matched capacity, XGBoost captures two additional fraud-labelled claims. The gain is modest; it does not establish statistical significance or operational savings. AP is average precision, not accuracy.
+
+**Current live score bands**
+
+| Tier | Score rule |
+| --- | --- |
+| `fast_track` | score < 0.1754 |
+| `review` | 0.1754 ≤ score < 0.31254968 |
+| `investigate` | score ≥ 0.31254968 (displayed approximately as 0.31255) |
+
+At the unchanged investigation threshold, test precision is **12.38%** and recall is **21.08%**, flagging 315 claims containing 39 fraud labels. This is a different operating point from the matched-capacity comparison above.
+
+**Validation trade-off after the review-policy update:** on 3,084 validation claims with 184 fraud labels, lowering the review boundary from 0.25596985 to 0.1754 reduces fraud labels routed to fast-track from **77 to 9**. Review-only workload rises from **20.01% to 53.99%**, with investigation unchanged at **9.99%**. Combined review plus investigation therefore reaches **63.98%** of validation claims. These are validation routing results, not an improvement in test ROC-AUC or a guarantee of future workload.
+
+The review boundary changed after the original test evaluation. Revised test routing is reported separately as **post-evaluation reanalysis of cached predictions**, not a new untouched holdout evaluation. Scores are relative risk rankings, not calibrated fraud probabilities. Officers retain the final decision; fast-track does not mean automatic approval or clearance.
+
+See the [full evaluation and charts](docs/evaluation.md), [original test results](docs/figures/test/evaluation_summary.json), and [routing-policy reanalysis](docs/figures/routing-update/README.md).
 
 ## 9. Limitations
 
