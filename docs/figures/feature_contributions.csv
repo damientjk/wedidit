@@ -1,0 +1,20 @@
+feature,label,mean_absolute_log_odds
+BasePolicy,Policy coverage,0.8806394
+MonthClaimed,Claim reporting month,0.109332964
+VehiclePrice,Vehicle price band,0.08218744
+AgeOfVehicle,Vehicle age band,0.060040995
+VehicleCategory,Vehicle category,0.04885408
+Make,Vehicle make,0.036391392
+DayOfWeek,Accident weekday,0.036172275
+AccidentArea,Accident area,0.031058826
+WeekOfMonth,Accident week of month,0.028128536
+Deductible,Policy deductible,0.025708474
+WeekOfMonthClaimed,Claim reporting week of month,0.021021944
+PastNumberOfClaims,Prior claims band,0.019572375
+Days_Policy_Accident,Policy-to-accident duration band,0.010554136
+DriverRating,Driver rating,0.0047088237
+NumberOfCars,Number of cars band,0.0026647556
+Month,Accident month,0.0016925496
+AgentType,Agent type,0.0
+DayOfWeekClaimed,Claim reporting weekday,0.0
+Days_Policy_Claim,Policy-to-claim duration band,0.0

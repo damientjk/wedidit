@@ -1,0 +1,5 @@
+model,label,roc_auc,average_precision
+working_logistic,Original LR baseline,0.6941060719640181,0.10191238070089309
+logistic_02,Tuned LR,0.7100955772113944,0.11425726712433802
+xgboost_09,Locked tuned XGBoost,0.7169209145427287,0.1255515398563654
+hist_gradient_boosting_32,HistGradientBoosting reference,0.7189308470764619,0.14038925296656551

@@ -1,0 +1,60 @@
+{
+  "8000": [
+    {
+      "sample": "claim_safe.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    },
+    {
+      "sample": "claim_borderline.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    },
+    {
+      "sample": "claim_suspicious.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    }
+  ],
+  "8002": [
+    {
+      "sample": "claim_safe.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    },
+    {
+      "sample": "claim_borderline.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    },
+    {
+      "sample": "claim_suspicious.pdf",
+      "status": 200,
+      "detail": null,
+      "steps": 11,
+      "final_model_id": null,
+      "final_feature_count": 5,
+      "final_score_type": null
+    }
+  ]
+}

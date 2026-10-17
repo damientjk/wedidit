@@ -1,0 +1,130 @@
+{
+  "checked_at_utc": "2026-10-17T06:09:13.966402+00:00",
+  "cases": 20,
+  "services": {
+    "8000": {
+      "model_info_status": 200,
+      "model_info_features": [
+        "claims_last_12m",
+        "days_policy_to_incident",
+        "vehicle_age",
+        "claim_amount",
+        "police_report"
+      ],
+      "model_info_feature_count": 5,
+      "old_ui_metrics_compatible": true,
+      "score_parity_passed": 0,
+      "score_parity_total": 20,
+      "max_score_error": 0.27883789591789243,
+      "sample_errors": [
+        {
+          "index": 0,
+          "status": 200,
+          "score_error": 0.1443545883178711,
+          "contributions": 5,
+          "model_id": null,
+          "impact_unit": null,
+          "detail": null
+        },
+        {
+          "index": 1,
+          "status": 200,
+          "score_error": 0.1516538625240326,
+          "contributions": 5,
+          "model_id": null,
+          "impact_unit": null,
+          "detail": null
+        }
+      ],
+      "what_if": {
+        "status": 200,
+        "sensitivity_flag": null,
+        "routing_disallowed": false,
+        "reference_present": false
+      },
+      "invalid_exclusion_status": 200,
+      "non_numeric_deductible_status": 200,
+      "missing_input": {
+        "status": 200,
+        "flagged": null,
+        "routing_disallowed": false
+      },
+      "sequential_internal_http_timing": {
+        "requests": 20,
+        "median_ms": 5.468203999043908,
+        "p95_ms": 7.559501995274331,
+        "note": "Small on-server sequential diagnostic including HTTP; not a throughput/load benchmark; no warm-up."
+      }
+    },
+    "8002": {
+      "model_info_status": 200,
+      "model_info_features": [
+        "claims_last_12m",
+        "days_policy_to_incident",
+        "vehicle_age",
+        "claim_amount",
+        "police_report"
+      ],
+      "model_info_feature_count": 5,
+      "old_ui_metrics_compatible": false,
+      "score_parity_passed": 20,
+      "score_parity_total": 20,
+      "max_score_error": 0,
+      "sample_errors": [],
+      "what_if": {
+        "status": 200,
+        "sensitivity_flag": true,
+        "routing_disallowed": true,
+        "reference_present": true,
+        "equals_explicit_reference": true,
+        "original_score_preserved": true
+      },
+      "invalid_exclusion_status": 422,
+      "non_numeric_deductible_status": 422,
+      "missing_input": {
+        "status": 200,
+        "flagged": true,
+        "routing_disallowed": true
+      },
+      "sequential_internal_http_timing": {
+        "requests": 20,
+        "median_ms": 4.426330502610654,
+        "p95_ms": 5.7429019943811,
+        "note": "Small on-server sequential diagnostic including HTTP; not a throughput/load benchmark; no warm-up."
+      }
+    }
+  },
+  "test_container_artifact": {
+    "model_id": "xgboost_09",
+    "model_sha256": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+    "features": [
+      "Deductible",
+      "Month",
+      "WeekOfMonth",
+      "DayOfWeek",
+      "MonthClaimed",
+      "WeekOfMonthClaimed",
+      "DayOfWeekClaimed",
+      "Make",
+      "AccidentArea",
+      "VehicleCategory",
+      "BasePolicy",
+      "AgentType",
+      "VehiclePrice",
+      "DriverRating",
+      "Days_Policy_Accident",
+      "Days_Policy_Claim",
+      "PastNumberOfClaims",
+      "AgeOfVehicle",
+      "NumberOfCars"
+    ],
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4+dfsg",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.3.2"
+    }
+  }
+}

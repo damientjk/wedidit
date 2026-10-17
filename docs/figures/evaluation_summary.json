@@ -1,0 +1,248 @@
+{
+  "commit": "48e14f9eb3aae344bb14c8f66ef05893276ad2a8",
+  "split": "validation",
+  "test_evaluated": false,
+  "claims": 3084,
+  "fraud": 184,
+  "comparison": [
+    {
+      "model": "working_logistic",
+      "label": "Original LR baseline",
+      "roc_auc": 0.6941060719640181,
+      "average_precision": 0.10191238070089309
+    },
+    {
+      "model": "logistic_02",
+      "label": "Tuned LR",
+      "roc_auc": 0.7100955772113944,
+      "average_precision": 0.11425726712433802
+    },
+    {
+      "model": "xgboost_09",
+      "label": "Locked tuned XGBoost",
+      "roc_auc": 0.7169209145427287,
+      "average_precision": 0.1255515398563654
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "label": "HistGradientBoosting reference",
+      "roc_auc": 0.7189308470764619,
+      "average_precision": 0.14038925296656551
+    }
+  ],
+  "thresholds": {
+    "review": 0.25596985,
+    "investigate": 0.31254968
+  },
+  "operating": {
+    "investigate": {
+      "threshold": 0.31254968,
+      "precision": 0.1266233766233766,
+      "recall": 0.21195652173913043,
+      "f1": 0.15853658536585366,
+      "false_positive_rate": 0.09275862068965517,
+      "flagged": 308,
+      "flagged_share": 0.09987029831387809,
+      "confusion_matrix": [
+        [
+          2631,
+          269
+        ],
+        [
+          145,
+          39
+        ]
+      ]
+    },
+    "review_or_investigate": {
+      "threshold": 0.25596985,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348,
+      "f1": 0.19296663660955815,
+      "false_positive_rate": 0.28206896551724137,
+      "flagged": 925,
+      "flagged_share": 0.29993514915693903,
+      "confusion_matrix": [
+        [
+          2082,
+          818
+        ],
+        [
+          77,
+          107
+        ]
+      ]
+    }
+  },
+  "tiers": [
+    {
+      "tier": "fast_track",
+      "count": 2159,
+      "share": 0.7000648508430609,
+      "fraud": 77,
+      "fraud_rate": 0.035664659564613246
+    },
+    {
+      "tier": "review",
+      "count": 617,
+      "share": 0.20006485084306097,
+      "fraud": 68,
+      "fraud_rate": 0.11021069692058347
+    },
+    {
+      "tier": "investigate",
+      "count": 308,
+      "share": 0.09987029831387809,
+      "fraud": 39,
+      "fraud_rate": 0.1266233766233766
+    }
+  ],
+  "capacity": [
+    {
+      "model": "working_logistic",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "caught": 32,
+      "precision": 0.1038961038961039,
+      "recall": 0.17391304347826086
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "caught": 73,
+      "precision": 0.11831442463533225,
+      "recall": 0.3967391304347826
+    },
+    {
+      "model": "working_logistic",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "caught": 98,
+      "precision": 0.10594594594594595,
+      "recall": 0.532608695652174
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "caught": 39,
+      "precision": 0.1266233766233766,
+      "recall": 0.21195652173913043
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "caught": 75,
+      "precision": 0.12155591572123177,
+      "recall": 0.4076086956521739
+    },
+    {
+      "model": "logistic_02",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "caught": 103,
+      "precision": 0.11135135135135135,
+      "recall": 0.5597826086956522
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "caught": 39,
+      "precision": 0.1266233766233766,
+      "recall": 0.21195652173913043
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "caught": 81,
+      "precision": 0.1312803889789303,
+      "recall": 0.44021739130434784
+    },
+    {
+      "model": "xgboost_09",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "caught": 107,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.1,
+      "reviewed": 308,
+      "caught": 45,
+      "precision": 0.1461038961038961,
+      "recall": 0.24456521739130435
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.2,
+      "reviewed": 617,
+      "caught": 82,
+      "precision": 0.13290113452188007,
+      "recall": 0.44565217391304346
+    },
+    {
+      "model": "hist_gradient_boosting_32",
+      "capacity": 0.3,
+      "reviewed": 925,
+      "caught": 107,
+      "precision": 0.11567567567567567,
+      "recall": 0.5815217391304348
+    }
+  ],
+  "probability_experiment": [
+    {
+      "model": "xgboost_raw",
+      "log_loss": 0.2802151868110526,
+      "brier": 0.07563152073521348,
+      "roc_auc": 0.7169209145427287,
+      "average_precision": 0.1255515398563654
+    },
+    {
+      "model": "xgboost_isotonic",
+      "log_loss": 0.20765293223210718,
+      "brier": 0.054382312187396156,
+      "roc_auc": 0.7100777736131934,
+      "average_precision": 0.11082144557448712
+    },
+    {
+      "model": "logistic_sigmoid",
+      "log_loss": 0.20840908414572465,
+      "brier": 0.05446116860478806,
+      "roc_auc": 0.7100955772113944,
+      "average_precision": 0.11425726712433802
+    },
+    {
+      "model": "blend_sigmoid",
+      "log_loss": 0.20900795914953318,
+      "brier": 0.054610858395517804,
+      "roc_auc": 0.7183676911544228,
+      "average_precision": 0.12089851303006277
+    }
+  ],
+  "max_saved_prediction_difference": 3.280632021596119e-08,
+  "max_contribution_additivity_error": 1.430511474609375e-06,
+  "model_sha256": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+  "validation_sha256": "81b0e9d5a8be8a7ecbcea9735ce04830b63da7f3f776cc31400146cec488a112",
+  "saved_predictions_sha256": "43d953c9da2cdb84954e10e401900b1e362db4e2a837a5e0e8d52081cb87e2dd",
+  "recorded_prediction_sha256": "159b3c3edc9dd17f3136c50ea4f7cc0df2584ec9d35b5fc610d4880f725918b9",
+  "prediction_hash_note": "Recorded Windows CRLF hash verified; Git checkout has LF line endings.",
+  "environment": {
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "python": "3.12.1",
+    "versions": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "scikit-learn": "1.4.1.post1",
+      "xgboost": "2.0.3",
+      "joblib": "1.6.0",
+      "matplotlib": "3.9.4"
+    }
+  }
+}

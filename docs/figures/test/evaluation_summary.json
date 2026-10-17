@@ -1,0 +1,247 @@
+{
+  "split": "final_test",
+  "model": "xgboost_09",
+  "claims": 3084,
+  "fraud": 185,
+  "fraud_rate": 0.05998702983138781,
+  "comparisons": [
+    {
+      "model": "lr_score",
+      "label": "Original LR baseline",
+      "roc_auc": 0.6821849099876005,
+      "average_precision": 0.09432428520709324
+    },
+    {
+      "model": "xgb_score",
+      "label": "Locked tuned XGBoost",
+      "roc_auc": 0.6876630338513746,
+      "average_precision": 0.10607576418345666
+    }
+  ],
+  "operating": {
+    "investigate": {
+      "threshold": 0.31254968,
+      "precision": 0.12380952380952381,
+      "recall": 0.21081081081081082,
+      "f1": 0.156,
+      "false_positive_rate": 0.09520524318730597,
+      "flagged": 315,
+      "workload": 0.10214007782101167,
+      "confusion_matrix": [
+        [
+          2623,
+          276
+        ],
+        [
+          146,
+          39
+        ]
+      ],
+      "recall_wilson_95": [
+        0.15822188294439923,
+        0.27516525212535786
+      ],
+      "precision_wilson_95": [
+        0.09190654045149815,
+        0.16477732720925997
+      ]
+    },
+    "review_or_investigate": {
+      "threshold": 0.25596985,
+      "precision": 0.10236220472440945,
+      "recall": 0.4918918918918919,
+      "f1": 0.16945996275605213,
+      "false_positive_rate": 0.2752673335632977,
+      "flagged": 889,
+      "workload": 0.28826199740596625,
+      "confusion_matrix": [
+        [
+          2101,
+          798
+        ],
+        [
+          94,
+          91
+        ]
+      ],
+      "recall_wilson_95": [
+        0.42075289785797926,
+        0.5633607601346309
+      ],
+      "precision_wilson_95": [
+        0.08411660392221126,
+        0.12402948627633531
+      ]
+    },
+    "original_baseline_at_0_5": {
+      "threshold": 0.5,
+      "precision": 0.09197939661515821,
+      "recall": 0.6756756756756757,
+      "f1": 0.16191709844559585,
+      "false_positive_rate": 0.4256640220765781,
+      "flagged": 1359,
+      "workload": 0.4406614785992218,
+      "confusion_matrix": [
+        [
+          1665,
+          1234
+        ],
+        [
+          60,
+          125
+        ]
+      ],
+      "recall_wilson_95": [
+        0.6052400128531741,
+        0.738964063973609
+      ],
+      "precision_wilson_95": [
+        0.07774315388757097,
+        0.10851582523121106
+      ]
+    }
+  },
+  "capacity": [
+    {
+      "model": "Original LR baseline",
+      "fraction": 0.1,
+      "reviewed": 308,
+      "caught": 29,
+      "precision": 0.09415584415584416,
+      "recall": 0.15675675675675677,
+      "recall_wilson_95": [
+        0.11141631124499479,
+        0.21606187710882901
+      ]
+    },
+    {
+      "model": "Original LR baseline",
+      "fraction": 0.2,
+      "reviewed": 617,
+      "caught": 63,
+      "precision": 0.10210696920583469,
+      "recall": 0.34054054054054056,
+      "recall_wilson_95": [
+        0.27611722138239175,
+        0.4114513858056052
+      ]
+    },
+    {
+      "model": "Original LR baseline",
+      "fraction": 0.3,
+      "reviewed": 925,
+      "caught": 94,
+      "precision": 0.10162162162162162,
+      "recall": 0.5081081081081081,
+      "recall_wilson_95": [
+        0.4366392398653692,
+        0.5792471021420209
+      ]
+    },
+    {
+      "model": "Locked tuned XGBoost",
+      "fraction": 0.1,
+      "reviewed": 308,
+      "caught": 38,
+      "precision": 0.12337662337662338,
+      "recall": 0.20540540540540542,
+      "recall_wilson_95": [
+        0.15346667826261245,
+        0.2693295621355513
+      ]
+    },
+    {
+      "model": "Locked tuned XGBoost",
+      "fraction": 0.2,
+      "reviewed": 617,
+      "caught": 65,
+      "precision": 0.1053484602917342,
+      "recall": 0.35135135135135137,
+      "recall_wilson_95": [
+        0.28621939431579707,
+        0.4225310022153866
+      ]
+    },
+    {
+      "model": "Locked tuned XGBoost",
+      "fraction": 0.3,
+      "reviewed": 925,
+      "caught": 98,
+      "precision": 0.10594594594594595,
+      "recall": 0.5297297297297298,
+      "recall_wilson_95": [
+        0.45793544682761494,
+        0.6003144738661484
+      ]
+    }
+  ],
+  "tiers": [
+    {
+      "tier": "fast_track",
+      "count": 2195,
+      "share": 0.7117380025940337,
+      "fraud": 94,
+      "fraud_rate": 0.0428246013667426
+    },
+    {
+      "tier": "review",
+      "count": 574,
+      "share": 0.1861219195849546,
+      "fraud": 52,
+      "fraud_rate": 0.09059233449477352
+    },
+    {
+      "tier": "investigate",
+      "count": 315,
+      "share": 0.10214007782101167,
+      "fraud": 39,
+      "fraud_rate": 0.12380952380952381
+    }
+  ],
+  "thresholds": {
+    "review": 0.25596985,
+    "investigate": 0.31254968
+  },
+  "verification": {
+    "test_sha256": "1f252d336a3d086c5175103fac1b1367c48da9be79dc68c028f88ca48015317b",
+    "prediction_sha256": "a9c7c314c92eb2b750bbc7242909acc0d98a5c953959f7b93dccb9bed2bcfe74",
+    "model_artifacts_unchanged": true,
+    "protected_model_files": 46,
+    "no_split_id_overlap": true,
+    "max_contribution_additivity_error": 1.430511474609375e-06
+  },
+  "protocol": {
+    "source_commit": "48e14f9eb3aae344bb14c8f66ef05893276ad2a8",
+    "authorisation": "User confirmed locked tuned XGBoost is final and authorised once-only test evaluation in this chat.",
+    "evaluated_at_utc": "2026-10-17T06:04:21.912953+00:00",
+    "model": "models/experiments/capacity_20261017T042040511095Z/xgboost_09.joblib",
+    "model_sha256": "bfa2cc3ca893eb9f0f2d066472cd6b7897155ce4d2270c5a849711fc8ffb76e9",
+    "original_baseline": "models/baseline.joblib",
+    "baseline_sha256": "c972245be10fc07a19c084b19b248ce431e3ba67e4ab75dad87feb23845bbb96",
+    "thresholds": {
+      "review": 0.25596985,
+      "investigate": 0.31254968,
+      "baseline_binary": 0.5
+    },
+    "capacity_fractions": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "ties": "claim_id ascending",
+    "plan": "Evaluate locked XGBoost and existing original logistic baseline. No other candidates, fitting or threshold selection. Save predictions before reporting.",
+    "environment": {
+      "platform": "macOS-26.2-arm64-arm-64bit",
+      "python": "3.12.1",
+      "versions": {
+        "numpy": "1.26.4",
+        "pandas": "2.1.4",
+        "scipy": "1.11.4",
+        "scikit-learn": "1.4.1.post1",
+        "xgboost": "2.0.3",
+        "joblib": "1.6.0",
+        "matplotlib": "3.9.4"
+      }
+    }
+  }
+}
