@@ -51,7 +51,7 @@ Its saved pipeline owns train-fitted imputation and one-hot preprocessing. Prese
 | `reports/explain_runtime/manifest.json` | Final model hash, model path and current numerical bands |
 | `src/explain.py` | Relative score, priority band, original-feature TreeSHAP and what-if analysis |
 | `models/experiments/probability_20261017T050105523504Z/` | Separate calibration experiment; not a silent replacement |
-| `src/MODEL_GUIDE.md` | Model development, contracts, limitations and handoff guide |
+| `src/MODEL_GUIDE.md` | Model development, contracts and limitations guide |
 
 The scorer returns `risk_score`, `tier`, `contributions`, `excluded`, plus model, data-quality and sensitivity metadata. The candidate score is uncalibrated: do not display it as a verified probability of fraud. Current live tiers are fast-track below **0.1754**, review from **0.1754** to below **0.31254968**, and investigate at or above **0.31254968** (displayed approximately as **0.31255**). The review boundary was replaced in bc85518 using Yu Heng’s validation-based risk-layer cutoff; the investigation boundary is unchanged. On validation, review-only workload is now 53.99%, investigation 9.99%, and total human-review workload 63.98%. These are observed workload shares, not future queue guarantees or permission to clear claims.
 
@@ -65,7 +65,7 @@ The live `POST /score` endpoint calls the final 19-input XGBoost scorer, with `G
 
 The current `POST /analyze` route uses `src/pdf_pipeline.py`: pypdf extracts text, rule-based patterns map facts and dates to the model's 19 fields, and `explain.score()` re-scores the partially populated claim after sentences that add facts. The form and PDF screens therefore use the same final XGBoost model. This is field extraction from claim text, not policy-document verification or an LLM agent.
 
-Both screens withhold the displayed score until `BasePolicy` (policy coverage category) is provided. Remaining missing fields are flagged and scores are provisional; fitted training median/modes supply missing model inputs. `/score/range` explores allowed values of missing fields to show possible score/tier changes. Empty, unreadable or scanned-image PDFs require manual handling; OCR is not implemented. Extracted values, date conventions and mappings need officer review. See [the UI handoff](claimlens.md) and [missing-field analysis](missing_fields.md).
+Both screens withhold the displayed score until `BasePolicy` (policy coverage category) is provided. Remaining missing fields are flagged and scores are provisional; fitted training median/modes supply missing model inputs. `/score/range` explores allowed values of missing fields to show possible score/tier changes. Empty, unreadable or scanned-image PDFs require manual handling; OCR is not implemented. Extracted values, date conventions and mappings need officer review. See [the UI guide](claimlens.md) and [missing-field analysis](missing_fields.md).
 
 The legacy `/demo/score` and `/model/info` endpoints still expose the earlier five-field synthetic demo artifacts; they are not the current PDF scorer or evidence for final-model metrics. The Docker build copies committed model artifacts and does not retrain them.
 
@@ -84,13 +84,6 @@ Marcus's training/verification environment was Windows AMD64; offline evaluation
 Team-provided evidence includes the [instance dashboard](evidence/01-instance-dashboard.png), [container health](evidence/02-system-containers-health.png), [CPU and memory](evidence/03-cpu-memory.png), [API request](evidence/04-api-call.png), [claim form](evidence/05a-ui-claim-form.png), [PDF walkthrough](evidence/05b-ui-pdf-walkthrough.png) and [low-priority PDF example](evidence/05c-ui-pdf-safe.png). These are screenshots of their captured release, not an automated check of subsequent deployments. The [14:09 SGT integration report](figures/integration-check/README.md) records older failures and is retained as historical evidence.
 
 For source reviewed at `1cea778`, the final-model PDF route and required-field display guards were inspected. A fresh live upload/parity check was not performed. Damien should match the deployed revision to the final screenshots before submission; rule-based extraction accuracy on arbitrary PDFs has not been established by the model's held-out CSV metrics.
-
-## Completion handoffs
-
-- Marcus: the manifest now describes the current 0.1754 / 0.31254968 boundaries. Retain the frozen model and numerical thresholds; do not tune against the evaluated test results.
-- Damien: confirm that final screenshots match the deployed source and retain final-model parity evidence.
-- Da Feng: preserve the shared final-model path, missing-coverage guard, provisional labels and contribution units across both intake screens.
-- Yizhuo: hand over the evaluation, updated flowchart and recording script; retain the original test records unchanged.
 
 ## Historical source transition: `393ad1c`
 

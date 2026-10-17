@@ -1,4 +1,4 @@
-# Vehicle insurance fraud models: development and team handoff
+# Vehicle insurance fraud models: development guide
 
 This guide describes Marcus's dataset audit, model development, current
 risk-prioritization deployment candidate and separate probability-estimation
@@ -10,8 +10,8 @@ It produces a **relative fraud-risk score** to help a human prioritize claims.
 `src/explain.py` loads this model, not the calibrated experiment. Calling the
 score a verified fraud probability would be incorrect. The team's
 [evaluation report](../docs/evaluation.md) now records LinuxONE integration
-and parity checks for this model. This guide update does not independently
-recheck the live service; preserve timestamped release evidence with Damien.
+and parity checks for this model. LinuxONE evidence screenshots are in
+[docs/evidence](../docs/evidence/).
 
 **Chosen current boundaries:** review begins at **0.1754**, investigation at
 **0.31254968** (displayed approximately as **0.31255**). The original test
@@ -255,7 +255,7 @@ Loading the final calibrated artifact does not require those source models.
   **within the separate probability-estimation experiment**, not a deployment
   replacement.
 
-## 6. Current risk scorer: inference and handoff
+## 6. Current risk scorer: inference
 
 With the repository available and `src` on the Python import path:
 
@@ -298,27 +298,8 @@ captures 175/184 (95.11%) at 63.98% model-driven human workload. The review-only
 share is 53.99%, not the historical 20%. High coverage comes with much more
 human review; future coverage/workload is not guaranteed.
 
-**Damien (API/deployment handoff):** use the whole locked pipeline via the
-scorer; preserve the 19 raw input types and transform exactly once. Coordinate
-the different `src/features.py` schema rather than substituting it. Translate
-invalid-input errors appropriately, propagate quality/sensitivity metadata,
-and retain model-loading and score-parity evidence for the current s390x
-release. `/score` now invokes `explain.score`; `/model/final` provides the
-19-feature schema and current numeric boundaries. `/demo/score`, `/analyze`
-and `/model/info` remain the separate five-feature demo. Do not switch
-the scorer to the calibrated experiment without an explicit model decision.
-
-**Da Feng (UI handoff):** retain the four response keys, display a relative
-risk score and provisional priority, and show human-decision wording. Do not
-label the raw score as a fraud probability or treat low priority as clearance.
-Display signed contribution impacts in log-odds, never a probability-point
-formatter. What-if results need a sensitivity banner and must not
-overwrite the observed claim score. Coordinate feature labels, missing/unknown
-warnings, and the separate five-feature PDF/demo interface. Keep current band
-text aligned to 0.1754 / 0.31254968; do not hardcode old workload percentages.
-
-See the [detailed scorer contract](../reports/explain_runtime/HANDOFF.md),
-[measured example response](../reports/explain_runtime/example_response.json),
+See the [measured example response](../reports/explain_runtime/example_response.json),
+[example what-if response](../reports/explain_runtime/example_what_if.json)
 and [inference tests](../tests/test_explain.py).
 
 ## 7. Loading the separate calibrated experiment

@@ -214,20 +214,6 @@ To regenerate final-test summaries and figures **from saved predictions**, use `
 
 The one final holdout has now been evaluated. Any later model, feature or threshold changes prompted by these results require a new independent evaluation design; these same test results cannot certify a modified model.
 
-## Deployment and video handoff
-
-The final model is xgboost_09 alone. Historical LinuxONE verification after commit 8346c73 covered the 19-field claim form, native log-odds explanations, three priority examples, what-if/reset and navigation. Twenty live API scores exactly matched cached evaluated predictions. Later commits bc85518 and aa60ed7 set the review boundary to 0.1754 and replaced the hardcoded band-share UI text; live API metadata was rechecked for those boundaries.
-
-Application source reviewed at `1cea778` now sends both intake screens to the final model: the claim form uses `/score`, while `/analyze` extracts claim-PDF text using pypdf and rule-based patterns before calling the same `explain.score()`. Neither screen displays a score without the `BasePolicy` category. Other missing fields produce provisional scores and warnings. This does not verify policy coverage and does not establish PDF extraction accuracy from the held-out CSV metrics. A new live PDF-upload/parity check was not performed for this update; source inspection and historical deployment verification are distinct.
-
-Damien confirms Ubuntu 24.04, s390x, 3 CPUs / 7.8 GB RAM and JupyterLab on port 38888. Small sequential HTTP checks are diagnostic, not a server throughput or latency guarantee.
-
-Suggested routing segment: “The live model reviews claims from a score of 0.1754 and investigates from approximately 0.31255. On validation, lowering the review cutoff reduced fraud-labelled claims in fast-track from 77 to 9 out of 184. The trade-off is a larger review queue, about 54% instead of 20%, plus roughly 10% for investigation. These are human-review recommendations, not automatic claim decisions.”
-
-For model-quality reporting, retain the original test ROC-AUC of 0.6877 and the unchanged matched-workload comparison of 65 versus 63 fraud-labelled claims in 617 review slots. Distinguish these model results from the later routing-policy update; do not present revised test routing as an untouched confirmatory evaluation.
-
-Match the final deployment to [the team screenshots](architecture.md#linuxone-environment-and-evidence) before submission and retain the feature-availability limitation. Historical data, possible entity/time leakage, limited positives, demographic proxies and drift limit real-world conclusions. No real savings, fraud confirmation, automatic clearance or calibrated individual probability is established by these results.
-
 ## Historical integration source update
 
 Commit `393ad1c` wired `/score` to `explain.score`, introduced `/model/final`, separated `/demo/score`, and changed the Docker build to copy committed models. In that historical revision, `/analyze` still used the demo scorer. Subsequent claim-form/API checks superseded the earlier failures; the PDF path changed again before reviewed revision `1cea778`, as described above. The timestamped [integration report](figures/integration-check/README.md) preserves what was observed at 14:09 SGT on 17 October 2026 and should not be read as the current service status. These application-source changes do not alter the saved test metrics or evaluate the extraction pipeline.
