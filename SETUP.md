@@ -40,17 +40,12 @@ ssh -i "C:\Users\YOURNAME\Downloads\datathon.pem" -L 38888:localhost:38888 linux
 ```
 Keep this terminal open, then open http://localhost:38888 and enter the Jupyter token. Closing the terminal kills the tunnel.
 
-## 5. VS Code Remote-SSH (optional, best for Claude Code)
-1. Install the **Remote - SSH** extension.
-2. Add this to your SSH config (`~/.ssh/config`):
-```
-Host linuxone
-    HostName <SERVER_IP>
-    User linux1
-    IdentityFile C:\Users\YOURNAME\Downloads\datathon.pem
-```
-3. Click the green `><` button, choose Connect to Host, pick `linuxone`.
-4. Open a terminal in that window and run Claude Code there, so it works on the server's files.
+## 5. Edit server files from VS Code (optional)
+VS Code Remote-SSH does not work on this server: it needs a VS Code server build for the s390x architecture, which does not exist. Use the **SSH FS** extension instead:
+1. Install **SSH FS** (by Kelvin Schoutsen).
+2. Create a configuration: host `<SERVER_IP>`, port `22`, username `linux1`, private key = your `datathon.pem`, root `/home/linux1/wedidit`.
+3. Right-click the configuration and choose **Add as Workspace folder**. Files save straight to the server.
+4. For commands, open a normal terminal and `ssh` in.
 
 ## 6. First checks on the server
 ```bash
