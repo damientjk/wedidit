@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>we did it | Claim Risk Scoring</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Claim Risk Scoring</h1>
+  <span class="sub">The model advises, the claims officer decides.</span>
+  <span id="mode" class="badge">mock</span>
+</header>
+
+<main>
+  <section class="panel" aria-labelledby="h-claim">
+    <h2 id="h-claim">Claim</h2>
+    <div class="examples">
+      <button data-ex="safe">Safe</button>
+      <button data-ex="borderline">Borderline</button>
+      <button data-ex="fraud">Suspicious</button>
+    </div>
+    <form id="claim" autocomplete="off"></form>
+  </section>
+
+  <section class="panel centre" aria-labelledby="h-risk">
+    <h2 id="h-risk">Risk</h2>
+    <svg id="gauge" viewBox="0 0 200 120" role="img" aria-label="Risk gauge">
+      <path class="track" d="M20 100 A80 80 0 0 1 180 100"/>
+      <path id="arc" class="arc" d="M20 100 A80 80 0 0 1 180 100"/>
+    </svg>
+    <div id="score" class="score">0%</div>
+    <div id="tier" class="tier">-</div>
+    <p id="advice" class="advice"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-why">
+    <h2 id="h-why">Why this score</h2>
+    <p class="hint">Untick a factor to see the score without it.</p>
+    <ul id="bars"></ul>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

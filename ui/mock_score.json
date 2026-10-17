@@ -1,0 +1,9 @@
+{
+  "risk_score": 0.82,
+  "tier": "investigate",
+  "contributions": [
+    {"feature": "claims_last_12m", "value": 4, "impact": 0.21},
+    {"feature": "days_policy_to_incident", "value": 6, "impact": 0.14}
+  ],
+  "excluded": []
+}
