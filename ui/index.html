@@ -16,8 +16,8 @@
     <strong>Claim!</strong><span class="muted">Claims Risk Review</span>
   </div>
   <nav class="modes" aria-label="Mode">
-    <button id="tabForm" class="mode" data-mode="form">Claim form <span>final model</span></button>
-    <button id="tabPdf" class="mode" data-mode="pdf">PDF walkthrough <span>demo model</span></button>
+    <button id="tabForm" class="mode" data-mode="form">Claim form</button>
+    <button id="tabPdf" class="mode" data-mode="pdf">PDF walkthrough</button>
   </nav>
   <div id="modelChip" class="chip">Loading model...</div>
   <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Connecting</span></div>
@@ -51,9 +51,9 @@
     </div>
 
     <div class="legend small">
-      <span><i class="sw up"></i>Raised risk</span>
-      <span><i class="sw down"></i>Lowered risk</span>
-      <span><i class="sw noted"></i>Read as a fact, no change</span>
+      <span><i class="sw up"></i>Raised the score</span>
+      <span><i class="sw down"></i>Lowered the score</span>
+      <span><i class="sw noted"></i>Field read, no change</span>
     </div>
 
     <div id="paperWrap" class="paper-wrap">
@@ -71,7 +71,7 @@
 
     <div id="decision" class="decision fast_track">
       <div class="dec-main">
-        <div class="eyebrow" id="decLabel">RISK SCORE</div>
+        <div class="eyebrow" id="decLabel">RISK RANKING SCORE</div>
         <div class="dec-row">
           <div id="riskNum" class="risk-num">-</div>
           <div>
@@ -79,7 +79,8 @@
             <div id="advice" class="small"></div>
           </div>
         </div>
-        <div class="meter" aria-hidden="true"><div id="meterFill"></div><i style="left:30%"></i><i style="left:60%"></i></div>
+        <div class="meter" aria-hidden="true"><div id="meterFill"></div><i id="pMarkR"></i><i id="pMarkI"></i></div>
+        <div class="small muted note">Uncalibrated ranking score, not a % chance of fraud.</div>
       </div>
       <div class="stepper">
         <div class="eyebrow">DECISION TRAIL</div>
@@ -89,9 +90,10 @@
           <button id="next" class="btn round" aria-label="Next chunk" disabled>&rsaquo;</button>
         </div>
       </div>
+      <div id="pRange" class="range-note small" hidden></div>
     </div>
     <div id="whatif" class="whatif" hidden>
-      <span class="eyebrow">WHAT IF</span><span class="small muted">Untick a fact to score the claim without it.</span>
+      <span class="eyebrow">WHAT IF</span><span class="small muted">Untick a field the reader found to score the claim without it.</span>
       <div id="chips" class="chips"></div>
     </div>
    </div>
@@ -145,38 +147,22 @@
     <div class="card-head">
       <div>
         <div class="title">Live decision feed</div>
-        <div class="sub">Two models re-score the claim each time the reader finds a fact. Risk = average of both.</div>
+        <div class="sub">The final model re-scores the claim each time the reader finds a field. Contributions in log-odds.</div>
       </div>
       <div class="readouts">
-        <div><span class="small muted">LogReg</span><b id="pLr">-</b></div>
-        <div><span class="small muted">XGBoost</span><b id="pXgb">-</b></div>
+        <div><span class="small muted">Score</span><b id="pScore">-</b></div>
+        <div><span class="small muted">Log-odds</span><b id="pMargin">-</b></div>
       </div>
     </div>
 
-    <div class="panel lr">
-      <div class="panel-head"><b>Logistic regression</b><span class="small muted mono">p = 1 / (1 + e<sup>-z</sup>)</span></div>
-      <div class="lr-body">
-        <svg id="sigmoid" viewBox="0 0 420 210" role="img" aria-label="Sigmoid curve with the claim's current position"></svg>
-        <div class="terms">
-          <div class="small muted">z = intercept + terms</div>
-          <ul id="terms"></ul>
-          <div id="zLine" class="mono small"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel tree">
-      <div class="panel-head">
-        <b>XGBoost: the claim's path through tree <span id="treeNo">1</span></b>
-        <div id="treeTabs" class="tabs" role="tablist"></div>
-      </div>
-      <svg id="treeSvg" viewBox="0 0 640 230" role="img" aria-label="Decision tree with the claim's current path highlighted"></svg>
-      <div id="treeNote" class="small muted"></div>
+    <div class="panel shap">
+      <div class="panel-head"><b>From the average claim to this claim</b><span class="small muted mono">score = 1 / (1 + e<sup>-log-odds</sup>)</span></div>
+      <svg id="pWaterfall" viewBox="0 0 640 360" role="img" aria-label="Waterfall of each field's contribution to the log-odds"></svg>
     </div>
 
     <div class="split-h" role="separator" aria-orientation="horizontal" aria-label="Drag to resize the reasoning panel" tabindex="0" title="Drag to resize. Double-click to reset."></div>
     <div class="panel think">
-      <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>READER REASONING</span><span class="small dim">rule-based extractor, runs offline on LinuxONE</span></div>
+      <div class="panel-head"><span class="eyebrow light"><span class="dot on"></span>READER REASONING</span><span class="small dim">rule-based reader + final XGBoost, offline on LinuxONE</span></div>
       <div id="thinking" class="thinking mono" aria-live="polite"></div>
     </div>
    </div>

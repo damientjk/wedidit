@@ -42,11 +42,22 @@ function orderOptions(f, opts) {
   });
 }
 
+// GET /model/final once, shared by the claim form and the PDF walkthrough (app.js).
+let finPromise = null;
+function loadFinal() {
+  if (!finPromise) {
+    finPromise = fetch("model/final").then((r) => {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then((j) => { fin = j; return j; });
+    finPromise.catch(() => { finPromise = null; });
+  }
+  return finPromise;
+}
+
 async function bootFinal() {
   try {
-    const r = await fetch("model/final");
-    if (!r.ok) throw new Error(r.status);
-    fin = await r.json();
+    await loadFinal();
   } catch (e) {
     $("#fSub").textContent = "Final model not available on this server (GET /model/final failed).";
     return;
@@ -310,9 +321,10 @@ function focusDriver(k) {
 }
 
 /* ---------- waterfall: base value -> each field -> log-odds ---------- */
-function drawWaterfall() {
-  const r = fRes;
-  const g = $("#fWaterfall");
+function drawWaterfall() { drawWaterfallInto($("#fWaterfall"), fRes); }
+
+// Also used by the PDF walkthrough (app.js) with its own <svg>.
+function drawWaterfallInto(g, r) {
   g.textContent = "";
   const TOP = 11;
   const list = r.contributions.filter((c) => !c.excluded);

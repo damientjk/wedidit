@@ -22,7 +22,13 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 
 import explain
-from pdf_pipeline import LABELS, analyse
+from pdf_pipeline import allowed_values, analyse
+
+# Labels for the old 5-feature demo model (/model/info, /demo/score). The UI no longer uses them.
+DEMO_LABELS = {
+    "claims_last_12m": "Claims in last 12 months", "days_policy_to_incident": "Days from policy start to incident",
+    "vehicle_age": "Vehicle age (years)", "claim_amount": "Claim amount ($)", "police_report": "Police report filed",
+}
 
 ROOT = Path(__file__).resolve().parent.parent
 MODELS = ROOT / "models"
@@ -83,7 +89,7 @@ def health():
 @app.get("/model/info")
 def model_info():
     return {
-        "features": FEATURES, "labels": LABELS, "baseline": BASELINE, "tiers": TIERS,
+        "features": FEATURES, "labels": DEMO_LABELS, "baseline": BASELINE, "tiers": TIERS,
         "lr": {k: LR[k] for k in ("coef", "intercept", "mean", "scale")},
         "trees": json.loads((MODELS / "trees.json").read_text()),
         "metrics": json.loads((MODELS / "demo_metrics.json").read_text()),  # models/metrics.json is Marcus's
@@ -91,16 +97,9 @@ def model_info():
     }
 
 
-DEDUCTIBLES = [300.0, 400.0, 500.0, 700.0]  # the only deductibles in the training data
-
-
 def final_options():
     """Allowed values per field (categorical levels, plus the observed deductibles)."""
-    _, _, _, _, encoder, categorical, _ = explain._load()
-    options = {f: [c.item() if hasattr(c, "item") else c for c in cats]
-               for f, cats in zip(categorical, encoder.categories_)}
-    options["Deductible"] = DEDUCTIBLES
-    return options
+    return allowed_values()
 
 
 @app.get("/model/final")
@@ -177,7 +176,7 @@ async def analyze(file: UploadFile = File(...)):
     if not data.startswith(b"%PDF"):
         raise HTTPException(415, "Please upload a PDF file")
     try:
-        result = analyse(data, raw_score, BASELINE)
+        result = analyse(data)  # final model, starts from an empty claim
     except Exception as e:  # unreadable or encrypted PDF
         raise HTTPException(422, f"Could not read this PDF: {e}")
     if not result["steps"]:

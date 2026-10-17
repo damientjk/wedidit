@@ -1,7 +1,17 @@
-"""Generate the three demo claim PDFs (fictional claims, made-up people).
+"""Generate the three demo claim PDFs from real test-set claims.
+
+Each PDF states all 19 fields the final model reads, in ordinary sentences, using the
+field values of a real claim in data/processed/test.csv:
+  claim_safe.pdf        claim_id 6180  (low priority, legitimate)
+  claim_borderline.pdf  claim_id 7223  (medium priority, legitimate)
+  claim_suspicious.pdf  claim_id 2857  (high priority, labelled fraud)
+People, places and reference numbers are made up. Dates are chosen so that month, weekday
+and week of month (ceil(day / 7)) match the claim exactly.
 
 Run:  python samples/make_samples.py
 """
+import calendar
+from datetime import date, timedelta
 from pathlib import Path
 
 from reportlab.lib.pagesizes import A4
@@ -9,52 +19,94 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 HERE = Path(__file__).resolve().parent
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-CLAIMS = {
-    "claim_safe.pdf": ("Motor Vehicle Accident Claim MV-1042", [
-        "Claim reference MV-1042 was submitted by the policyholder on 2 October 2026.",
-        "The insured vehicle is a 4-year-old Toyota Corolla used for commuting.",
-        "The policyholder has held the policy for 3 years and this is the first claim on record.",
-        "On 28 September 2026 the vehicle was rear-ended at a traffic light on Clementi Road.",
-        "The other driver admitted fault at the scene and two witnesses gave statements.",
-        "A police report was filed the same evening under reference SPF-2026-55120.",
-        "The workshop estimate for the rear bumper and boot lid totals $1,850.",
-        "Photographs of the damage are attached and match the workshop estimate.",
-    ]),
-    "claim_borderline.pdf": ("Motor Vehicle Accident Claim MV-2210", [
-        "Claim reference MV-2210 was submitted online on 9 October 2026.",
-        "The insured vehicle is a 9-year-old Honda Civic.",
-        "The claimant reports one prior claim in the last 12 months for a cracked windscreen.",
-        "The policy started four months before the incident.",
-        "The vehicle was scraped along the left side while parked at a multi-storey car park.",
-        "No witnesses were present and there is no CCTV footage available.",
-        "No police report was made because the claimant considered the damage minor.",
-        "The repair quote from the claimant's chosen workshop is $6,900.",
-    ]),
-    "claim_suspicious.pdf": ("Motor Vehicle Accident Claim MV-7734", [
-        "Claim reference MV-7734 was submitted by J. Tan on 8 August 2026.",
-        "The policy was issued six days before the reported loss.",
-        "The insured vehicle is a 13-year-old BMW 5 Series bought shortly before cover began.",
-        "The vehicle was reportedly struck while parked outside a shopping centre at night.",
+
+def find_date(month, weekday, week, after=None, years=(2026, 2025, 2027)):
+    """First date (on or after `after`) with this month abbreviation, weekday and week of month."""
+    m = list(calendar.month_abbr).index(month)
+    for y in years:  # prefer 2026
+        for d in range(1, calendar.monthrange(y, m)[1] + 1):
+            dt = date(y, m, d)
+            if WEEKDAYS[dt.weekday()] == weekday and min(5, (d - 1) // 7 + 1) == week and (after is None or dt >= after):
+                return dt
+    raise ValueError(f"no {weekday} in week {week} of {month}")
+
+
+def fmt(d):
+    return f"{WEEKDAYS[d.weekday()]}, {d.day} {calendar.month_name[d.month]} {d.year}"
+
+
+def claim_safe():
+    acc = find_date("Apr", "Wednesday", 2)
+    clm = find_date("Apr", "Wednesday", 3, after=acc)
+    return "Motor Vehicle Accident Claim MV-6180", [
+        f"Claim reference MV-6180 was submitted on {fmt(clm)}.",
+        f"The accident happened on {fmt(acc)} at a junction in the city centre, an urban area.",
+        "The insured vehicle is a brand new Honda sports car.",
+        "The car is valued at $72,000.",
+        "The policyholder holds a liability-only policy with a $400 deductible.",
+        "The policy was sold through an independent broker.",
+        "The policy had been in force for 14 months when the accident happened.",
+        "By the time the claim was filed, the policy had been in force for 14 months.",
+        "The policyholder has made 3 previous claims.",
+        "Only one car is insured on the policy.",
+        "The driver rating on file is 1.",
+        "The other driver admitted fault at the scene and photographs of the damage are attached.",
+    ]
+
+
+def claim_borderline():
+    acc = find_date("May", "Thursday", 1)
+    clm = find_date("May", "Thursday", 4, after=acc)
+    start = acc - timedelta(days=790)
+    return "Motor Vehicle Accident Claim MV-7223", [
+        f"Claim reference MV-7223 was submitted on {fmt(clm)}.",
+        f"The policy started on {start.day} {calendar.month_name[start.month]} {start.year}.",
+        f"The accident happened on {fmt(acc)} in an urban area near a shopping mall.",
+        "The insured vehicle is a 7-year-old Pontiac sedan.",
+        "The vehicle is valued at $26,000.",
+        "The policyholder holds an all-perils policy with a $400 deductible.",
+        "The policy was sold through an independent broker.",
+        "The policyholder has made 3 previous claims.",
+        "Only one car is insured on the policy.",
+        "The driver rating on file is 2.",
+        "The vehicle was scraped along the left side while parked and no witnesses were present.",
+    ]
+
+
+def claim_suspicious():
+    acc = find_date("Apr", "Monday", 2)
+    clm = find_date("Apr", "Friday", 3, after=acc)
+    return "Motor Vehicle Accident Claim MV-2857", [
+        f"Claim reference MV-2857 was submitted on {fmt(clm)}.",
+        f"The accident happened on {fmt(acc)} in an urban area, on a quiet street at night.",
+        "The insured vehicle is a 7-year-old Pontiac sedan.",
+        "The car is valued at $24,500.",
+        "The policyholder holds an all-perils policy with a $500 deductible.",
+        "The policy was sold through an independent broker.",
+        "The policy had been in force for 2 years when the accident happened.",
+        "By the time the claim was filed, the policy had been in force for 2 years.",
+        "This is the policyholder's first claim.",
+        "Two cars are insured on the policy.",
+        "The driver rating on file is 2.",
         "The claimant states there were no witnesses and the car was repaired before an adjuster could inspect it.",
-        "The claimant has filed 3 prior claims in the past 12 months with other insurers.",
-        "The incident was not reported to the police.",
-        "The repair invoice totals $18,400 against a market assessment of $6,400 for comparable damage.",
-    ]),
-}
+    ]
 
 
 def main():
     styles = getSampleStyleSheet()
     body = styles["BodyText"]
     body.fontSize, body.leading = 11, 17
-    for name, (title, sentences) in CLAIMS.items():
+    for name, make in [("claim_safe.pdf", claim_safe), ("claim_borderline.pdf", claim_borderline),
+                       ("claim_suspicious.pdf", claim_suspicious)]:
+        title, sentences = make()
         doc = SimpleDocTemplate(str(HERE / name), pagesize=A4, title=title)
         story = [Paragraph(title, styles["Title"]), Spacer(1, 8),
                  Paragraph("Description of claim", styles["Heading3"]),
                  Paragraph(" ".join(sentences), body),
                  Spacer(1, 12),
-                 Paragraph("Fictional claim generated for the IBM Z Datathon demo.", styles["Italic"])]
+                 Paragraph("Fictional claim document built from a real test-set claim, for the IBM Z Datathon demo.", styles["Italic"])]
         doc.build(story)
         print("wrote", name)
 
