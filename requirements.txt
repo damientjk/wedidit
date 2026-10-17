@@ -1,0 +1,13 @@
+# Pinned to the versions running on the team LinuxONE server (Ubuntu 24.04, s390x).
+# On LinuxONE, numpy / pandas / scipy / scikit-learn / xgboost come from Ubuntu's apt
+# packages (PyPI has no s390x wheels), see deploy/claimlens.Dockerfile.
+# On a laptop, `pip install -r requirements.txt` installs the same versions.
+numpy==1.26.4
+pandas==2.1.4
+scipy==1.11.4
+scikit-learn==1.4.1.post1
+xgboost==2.0.3
+fastapi==0.143.3
+uvicorn==0.54.0
+pypdf==6.21.0
+python-multipart==0.0.32

@@ -9,3 +9,5 @@ __pycache__/
 .DS_Store
 data/raw/
 video/*.mp4
+# jupyter
+.ipynb_checkpoints/
