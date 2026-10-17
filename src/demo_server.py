@@ -2,8 +2,10 @@
 
   GET  /health
   GET  /model/info       metrics, LR weights, first XGBoost trees (for the live view)
-  POST /score            claim JSON (+ "exclude") -> risk_score, tier, contributions
-  POST /analyze          PDF upload -> risk after every sentence
+  GET  /model/final      the final model's input fields, labels and tier thresholds
+  POST /score            claim JSON (+ "exclude") -> final XGBoost model (src/explain.py)
+  POST /demo/score       the 5-feature demo model, used by the PDF walkthrough UI
+  POST /analyze          PDF upload -> risk after every sentence (demo model)
   GET  /                 the UI;  /samples/*.pdf  example claims
 
 Run:  uvicorn demo_server:app --app-dir src --port 8000
@@ -18,6 +20,7 @@ import xgboost as xgb
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 
+import explain
 from pdf_pipeline import LABELS, analyse
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -87,8 +90,27 @@ def model_info():
     }
 
 
+@app.get("/model/final")
+def model_final():
+    manifest, _, features, reference, *_ = explain._load()
+    return {
+        "model_id": manifest["model_id"], "features": features,
+        "labels": {f: explain.LABELS.get(f, f) for f in features}, "reference": reference,
+        "tiers": {"review": manifest["review_min_score"], "investigate": manifest["investigate_min_score"]},
+        "impact_unit": "log-odds", "platform": platform.machine(),
+    }
+
+
 @app.post("/score")
 def score(claim: dict):
+    try:
+        return explain.score(claim)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
+@app.post("/demo/score")
+def demo_score(claim: dict):
     exclude = [f for f in claim.get("exclude", []) if f in FEATURES]
     feats = clean(claim)
     for f in exclude:

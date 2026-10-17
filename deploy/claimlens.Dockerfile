@@ -13,8 +13,10 @@ WORKDIR /app
 COPY src/ src/
 COPY ui/ ui/
 COPY samples/*.pdf samples/
-# Train inside the image, so the model the API serves was trained on this machine.
-RUN python3 src/train_demo.py
+# Use the committed models instead of retraining on every build. The final model
+# (src/explain.py) is located and checksummed via reports/explain_runtime/manifest.json.
+COPY models/ models/
+COPY reports/explain_runtime/ reports/explain_runtime/
 
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s CMD python3 -c "import urllib.request;urllib.request.urlopen('http://localhost:8000/health')"
