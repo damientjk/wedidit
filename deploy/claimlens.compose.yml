@@ -2,8 +2,8 @@
 #   docker compose -f deploy/claimlens.compose.yml up -d --build
 # The LinuxONE server has no compose plugin, so there use plain docker:
 #   docker build -f deploy/claimlens.Dockerfile -t claimlens:latest .
-#   docker run -d --name claimlens --restart unless-stopped -p 127.0.0.1:8000:8000 claimlens:latest
-# Bound to localhost only. Reach it with an SSH tunnel:
+#   docker run -d --name claimlens --restart unless-stopped -p 8000:8000 claimlens:latest
+# Open on port 8000 at http://<SERVER_IP>:8000. For local work, an SSH tunnel also works:
 #   ssh -i datathon.pem -L 8000:localhost:8000 linux1@<SERVER_IP>   then open http://localhost:8000
 services:
   claimlens:
@@ -13,5 +13,5 @@ services:
     image: claimlens:latest
     container_name: claimlens
     ports:
-      - "127.0.0.1:8000:8000"
+      - "8000:8000"
     restart: unless-stopped
