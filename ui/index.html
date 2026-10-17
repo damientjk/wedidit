@@ -102,17 +102,19 @@
     <div class="card-head">
       <div>
         <div class="title">Claim details</div>
-        <div id="fSub" class="sub">Start with the required field, then fill in what you know. The score updates after every field. Click a field's number to switch it off (what-if).</div>
+        <div id="fSub" class="sub">Fill in what you know, starting with the required field, then press Calculate risk score. After that, click a field's number to switch it off (what-if).</div>
       </div>
     </div>
     <div class="toolbar">
       <div class="filled"><b id="fFilled">0 of 19</b> <span class="small muted">fields filled</span><div class="bar"><div id="fFilledBar"></div></div></div>
       <span class="spacer"></span>
       <button id="fReset" class="btn" hidden title="Undo every what-if switch-off">Turn all fields back on</button>
-      <button id="fClear" class="btn">Clear form</button>
+      <button id="fClear" class="btn" type="button">Clear form</button>
+      <button id="fCalc" class="btn go" type="button" disabled>Calculate risk score</button>
     </div>
     <form id="fForm" class="fform" autocomplete="off"></form>
     <div id="fDecision" class="decision fast_track">
+      <div id="fStale" class="stale-note small" hidden>Fields changed since this score. Press <b>Calculate risk score</b> to update it.</div>
       <div class="dec-main">
         <div class="eyebrow">RISK RANKING SCORE</div>
         <div class="dec-row">

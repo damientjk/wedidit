@@ -99,7 +99,7 @@ async function bootFinal() {
       }
       input.id = id;
       input.name = f;
-      input.addEventListener("change", () => scoreFinal());
+      input.addEventListener("change", onFieldChange); // no scoring until Calculate is pressed
       const imp = el("button", "imp", "");
       imp.type = "button";
       imp.setAttribute("aria-label", `Switch ${fin.labels[f] || f} off or on for a what-if`);
@@ -109,12 +109,34 @@ async function bootFinal() {
     });
     form.appendChild(box);
   });
-  form.addEventListener("submit", (e) => e.preventDefault());
+  form.addEventListener("submit", (e) => { e.preventDefault(); scoreFinal(); }); // Enter = Calculate
   const span = 0.6; // meter shows 0 to 0.6, where all the action is
   $("#fMarkR").style.left = (fin.tiers.review / span) * 100 + "%";
   $("#fMarkI").style.left = (fin.tiers.investigate / span) * 100 + "%";
   $("#fModelSub").textContent = `Final model ${fin.model_id} (XGBoost on the Kaggle claims), exact TreeSHAP contributions in log-odds`;
-  scoreFinal();
+  updateFilled();
+  renderEmptyFinal();
+}
+
+/* ---------- the score is only calculated when the user presses Calculate ---------- */
+function updateFilled() {
+  const n = filledCount();
+  $("#fFilled").textContent = `${n} of ${fin.features.length}`;
+  $("#fFilledBar").style.transform = `scaleX(${n / fin.features.length})`;
+  $("#fCalc").disabled = n === 0;
+}
+
+// Editing a field never re-scores. If there is a result, it is marked out of date instead.
+function onFieldChange(e) {
+  updateFilled();
+  e.target.closest(".frow").classList.remove("need");
+  setStale(!!fRes);
+}
+
+function setStale(on) {
+  $("#fDecision").classList.toggle("stale", on);
+  $("#formRight").classList.toggle("stale", on);
+  $("#fStale").hidden = !on;
 }
 
 // Blank fields are sent as null: the model fills them with the training median/mode
@@ -135,18 +157,20 @@ function filledCount() {
 function clearForm() {
   fin.features.forEach((f) => { $("#fForm").elements[f].value = ""; });
   fExcluded.clear();
-  scoreFinal();
+  updateFilled();
+  renderEmptyFinal();
 }
 
 // Nothing entered yet: show an empty state instead of a score built only from typical values.
 function renderEmptyFinal(missingReq) {
   fRes = null;
   ++fRangeReq;
+  setStale(false);
   $("#fRisk").textContent = "-";
   $("#fTier").textContent = missingReq ? "Required field missing" : "Waiting for details";
   $("#fAdvice").textContent = missingReq
-    ? `Fill in ${missingReq.map((f) => fin.labels[f]).join(", ")} to get a score. It decides the score more than any other field.`
-    : "Start with Policy coverage (required). The score appears once it is filled and updates after every field.";
+    ? `${missingReq.map((f) => fin.labels[f]).join(", ")} is required: it decides the score more than any other field. Fill it in, then press Calculate again.`
+    : "Fill in what you know, starting with Policy coverage (required), then press Calculate risk score.";
   $("#fDecision").className = "decision";
   $("#fMeter").style.transform = "scaleX(0)";
   $("#fScoreR").textContent = $("#fMargin").textContent = "-";
@@ -174,8 +198,7 @@ function renderEmptyFinal(missingReq) {
 async function scoreFinal() {
   const my = ++fReq;
   const n = filledCount();
-  $("#fFilled").textContent = `${n} of ${fin.features.length}`;
-  $("#fFilledBar").style.transform = `scaleX(${n / fin.features.length})`;
+  updateFilled();
   if (n === 0) { renderEmptyFinal(); return; }
   const missingReq = F_REQUIRED.filter((f) => fin.features.includes(f) && $("#fForm").elements[f].value === "");
   if (missingReq.length) { renderEmptyFinal(missingReq); return; }
@@ -191,6 +214,7 @@ async function scoreFinal() {
   }
   if (my !== fReq) return;
   fRes = res;
+  setStale(false);
   renderFinal();
   fetchRanges();
 }
@@ -405,6 +429,7 @@ function setMode(m) {
 document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
 $("#fReset").addEventListener("click", () => { fExcluded.clear(); scoreFinal(); });
 $("#fClear").addEventListener("click", clearForm);
+$("#fCalc").addEventListener("click", scoreFinal);
 $("#fPrev").addEventListener("click", () => focusDriver(fPointer - 1));
 $("#fNext").addEventListener("click", () => focusDriver(fPointer + 1));
 // Click a field's impact to exclude / include it (what-if).

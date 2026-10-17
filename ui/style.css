@@ -93,6 +93,10 @@ body.resizing.rows{cursor:row-resize}
 .decision.fast_track{background:var(--green-l);border-color:#B5DEC6}
 .decision.review{background:var(--amber-l);border-color:#EED8A8}
 .decision.investigate{background:var(--red-l);border-color:#EBB9B3}
+/* Claim form result is out of date after an edit, until Calculate is pressed again */
+.stale-note{grid-column:1/-1;padding:6px 10px;border-radius:6px;background:#fff;border:1px dashed var(--orange);color:#8A4A0F}
+#fDecision.stale .dec-main,#fDecision.stale .stepper{opacity:.4}
+#formRight.stale .panel.shap,#formRight.stale .readouts{opacity:.4}
 .decision.needinfo{background:#F1F3F6;border-color:var(--line)}
 .decision.needinfo .pill{color:var(--mute)}
 .dec-row{display:flex;align-items:center;gap:14px}
