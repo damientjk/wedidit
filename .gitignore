@@ -1,3 +1,11 @@
-data/raw/
+# secrets: never commit
+*.pem
+.env
+*.key
+# local
+.venv/
 __pycache__/
 *.pyc
+.DS_Store
+data/raw/
+video/*.mp4

@@ -1,0 +1,11 @@
+# ClaimLens demo (local dev). On LinuxONE use deploy/claimlens.Dockerfile instead,
+# because xgboost and scikit-learn have no s390x wheels on PyPI.
+xgboost>=2.0
+scikit-learn>=1.4
+pandas>=2.1
+numpy>=1.26
+fastapi>=0.110
+uvicorn>=0.29
+pypdf>=4.0
+python-multipart>=0.0.9
+reportlab>=4.0   # only for samples/make_samples.py
