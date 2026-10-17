@@ -246,7 +246,7 @@ function writeReasoning() {
   const t = fin.tiers;
   const rule = r.tier === "investigate" ? `≥ ${t.investigate.toFixed(3)}` : r.tier === "review" ? `≥ ${t.review.toFixed(3)} and < ${t.investigate.toFixed(3)}` : `< ${t.review.toFixed(3)}`;
   line("result", `All ${r.contributions.length} fields sum to ${r.raw_margin.toFixed(2)} log-odds, score ${r.risk_score.toFixed(3)} ${rule}, so ${TIER_LABEL[r.tier].toUpperCase()}.`, "res");
-  line("", "Bands are provisional: about the top 10% of validation claims are high, the next 20% medium.", "quiet");
+  line("", `Tier cut-offs (provisional): review \u2265 ${t.review.toFixed(3)}, investigate \u2265 ${t.investigate.toFixed(3)}.`, "quiet");
   if (r.requires_data_quality_check) line("check", `Missing or unknown inputs: ${[...r.missing_features, ...r.unknown_categories].join(", ")}. Verify before routing.`, "err");
   line("note", r.safety_note, "quiet");
 }
