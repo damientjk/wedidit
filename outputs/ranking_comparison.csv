@@ -1,0 +1,9 @@
+ranked_by,claims_investigated,fraud_cases_caught,share_fraud_cases,fraud_usd_caught,share_fraud_usd,median_amount_investigated,capacity
+probability,154,23,0.125,257265,0.271,2854,0.05
+expected_loss,154,20,0.109,526768,0.556,13862,0.05
+probability,308,39,0.212,391613,0.413,2842,0.1
+expected_loss,308,37,0.201,643114,0.678,10291,0.1
+probability,463,63,0.342,498543,0.526,2459,0.15
+expected_loss,463,52,0.283,717277,0.757,8374,0.15
+probability,617,79,0.429,596168,0.629,2320,0.2
+expected_loss,617,63,0.342,758333,0.8,6767,0.2
